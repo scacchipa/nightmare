@@ -1,43 +1,22 @@
 package ar.com.scacchi.nightmare.data
 
 import java.io.InputStream
+import java.nio.ByteBuffer
 
 class WadInfo {
     val identification: ByteArray
-    val numLumps: Int
-    val infoTableOfs: Int
+    val numLumps: UInt
+    val infoTableOfs: UInt
 
-    constructor(identification: ByteArray, numLumps: Int, infoTableOfs: Int) {
+    constructor(identification: ByteArray, numLumps: UInt, infoTableOfs: UInt) {
         this.identification = identification
         this.numLumps = numLumps
         this.infoTableOfs = infoTableOfs
     }
 
-//    constructor(file: InputStream) {
-//        val identArray = ByteArray(4)
-//        file.read(identArray)
-//        this.identification = identArray
-//    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as WadInfo
-
-        if (numLumps != other.numLumps) return false
-        if (infoTableOfs != other.infoTableOfs) return false
-        if (!identification.contentEquals(other.identification)) return false
-
-        return true
+    constructor(buffer: ByteBuffer) {
+        this.identification = buffer.readByteArray(4) ?: byteArrayOf()
+        this.numLumps = buffer.readLittleEndianUInt() ?: 0u
+        this.infoTableOfs = buffer.readLittleEndianUInt() ?: 0u
     }
-
-    override fun hashCode(): Int {
-        var result = numLumps
-        result = 31 * result + infoTableOfs
-        result = 31 * result + identification.contentHashCode()
-        return result
-    }
-
-
 }
