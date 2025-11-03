@@ -23,7 +23,7 @@ class Letter {
                     if ((secondUByte and 0b00_001_000u) > 0u) 8 else 0
         ]
         this.backgroundColor = DOS_COLORS[
-            (secondUByte and 0b01_110_000u).toInt() +
+            (secondUByte and 0b01_110_000u).toInt().rotateRight(4) +
                     if ((secondUByte and 0b00_001_000u) > 0u) 8 else 0
         ]
     }

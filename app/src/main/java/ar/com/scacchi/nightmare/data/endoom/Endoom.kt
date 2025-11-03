@@ -1,13 +1,32 @@
 package ar.com.scacchi.nightmare.data.endoom
 
 import androidx.compose.ui.graphics.Color
+import ar.com.scacchi.nightmare.data.FileLump
+import ar.com.scacchi.nightmare.data.readByte
+import ar.com.scacchi.nightmare.data.readUByte
+import java.nio.ByteBuffer
 
 class Endoom {
     val content: Array<Array<Letter>>
 
     constructor(content: Array<Array<Letter>>) {
         this.content = content
+    }
 
+    operator fun get(x: Int, y: Int) = content[y][x]
+
+    companion object {
+        fun createFromLump(lump: FileLump, buffer: ByteBuffer): Endoom? {
+            buffer.position(lump.filepos.toInt())
+
+            return Endoom(Array(25) {
+                Array(80) {
+                    val x = buffer.readUByte() ?: return null
+                    val y = buffer.readUByte() ?: return null
+                    Letter(x, y)
+                }
+            })
+        }
     }
 }
 

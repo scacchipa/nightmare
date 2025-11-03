@@ -12,6 +12,7 @@ import ar.com.scacchi.nightmare.data.FileLump
 import ar.com.scacchi.nightmare.data.color.PlayPay
 import ar.com.scacchi.nightmare.data.WadInfo
 import ar.com.scacchi.nightmare.data.color.ColorMap
+import ar.com.scacchi.nightmare.data.endoom.Endoom
 import java.nio.ByteBuffer
 import kotlin.repeat
 
@@ -64,6 +65,12 @@ class MainActivity : AppCompatActivity() {
 
         val endoom = lumpMap["ENDOOM"]?.let {
             Endoom.createFromLump(it, buffer)
+        }
+        for (y in 0..24) {
+            for (x in 0..79) {
+                print(endoom?.get(x, y)?.letter)
+            }
+            println()
         }
 
         setContent {
