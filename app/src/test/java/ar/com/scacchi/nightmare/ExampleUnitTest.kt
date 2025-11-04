@@ -1,5 +1,6 @@
 package ar.com.scacchi.nightmare
 
+import ar.com.scacchi.nightmare.data.readBoolean
 import ar.com.scacchi.nightmare.data.readByte
 import ar.com.scacchi.nightmare.data.readByteArray
 import ar.com.scacchi.nightmare.data.readLittleEndianInt
@@ -182,5 +183,39 @@ class ByteBufferExtensionsTest {
             .readByteArray(5)
             ?.joinToString("") { it.toInt().toChar().toString() }
         assertEquals(bytes, "Pablo")
+    }
+
+    @Test
+    fun `debe lee un Array retornar null si el flujo esta vacio (EOF)`() {
+
+        val reader = ByteBuffer.wrap(
+            byteArrayOf(0x50, 0x61, 0x62)
+        )
+
+        val bytes = reader.readByteArray(5)
+        assertNull(bytes)
+    }
+
+    @Test
+    fun `debe lee un booleans de bytes correctamente`() {
+        val reader = ByteBuffer.wrap(
+            byteArrayOf(0x00, 0x01, 0x80.toByte(), 0x00)
+        )
+
+        assertEquals(reader.readBoolean(), false)
+        assertEquals(reader.readBoolean(), true)
+        assertEquals(reader.readBoolean(), true)
+        assertEquals(reader.readBoolean(), false)
+    }
+
+    @Test
+    fun `debe lee un Boolean retornar null si el flujo esta vacio (EOF)`() {
+
+        val reader = ByteBuffer.wrap(
+            byteArrayOf()
+        )
+
+        val bytes = reader.readByteArray(5)
+        assertNull(bytes)
     }
 }

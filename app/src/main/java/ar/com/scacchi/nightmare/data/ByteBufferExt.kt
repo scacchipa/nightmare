@@ -73,3 +73,11 @@ fun ByteBuffer.readByteArray(len: Int): ByteArray? {
     }
 }
 
+fun ByteBuffer.readBoolean(): Boolean? {
+    return try {
+        this.readByte()?.toInt() != 0
+    } catch (e: BufferUnderflowException) {
+        null
+    }
+}
+
