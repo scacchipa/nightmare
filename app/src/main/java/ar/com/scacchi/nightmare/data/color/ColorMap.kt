@@ -14,10 +14,10 @@ class ColorMap {
 
     companion object {
         fun createColorMap(lump: FileLump, buffer: ByteBuffer): ColorMap? {
-            buffer.position(lump.filepos.toInt())
+            buffer.position(lump.filePos.toInt())
 
             return ColorMap(
-                array = Array((lump.size / 256u).toInt()) {
+                array = Array(lump.size / 256) {
                     ColorTable.createColorTable(buffer) ?: return null
                 }
             )

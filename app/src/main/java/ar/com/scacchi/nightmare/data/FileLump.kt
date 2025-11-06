@@ -3,19 +3,23 @@ package ar.com.scacchi.nightmare.data
 import java.nio.ByteBuffer
 
 class FileLump {
-    val filepos: UInt
-    val size: UInt
-    val name: ByteArray
+    val filePos: Int
+    val size: Int
+    val name: String
 
-    constructor(filePos: UInt, size: UInt, name: ByteArray) {
-        this.filepos = filePos
+    constructor(filePos: Int, size: Int, name: String) {
+        this.filePos = filePos
         this.size = size
         this.name = name
     }
 
-    constructor(buffer: ByteBuffer) {
-        this.filepos = buffer.readLittleEndianUInt() ?: 0u
-        this.size = buffer.readLittleEndianUInt() ?: 0u
-        this.name = buffer.readByteArray(8) ?: byteArrayOf()
+    companion object {
+        fun createFrom(buffer: ByteBuffer): FileLump {
+            return FileLump(
+                filePos = buffer.readLittleEndianInt(),
+                size = buffer.readLittleEndianInt(),
+                name = buffer.readByteArrayAsString(8),
+            )
+        }
     }
 }

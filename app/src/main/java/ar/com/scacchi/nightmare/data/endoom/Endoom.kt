@@ -2,7 +2,6 @@ package ar.com.scacchi.nightmare.data.endoom
 
 import androidx.compose.ui.graphics.Color
 import ar.com.scacchi.nightmare.data.FileLump
-import ar.com.scacchi.nightmare.data.readByte
 import ar.com.scacchi.nightmare.data.readUByte
 import java.nio.ByteBuffer
 
@@ -17,7 +16,7 @@ class Endoom {
 
     companion object {
         fun createFromLump(lump: FileLump, buffer: ByteBuffer): Endoom? {
-            buffer.position(lump.filepos.toInt())
+            buffer.position(lump.filePos.toInt())
 
             return Endoom(Array(25) {
                 Array(80) {

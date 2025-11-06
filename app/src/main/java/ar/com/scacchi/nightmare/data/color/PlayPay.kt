@@ -15,9 +15,9 @@ class PlayPay {
     companion object {
         fun createFromLump(lump: FileLump, buffer: ByteBuffer): PlayPay? {
 
-            buffer.position(lump.filepos.toInt())
+            buffer.position(lump.filePos.toInt())
             return PlayPay(
-                array = Array((lump.size / 768u).toInt()) {
+                array = Array(lump.size / 768) {
                     Palette.createFrom(buffer) ?: return null
                 }
             )
