@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare
+package ar.com.scacchi.nightmare.component
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -6,15 +6,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.StrokeCap
+import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.engine.Engine
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,21 +46,15 @@ class MainActivity : AppCompatActivity() {
             Surface(
                 modifier = Modifier.fillMaxSize()
             ) {
-                Main()
+                MainScreen()
 
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val width = size.width
                     val height = size.height
 
-
-
                     val points = gameEngine.wadData.vertexes
-                        .map { Offset(it.x.toFloat()/4, it.y.toFloat()/4 + 1500) }
+                        .map { Offset(it.x.toFloat()/4, it.y.toFloat()/4 + height) }
                     points.forEach { println("${it.x}:${it.y}") }
-                    val points2 = listOf(
-                        Offset(100f, 100f),
-                        Offset(150f, 150f)
-                    )
 
                     drawPoints(
                         points = points,
@@ -72,9 +67,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-}
-
-@Composable
-fun Main() {
-    Text("Hello World!")
 }

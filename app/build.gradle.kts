@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -40,6 +42,11 @@ android {
 }
 
 dependencies {
+
+    implementation("com.google.dagger:hilt-android:2.57.2") // Use the latest version
+    ksp("com.google.dagger:hilt-android-compiler:2.57.2") // Or ksp for KSP
+    // If using Jetpack Compose or other Hilt integrations, add relevant libraries
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
