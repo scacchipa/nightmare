@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.component
+package ar.com.scacchi.nightmare.ui
 
 import androidx.compose.ui.geometry.Offset
 

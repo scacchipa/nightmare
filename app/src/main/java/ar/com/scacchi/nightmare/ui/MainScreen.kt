@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.component
+package ar.com.scacchi.nightmare.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTransformGestures
@@ -23,6 +23,17 @@ fun MainScreen(
 
     Canvas(modifier = Modifier
         .fillMaxSize()
+        .pointerInput(Unit) {
+            detectTransformGestures { centroid, pan, zoom, rotation ->
+                println("centroid: $centroid, pan: $pan, zoom: $zoom, rotation: $rotation")
+
+                vm.updateTransformation(
+                    pan = pan,
+                    zoom = zoom,
+                    rotation = rotation
+                )
+            }
+        }
         .graphicsLayer(
             scaleX = uiState.transformation.zoom,
             scaleY = uiState.transformation.zoom,
@@ -30,30 +41,26 @@ fun MainScreen(
             translationX = uiState.transformation.pan.x,
             translationY = uiState.transformation.pan.y
         )
-        .pointerInput(Unit) {
-            detectTransformGestures { centroid, pan, zoom, rotation ->
-                println("centroid: $centroid, pan: $pan, zoom: $zoom, rotation: $rotation")
-                vm.updateTransformation(
-                        pan = pan,
-                        zoom = zoom,
-                        rotation = rotation
-                )
-            }
-        }
     ) {
-        val width = size.width
-        val height = size.height
+        val wadData = uiState.engine.wadData
 
-        val points = uiState.engine.wadData.vertexes
-            .map { Offset(it.x.toFloat()/4, it.y.toFloat()/4 + height) }
-        points.forEach { println("${it.x}:${it.y}") }
+        wadData.lineDefs.lineDefs.forEach { line ->
+            drawLine(
+                color = Color.Red,
+                start = wadData.vertexes[line.startVertexId.toInt()].toOffset(),
+                end = wadData.vertexes[line.endVertexId.toInt()].toOffset(),
+            )
+        }
 
+
+        val points = uiState.engine.wadData.vertexes.vertexes
+            .map { Offset(it.x.toFloat(), it.y.toFloat()) }
 
         drawPoints(
             points = points,
             pointMode = PointMode.Points,
             color = Color.Red,
-            strokeWidth = 2f,
+            strokeWidth = 10f,
             cap = StrokeCap.Round
         )
     }

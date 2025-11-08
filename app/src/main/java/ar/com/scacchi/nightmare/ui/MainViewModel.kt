@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.component
+package ar.com.scacchi.nightmare.ui
 
 import android.content.Context
 import androidx.compose.ui.geometry.Offset
@@ -20,10 +20,10 @@ class MainViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         MainState(
-            engine = Engine.createFrom(context, R.raw.doom),
+            engine = Engine.Companion.createFrom(context, R.raw.doom),
             transformation = Transformation(
-                pan = Offset(0f, 400f),
-                zoom = 1f,
+                pan = Offset(0f, 1300f),
+                zoom = 0.4f,
                 rotation = 0f
             )
         )
