@@ -20,7 +20,7 @@ class MainViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(
         MainState(
-            engine = Engine.Companion.createFrom(context, R.raw.doom),
+            engine = Engine.createFrom(context, R.raw.doom),
             transformation = Transformation(
                 pan = Offset(0f, 1300f),
                 zoom = 0.4f,
