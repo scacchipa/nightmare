@@ -1,9 +1,11 @@
 package ar.com.scacchi.nightmare.ui
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.TransformOrigin
 
 data class Transformation(
-    val pan: Offset,
+    val offset: Offset,
     val zoom: Float,
     val rotation: Float,
+    val transformOrigin: TransformOrigin,
 )
