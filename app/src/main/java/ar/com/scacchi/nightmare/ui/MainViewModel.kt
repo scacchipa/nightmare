@@ -1,13 +1,15 @@
 package ar.com.scacchi.nightmare.ui
 
 import android.content.Context
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.engine.Engine
-import ar.com.scacchi.nightmare.ext.rotateBy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,43 +25,39 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(
         MainState(
             engine = Engine.createFrom(context, R.raw.doom),
-            transformation = Transformation(
-                offset = Offset(0f, 1300f),
-                zoom = 0.4f,
-                rotation = 0f,
-                transformOrigin = TransformOrigin(0f, 0f)
-            )
         )
     )
     val uiState: StateFlow<MainState> = _uiState
 
-    fun updateTransformation(
-        centroid: Offset,
-        pan: Offset,
-        gestureZoom: Float,
-        gestureRotate: Float,
-        transformationOrigin: TransformOrigin) {
+
+    fun onEventKey(eventKey: KeyEvent) {
         viewModelScope.launch {
 
-            val oldScale = uiState.value.transformation.zoom
-            val oldAngle = uiState.value.transformation.rotation
-            val oldOffset = uiState.value.transformation.offset
+            val newPlayer = with(_uiState.value.engine.player) {
+                when (eventKey.type) {
+                    KeyEventType.KeyDown -> when (eventKey.key) {
+                        Key.W -> advance()
+                        Key.S -> reverse()
+                        Key.A -> moveLeft()
+                        Key.D -> moveRight()
+                        Key.Q -> turnLeft()
+                        Key.E -> turnRight()
+                        else -> this
+                    }
 
-            val newScale = oldScale * gestureZoom
-            val newAngle = oldAngle + gestureRotate
-            val newOffset =
-                (oldOffset + pan - centroid * oldScale).rotateBy(-oldAngle).rotateBy(newAngle) +
-                        centroid * newScale
+                    else -> this
+                }
+            }
+
             _uiState.emit(
                 _uiState.value.copy(
-                    transformation = Transformation(
-                        offset = newOffset,
-                        zoom = newScale,
-                        rotation = newAngle,
-                        transformOrigin = transformationOrigin,
+                    engine = _uiState.value.engine.copy(
+                        player = newPlayer
                     )
                 )
             )
         }
     }
+
+
 }

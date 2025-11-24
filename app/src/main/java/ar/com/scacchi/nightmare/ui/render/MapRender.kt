@@ -27,6 +27,10 @@ import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
 import ar.com.scacchi.nightmare.engine.Vertexes
 import ar.com.scacchi.nightmare.ext.rotateBy
+import ar.com.scacchi.nightmare.ext.scalar
+import ar.com.scacchi.nightmare.settings.HEIGHT
+import ar.com.scacchi.nightmare.settings.H_FOV
+import ar.com.scacchi.nightmare.settings.SCALE
 import kotlin.random.Random
 
 @Composable
@@ -34,7 +38,7 @@ fun MapRender(
     modifier: Modifier,
     engine: Engine
 ) {
-    var scale by remember { mutableFloatStateOf(1f) }
+    var scale by remember { mutableFloatStateOf(1 / SCALE) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     var rotation by remember { mutableFloatStateOf(0f) }
 
@@ -86,6 +90,8 @@ fun MapRender(
         drawNode(engine, engine.bsp.rootNodeId)
 
         engine.bsp.update(this)
+
+        drawFov(engine)
     }
 }
 
@@ -125,7 +131,35 @@ fun DrawScope.drawPlayer(
     drawCircle(
         color = Color.Black,
         radius = 20f,
-        center = Offset(player.xPos.toFloat(), player.yPos.toFloat())
+        center = Offset(player.xPos, player.yPos)
+    )
+}
+fun DrawScope.drawFov(engine: Engine) {
+    val playerPos = Offset(
+        x = engine.player.xPos,
+        y = engine.player.yPos,
+    )
+
+    println("RADIAN: ${engine.player.angle}")
+
+    val angle = engine.player.angle
+    val dirA1 = Offset.scalar(angle - H_FOV)
+    val dirA2 = Offset.scalar(angle + H_FOV)
+
+    val lenRay = HEIGHT
+
+    this.drawLine(
+        color = Color.Yellow,
+        strokeWidth = 10f,
+        start = playerPos,
+        end = playerPos + dirA1 * lenRay * 5f
+    )
+
+    this.drawLine(
+        color = Color.Yellow,
+        strokeWidth = 10f,
+        start = playerPos,
+        end = playerPos + dirA2 * lenRay * 5f
     )
 }
 

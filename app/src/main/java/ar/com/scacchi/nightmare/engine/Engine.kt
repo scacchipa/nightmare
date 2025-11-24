@@ -6,32 +6,26 @@ import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.R
 import java.nio.ByteBuffer
 
-class Engine(
-    val wadData: WadData
+data class Engine(
+    val vertexes: Vertexes,
+    val lineDefs: LineDefs,
+    val nodes: Nodes,
+    val subSectors: SubSectors,
+    val segs: Segs,
+    val things: Things,
+    val player: Player,
+
 ) {
-    val vertexes: Vertexes
-        get() = wadData.vertexes
+    val bsp: BSP = BSP(this)
 
-    val lineDefs: LineDefs
-        get() = wadData.lineDefs
-
-    val nodes: Nodes
-        get() = wadData.nodes
-
-    val subSectors: SubSectors
-        get() = wadData.subSectors
-
-    val segs: Segs
-        get() = wadData.segs
-
-    val things: Things
-        get() = wadData.things
-
-    val player: Player
-        get() = wadData.player
-
-    val bsp: BSP = BSP(
-        engine = this,
+    constructor(wadData: WadData) : this(
+        vertexes = wadData.vertexes,
+        lineDefs = wadData.lineDefs,
+        nodes = wadData.nodes,
+        subSectors = wadData.subSectors,
+        segs = wadData.segs,
+        things = wadData.things,
+        player = wadData.player,
     )
 
     companion object {
