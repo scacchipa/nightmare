@@ -49,8 +49,8 @@ data class Player(
         val dy = PLAYER_SPEED * sin(leftAngle)
 
         return this.copy(
-            xPos = xPos - dx,
-            yPos = yPos - dy,
+            xPos = xPos + dx,
+            yPos = yPos + dy,
         )
     }
 
@@ -61,8 +61,8 @@ data class Player(
         val dy = PLAYER_SPEED * sin(leftAngle)
 
         return this.copy(
-            xPos = xPos - dx,
-            yPos = yPos - dy,
+            xPos = xPos + dx,
+            yPos = yPos + dy,
         )
     }
 

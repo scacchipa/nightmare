@@ -17,5 +17,5 @@ val WIN_RES: IntSize = IntSize(WIDTH.toInt(), HEIGHT.toInt())
 const val FOV: Float = (Math.PI / 2).toFloat()
 const val H_FOV: Float = (FOV / 2).toFloat()
 
-const val PLAYER_SPEED: Float = 0.3f
+const val PLAYER_SPEED: Float = 3f
 const val PLAYER_ROT_SPEED: Float = 0.12f

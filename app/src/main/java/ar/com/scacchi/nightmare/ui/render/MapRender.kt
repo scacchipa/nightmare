@@ -87,7 +87,7 @@ fun MapRender(
             player = engine.player
         )
 
-        drawNode(engine, engine.bsp.rootNodeId)
+//        drawNode(engine, engine.bsp.rootNodeId)
 
         engine.bsp.update(this)
 
