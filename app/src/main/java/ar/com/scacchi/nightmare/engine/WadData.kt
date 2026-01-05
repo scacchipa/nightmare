@@ -35,7 +35,7 @@ class WadData(
             val lineDefs = LineDefs.createFrom(buffer, lineDefsLump)
             val nodes = Nodes.createFrom(buffer, nodesLump)
             val subSectors = SubSectors.createFrom(buffer, subSectorsLump)
-            val segs = Segs.createFrom(buffer, segsLump)
+            val segs = Segs.createFrom(buffer, segsLump, vertexes, lineDefs)
             val thingsWithPlayer = Things.createFrom(buffer, thingsLump)
 
             return WadData(

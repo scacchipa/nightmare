@@ -2,7 +2,6 @@ package ar.com.scacchi.nightmare.engine;
 
 import android.content.Context
 import androidx.annotation.RawRes
-import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.R
 import java.nio.ByteBuffer
 
@@ -14,9 +13,8 @@ data class Engine(
     val segs: Segs,
     val things: Things,
     val player: Player,
-
 ) {
-    val bsp: BSP = BSP(this)
+    val rootNodeId: Int = this.nodes.count() - 1
 
     constructor(wadData: WadData) : this(
         vertexes = wadData.vertexes,

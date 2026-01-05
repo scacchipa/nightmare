@@ -9,11 +9,16 @@ class Segs(
     operator fun get(idx: Int) = content[idx]
 
     companion object {
-        fun createFrom(buffer: ByteBuffer, lump: FileLump): Segs {
+        fun createFrom(
+            buffer: ByteBuffer,
+            lump: FileLump,
+            vertexes: Vertexes,
+            lineDefs: LineDefs
+        ): Segs {
             buffer.position(lump.filePos)
             return Segs(
                 content = Array(lump.size / 12) {
-                    Seg.createFrom(buffer)
+                    Seg.createFrom(buffer, vertexes, lineDefs)
                 }
             )
         }

@@ -6,6 +6,8 @@ import java.nio.ByteBuffer
 class LineDefs(
     val content: Array<LineDef>
 ) {
+    operator fun get(idx: Int): LineDef = content[idx]
+
     companion object {
         fun createFrom(buffer: ByteBuffer, lump: FileLump): LineDefs {
             buffer.position(lump.filePos)

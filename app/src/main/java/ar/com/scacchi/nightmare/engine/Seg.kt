@@ -10,16 +10,30 @@ class Seg(
     val lineDefId: Short,
     val direction: Short, // 0 as linedef, 1 as opposite of linedef
     val offset: Short, // distance along linedef to start of seg.
+    val startVertex : Vertex,
+    val endVertex : Vertex,
+    val lineDef: LineDef,
 ) {
     companion object {
-        fun createFrom(buffer: ByteBuffer): Seg {
+        fun createFrom(buffer: ByteBuffer, vertexes: Vertexes, lineDefs: LineDefs): Seg {
+            val startVertexId = buffer.readLittleEndianShort()
+            val endVertexId= buffer.readLittleEndianShort()
+            val angle = buffer.readLittleEndianShort()
+            val lineDefId = buffer.readLittleEndianShort()
+            val direction = buffer.readLittleEndianShort()
+            val offset = buffer.readLittleEndianShort()
+
+
             return Seg(
-                startVertexId = buffer.readLittleEndianShort(),
-                endVertexId= buffer.readLittleEndianShort(),
-                angle = buffer.readLittleEndianShort(),
-                lineDefId = buffer.readLittleEndianShort(),
-                direction = buffer.readLittleEndianShort(),
-                offset = buffer.readLittleEndianShort(),
+                startVertexId = startVertexId,
+                endVertexId = endVertexId,
+                angle = angle,
+                lineDefId = lineDefId,
+                direction = direction,
+                offset = offset,
+                startVertex = vertexes[startVertexId.toInt()],
+                endVertex = vertexes[endVertexId.toInt()],
+                lineDef = lineDefs[lineDefId.toInt()],
             )
         }
     }

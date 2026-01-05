@@ -1,0 +1,97 @@
+package ar.com.scacchi.nightmare.ui.render.map
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.ext.rotateBy
+import ar.com.scacchi.nightmare.settings.SCALE
+import kotlin.random.Random
+
+@Composable
+fun ColumnScope.MapViewRender(
+    modifier: Modifier,
+    engine: Engine
+) {
+    var scale by remember { mutableFloatStateOf(1 / SCALE) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
+    var rotation by remember { mutableFloatStateOf(0f) }
+
+    Canvas(
+        modifier = modifier
+            .fillMaxWidth()
+            .weight(1f)
+            .clipToBounds()
+            .pointerInput(Unit) {
+                detectTransformGestures { centroid, pan, zoom, gestureRotation ->
+                    println("centroid: $centroid, pan: $pan, zoom: $zoom, rotation: $gestureRotation")
+                    //println("scale: $scale, offset: $offset, rotation: $rotation")
+
+                    val oldScale = scale
+
+                    val newScale = oldScale * zoom
+                    offset =
+                        (offset + centroid / oldScale).rotateBy(gestureRotation) -
+                                (centroid / newScale + pan / oldScale)
+                    scale = newScale
+                    rotation += gestureRotation
+                }
+            }
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                translationX = - offset.x * scale,
+                translationY = - offset.y * scale,
+                rotationZ = rotation,
+                transformOrigin = TransformOrigin(0f, 0f),
+            )
+    ) {
+
+        val mapViewDrawScope = MapViewDrawScope(this)
+        with(mapViewDrawScope) {
+            drawCircle(
+                color = Color.Black,
+                radius = 20f,
+                center = Offset.Zero
+            )
+
+            drawLineDefs(
+                lineDefs = engine.lineDefs,
+                vertexes = engine.vertexes
+            )
+
+            drawVertexes(
+                vertexes = engine.vertexes
+            )
+
+            drawPlayer(
+                player = engine.player
+            )
+
+            drawFov(engine)
+        }
+    }
+}
+
+
+fun getColor(seed: Int): Color {
+    val random = Random(seed)
+    return Color(
+        red = random.nextFloat(),
+        green = random.nextFloat(),
+        blue = random.nextFloat())
+}
