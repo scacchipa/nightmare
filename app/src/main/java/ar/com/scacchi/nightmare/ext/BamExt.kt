@@ -5,6 +5,10 @@ const val ANG_90: UShort = 0x4000u
 const val ANG_180: UShort = 0x8000u
 const val ANG_MAX: UShort = 0xFFFFu
 
+/*
+* BAM => Binary Angle Measurement
+ */
+
 fun UShort.bamToRadian(): Float {
     return (this.toFloat() / UShort.MAX_VALUE.toFloat() * 2.0 * Math.PI).toFloat()
 }

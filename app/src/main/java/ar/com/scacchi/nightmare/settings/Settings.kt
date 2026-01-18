@@ -8,7 +8,7 @@ const val DOOM_H: Int = 200
 
 val DOOM_RES: IntSize = IntSize(DOOM_W, DOOM_H)
 
-const val SCALE: Float = 1.0f
+const val SCALE: Float = 2.5f
 
 const val SCREEN_WIDTH: Float = DOOM_W * SCALE
 const val SCREEN_HEIGHT: Float = DOOM_H * SCALE
@@ -21,6 +21,7 @@ const val H_FOV: Float = (FOV / 2)
 
 const val PLAYER_SPEED: Float = 3f
 const val PLAYER_ROT_SPEED: Float = 0.12f
+const val PLAYER_HEIGHT: Float = 41f
 
 const val H_WIDTH = SCREEN_WIDTH / 2
 const val H_HEIGHT = SCREEN_HEIGHT / 2

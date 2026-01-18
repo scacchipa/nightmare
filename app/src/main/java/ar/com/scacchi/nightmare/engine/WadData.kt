@@ -12,6 +12,7 @@ class WadData(
     val nodes: Nodes,
     val subSectors: SubSectors,
     val segs: Segs,
+    val sectors: Sectors,
     val things: Things,
     val player: Player
 ) {
@@ -31,11 +32,17 @@ class WadData(
             val subSectorsLump = lumpDirectory[idx + (LUMP_INDICES["SSECTORS"] ?: 0)]
             val segsLump = lumpDirectory[idx + (LUMP_INDICES["SEGS"] ?: 0)]
             val thingsLump = lumpDirectory[idx + (LUMP_INDICES["THINGS"] ?: 0)]
+            val sectorsLump = lumpDirectory[idx + (LUMP_INDICES["SECTORS"] ?: 0)]
+            val sideDefLump = lumpDirectory[idx + (LUMP_INDICES["SIDEDEFS"] ?: 0)]
+
+
+            val sectors = Sectors.createFrom(buffer, sectorsLump)
+            val sideDefs = SideDefs.createFrom(buffer, sideDefLump, sectors)
             val vertexes = Vertexes.createFrom(buffer, vertexesLump)
-            val lineDefs = LineDefs.createFrom(buffer, lineDefsLump)
+            val lineDefs = LineDefs.createFrom(buffer, lineDefsLump, sideDefs)
             val nodes = Nodes.createFrom(buffer, nodesLump)
             val subSectors = SubSectors.createFrom(buffer, subSectorsLump)
-            val segs = Segs.createFrom(buffer, segsLump, vertexes, lineDefs)
+            val segs = Segs.createFrom(buffer, segsLump, vertexes, lineDefs, sectors)
             val thingsWithPlayer = Things.createFrom(buffer, thingsLump)
 
             return WadData(
@@ -47,6 +54,7 @@ class WadData(
                 nodes = nodes,
                 subSectors = subSectors,
                 segs = segs,
+                sectors = sectors,
                 things = Things.createWithoutPlayer(thingsWithPlayer),
                 player = Player(thingsWithPlayer[0])
             )

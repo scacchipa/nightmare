@@ -18,6 +18,18 @@ val LUMP_INDICES = mapOf(
     "BLOCKMAP" to 10
 )
 
+val LINEDEF_FLAGS = mapOf(
+    "BLOCKING" to 1.toUShort(),
+    "BLOCK_MONSTERS" to 2.toUShort(),
+    "TWO_SIDED" to 4.toUShort(),
+    "DONT_PEG_TOP" to 8.toUShort(),
+    "DONT_PEG_BOTTOM" to 16.toUShort(),
+    "SECRET" to 32.toUShort(),
+    "SOUND_BLOCK" to 64.toUShort(),
+    "DONT_DRAW" to 128.toUShort(),
+    "MAPPED" to 256.toUShort(),
+)
+
 class LumpDirectory(
     val lumpEntries: Array<FileLump>
 ) {

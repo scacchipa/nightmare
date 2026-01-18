@@ -1,7 +1,6 @@
 package ar.com.scacchi.nightmare.ui.render.mainview
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +28,6 @@ fun ColumnScope.User3dViewRender(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(SCREEN_ASPECT)
-            .background(color = Color.Green)
             .onGloballyPositioned { coordinates ->
                 scaleX = coordinates.size.width / SCREEN_WIDTH
                 scaleY = coordinates.size.height / SCREEN_HEIGHT
@@ -47,9 +45,11 @@ fun ColumnScope.User3dViewRender(
                 center = Offset(160f, 100f)
             )
 
-            val user3dViewDrawScope = User3dViewDrawScope(this)
+            val user3dViewDrawScope = User3dViewDrawScope(this, engine)
 
             with(user3dViewDrawScope) {
+                isTraverseBsp = false
+
                 renderBspNode(engine, engine.rootNodeId)
             }
         }

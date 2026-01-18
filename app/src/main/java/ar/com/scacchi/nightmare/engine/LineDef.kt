@@ -11,17 +11,33 @@ class LineDef(
     val sectorTag: UShort,
     val frontSideDefId: UShort, // Doom2
     val backSideDefId: UShort, // Doom2
+    val frontSideDef: SideDef?,
+    val backSideDef: SideDef?,
 ) {
     companion object {
-        fun createFrom(buffer: ByteBuffer): LineDef {
+        fun createFrom(buffer: ByteBuffer, sideDefs: SideDefs): LineDef {
+            val startVertexId = buffer.readLittleEndianUShort()
+            val endVertexId = buffer.readLittleEndianUShort()
+            val flags = buffer.readLittleEndianUShort()
+            val specialType = buffer.readLittleEndianUShort()
+            val sectorTag = buffer.readLittleEndianUShort()
+            val frontSideDefId = buffer.readLittleEndianUShort()
+            val backSideDefId = buffer.readLittleEndianUShort()
+
             return LineDef(
-                startVertexId = buffer.readLittleEndianUShort(),
-                endVertexId = buffer.readLittleEndianUShort(),
-                flags = buffer.readLittleEndianUShort(),
-                specialType = buffer.readLittleEndianUShort(),
-                sectorTag = buffer.readLittleEndianUShort(),
-                frontSideDefId = buffer.readLittleEndianUShort(),
-                backSideDefId = buffer.readLittleEndianUShort(),
+                startVertexId = startVertexId,
+                endVertexId = endVertexId,
+                flags = flags,
+                specialType = specialType,
+                sectorTag = sectorTag,
+                frontSideDefId = frontSideDefId,
+                backSideDefId = backSideDefId,
+                frontSideDef =
+                    if (frontSideDefId != 0xFFFFu.toUShort()) sideDefs[frontSideDefId.toInt()]
+                    else null,
+                backSideDef =
+                    if (backSideDefId != 0xFFFFu.toUShort()) sideDefs[backSideDefId.toInt()]
+                    else null,
             )
         }
     }

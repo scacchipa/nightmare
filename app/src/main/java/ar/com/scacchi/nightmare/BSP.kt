@@ -50,27 +50,26 @@ class BSP {
             val span = norm(realStartAngle - realEndAngle)
 
             // backface culling
-            if (span >= PI / 2) return null
+            if (span >= PI) return null
 
             val startAngle = realStartAngle - player.angle
+            val endAngle = realEndAngle - player.angle
+
             val startSpan = norm(H_FOV + startAngle)
 
             val startClippedAngle =
-                if (startSpan <= FOV) startAngle
-                else {
+                if (startSpan > FOV) {
                     if (startSpan >= span + FOV) return null
                     H_FOV
-                }
+                } else startAngle
 
-            val endAngle = realEndAngle - player.angle
             val endSpan = norm(H_FOV - endAngle)
 
             val endClippedAngle =
-                if (endSpan <= FOV) endAngle
-                else {
+                if (endSpan > FOV) {
                     if (endSpan >= span + FOV) return null
                     -H_FOV
-                }
+                } else endAngle
 
             val startX = angleToX(startClippedAngle)
             val endX = angleToX(endClippedAngle)

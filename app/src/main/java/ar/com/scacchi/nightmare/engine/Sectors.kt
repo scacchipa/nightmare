@@ -3,8 +3,8 @@ package ar.com.scacchi.nightmare.engine
 import ar.com.scacchi.nightmare.data.FileLump
 import java.nio.ByteBuffer
 
-class Segs(
-    val content: Array<Seg>,
+class Sectors(
+    val content: Array<Sector>,
 ) {
     operator fun get(idx: Int) = content[idx]
 
@@ -12,14 +12,11 @@ class Segs(
         fun createFrom(
             buffer: ByteBuffer,
             lump: FileLump,
-            vertexes: Vertexes,
-            lineDefs: LineDefs,
-            sectors: Sectors,
-        ): Segs {
+        ): Sectors {
             buffer.position(lump.filePos)
-            return Segs(
-                content = Array(lump.size / 12) {
-                    Seg.createFrom(buffer, vertexes, lineDefs, sectors)
+            return Sectors(
+                content = Array(lump.size / 26) {
+                    Sector.createFrom(buffer)
                 }
             )
         }

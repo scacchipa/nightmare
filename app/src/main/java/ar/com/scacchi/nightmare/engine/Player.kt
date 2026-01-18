@@ -1,5 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
+import ar.com.scacchi.nightmare.settings.PLAYER_HEIGHT
 import ar.com.scacchi.nightmare.settings.PLAYER_ROT_SPEED
 import ar.com.scacchi.nightmare.settings.PLAYER_SPEED
 import kotlin.math.PI
@@ -12,13 +13,15 @@ data class Player(
     val angle: Float,
     val type: UShort,
     val flags: UShort,
+    val height: Float,
 ) {
     constructor(thing: Thing) : this(
         xPos = thing.xPos.toFloat(),
         yPos = thing.yPos.toFloat(),
         angle = (thing.angle.toFloat() * PI / 180.0f).toFloat(),
         type = thing.type,
-        flags = thing.flags
+        flags = thing.flags,
+        height = PLAYER_HEIGHT
     )
 
     fun advance(): Player {

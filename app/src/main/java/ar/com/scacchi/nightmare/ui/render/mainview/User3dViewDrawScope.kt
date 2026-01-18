@@ -1,54 +1,63 @@
 package ar.com.scacchi.nightmare.ui.render.mainview
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import ar.com.scacchi.nightmare.BSP
+import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 import ar.com.scacchi.nightmare.ui.render.map.getColor
+import kotlin.random.Random
 
 class User3dViewDrawScope(
-    private val parentScope: DrawScope
+    private val parentScope: DrawScope,
+    private val engine: Engine,
 ) : DrawScope by parentScope {
 
+    var isTraverseBsp = true
+    var segHandler: SegHandler = SegHandler(engine, this)
+
     fun renderBspNode(engine: Engine, nodeId: Int) {
-        if (nodeId >= BSP.Companion.SUB_SECTOR_IDENTIFIER) {
-            this.renderSubSector(
-                engine = engine,
-                subSectorId = nodeId - BSP.Companion.SUB_SECTOR_IDENTIFIER
-            )
-            return
-        }
+        if (isTraverseBsp.not()) {
 
-        val node = engine.nodes[nodeId]
-
-        if (BSP.Companion.isOnBackSide(engine.player, node)) {
-            renderBspNode(engine, node.backChildId.toInt())
-            if (BSP.Companion.checkBBox(engine.player, node.frontBoundBox)) {
-                renderBspNode(engine, node.frondChildId.toInt())
+            if (nodeId >= BSP.SUB_SECTOR_IDENTIFIER) {
+                this.renderSubSector(
+                    engine = engine,
+                    subSectorId = nodeId - BSP.SUB_SECTOR_IDENTIFIER
+                )
+                return
             }
-        } else {
-            renderBspNode(engine, node.frondChildId.toInt())
-            if (BSP.Companion.checkBBox(engine.player, node.backBoundBox)) {
+
+            val node = engine.nodes[nodeId]
+
+            if (BSP.isOnBackSide(engine.player, node)) {
                 renderBspNode(engine, node.backChildId.toInt())
+                if (BSP.checkBBox(engine.player, node.frontBoundBox)) {
+                    renderBspNode(engine, node.frondChildId.toInt())
+                }
+            } else {
+                renderBspNode(engine, node.frondChildId.toInt())
+                if (BSP.checkBBox(engine.player, node.backBoundBox)) {
+                    renderBspNode(engine, node.backChildId.toInt())
+                }
             }
         }
     }
 
     fun renderSubSector(engine: Engine, subSectorId: Int) {
-        println("renderSubSector: $subSectorId")
+
         val subSector = engine.subSectors[subSectorId]
 
         for (segId in 0 until subSector.segCount) {
             val seg = engine.segs[subSector.firstSegId + segId]
 
-            val result = BSP.Companion.addSegmentToFov(
+            val result = BSP.addSegmentToFov(
                 engine.player, seg.startVertex, seg.endVertex
             ) ?: continue
 
-            println("result: $result")
-
-            drawVLines(engine, result.startX, result.endX, subSectorId)
+//            drawVLines(engine, result.startX, result.endX, subSectorId)
+            segHandler.classifySegment(seg, result.startX.toInt(), result.endX.toInt(), result.realWallAngle)
         }
     }
 
@@ -68,5 +77,31 @@ class User3dViewDrawScope(
             end = Offset(x2, SCREEN_HEIGHT),
             strokeWidth = 1f,
         )
+    }
+
+    val colorMap = mutableMapOf<String, Color>()
+    fun drawVLine(x: Int, y1: Int, y2: Int, tex: String, light: Int) {
+        if (y1 < y2) {
+            this.drawLine(
+                color = getColor(tex, light),
+                start = Offset(x.toFloat(), y1.toFloat()),
+                end = Offset(x.toFloat(), y2.toFloat()),
+
+            )
+        }
+    }
+
+    fun getColor(tex: String, lightLevel: Int): Color {
+        val colorLabel = tex + lightLevel.toString()
+
+        return colorMap.getOrPut(colorLabel) {
+            val intensity = lightLevel / 255f
+            val rnd = Random(tex.hashCode())
+            Color(
+                red = rnd.nextInt(50, 256) / 256f * intensity,
+                green = rnd.nextInt(50, 256) / 256 * intensity,
+                blue = rnd.nextInt(50, 256) / 256 * intensity,
+            )
+        }
     }
 }
