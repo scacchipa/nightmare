@@ -38,7 +38,7 @@ class SegHandler(
 
     val xToAngleTable: FloatArray =
         FloatArray(SCREEN_WIDTH.toInt() + 1) {
-            atan((H_WIDTH - it) / SCREEN_DIST)
+            atan((it - H_WIDTH) / SCREEN_DIST)
         }
 
 
@@ -78,33 +78,37 @@ class SegHandler(
         val bDrawFloor = worldFrontZ2 < 0
 
         // calculate the scaling factors of the left and right edges of the wall range
-        val rwNormalAngle = seg.radAngle + PI.toFloat() / 2
-        val offsetAngle = rwNormalAngle - this.rwAngle1
 
         val hypotenuse = hypot(
             x = player.xPos - seg.startVertex.x,
             y = player.yPos - seg.startVertex.y
         )
-        val rwDistance = hypotenuse * cos(offsetAngle)
 
-        val rwScale1 = scaleFromGlobalAngle(x1, rwNormalAngle, rwDistance)
+        val startX: Int
+        val endX: Int
 
-        val rwScaleStep: Float
         if (x1 < x2) {
-            val scale2 = scaleFromGlobalAngle(x2, rwNormalAngle, rwDistance)
-            rwScaleStep = (scale2 - rwScale1) / (x2 - x1)
+            startX = x1
+            endX = x2 - 1
         } else {
-            rwScaleStep = 0f
+            startX = x2
+            endX = x1 - 1
         }
 
-        val startX = min(x1, x2)
-        val endX = max(x1, x2)
+        val rwNormalAngle = seg.radAngle + PI.toFloat() / 2f
+        val offsetAngle = rwNormalAngle - this.rwAngle1
+        val rwDistance = hypotenuse * cos(offsetAngle)
+        val rwScale1 = scaleFromGlobalAngle(startX, rwNormalAngle, rwDistance)
+        val scale2 = scaleFromGlobalAngle(endX, rwNormalAngle, rwDistance)
+        val rwScaleStep = (scale2 - rwScale1) / (startX - endX)
+
+        println("X1: $startX -> $rwScale1. X2: $endX -> $scale2.  Player angle: ${player.angle}")
 
         var wallY1 = H_HEIGHT - worldFrontZ1 * rwScale1
-        val wallY1Step = -rwScaleStep * worldFrontZ1
+        val wallY1Step = rwScaleStep * worldFrontZ1
 
         var wallY2 = H_HEIGHT - worldFrontZ2 * rwScale1
-        val wallY2Step = -rwScaleStep * worldFrontZ2
+        val wallY2Step = rwScaleStep * worldFrontZ2
 
         for (x in startX until endX + 1) {
             val drawWallY1 = wallY1 - 1
@@ -340,7 +344,7 @@ class SegHandler(
     fun clipPortalWalls(xStart: Int, xEnd: Int) {
         // 1. Crea el rango de la pared actual
         val currWall = BitSet(xEnd).apply {
-            set(xEnd, xStart)
+            set(min(xStart, xEnd), max(xEnd, xStart))
         }
 
         // 2. Intersección: ¿Qué partes de la pared ven espacio vacio?)
@@ -391,7 +395,7 @@ class SegHandler(
 
             // Creamos un BitSet temporal para la pared actual (rango xStart) hasta xEnd)
             val currWall = BitSet(max(xStart, xEnd)).apply {
-                set(xEnd, xStart)
+                set(min(xStart, xEnd), max(xStart, xEnd))
             }
 
             // Intersección: qué parte de la pared cae en espacio vacio.
@@ -403,29 +407,31 @@ class SegHandler(
             if (intersection.isEmpty.not()) {
                 if (intersection.cardinality() == (xEnd - xStart).absoluteValue) {
                     // Caso A: la pared es totalmente visible (sin cortes)
-                    drawSolidWallRange(xStart, xEnd - 1)
-                } else {
-                    // Case B: La pared está fragmentada estilo sorted + zip)
-                    var x = intersection.nextSetBit(0)
-
-                    var x1 = x
-
-                    while (x1 != -1) {
-                        val nextEmpty = intersection.nextClearBit(x1)
-                        // dibujamos el segmento continuo encontrado
-
-                        drawSolidWallRange(x, nextEmpty - 1)
-
-                        // Buscamos el inicio del siguiente fragmento visible
-                        val x2 = intersection.nextSetBit(nextEmpty)
-                        if (x2 == -1 || x2 >= xEnd) break
-
-                        x = x2
-                        x1 = x2
-                    }
+                    drawSolidWallRange(xStart, xEnd)
+                    screenRange.andNot(intersection)
                 }
-                // eliminamos los bits recién dibujados de la pantalla disponible
-                screenRange.andNot(intersection)
+//                else {
+//                    // Case B: La pared está fragmentada estilo sorted + zip)
+//                    var x = intersection.nextSetBit(0)
+//
+//                    var x1 = x
+//
+//                    while (x1 != -1) {
+//                        val nextEmpty = intersection.nextClearBit(x1)
+//                        // dibujamos el segmento continuo encontrado
+//
+//                        drawSolidWallRange(x, nextEmpty - 1)
+//
+//                        // Buscamos el inicio del siguiente fragmento visible
+//                        val x2 = intersection.nextSetBit(nextEmpty)
+//                        if (x2 == -1 || x2 >= xEnd) break
+//
+//                        x = x2
+//                        x1 = x2
+//                    }
+//                }
+//                // eliminamos los bits recién dibujados de la pantalla disponible
+//                screenRange.andNot(intersection)
             }
         } else {
             // pantalla llena: detener el recorrid del BSP
@@ -472,6 +478,6 @@ class SegHandler(
 
         // 5. Fronteras con diferentes niveles de luz o texturas
         // Si llegó aquí, es una línea divisoria que necesita procesarse como portal
-        clipPortalWalls(x1, x2)
+//        clipPortalWalls(x1, x2)
     }
 }
