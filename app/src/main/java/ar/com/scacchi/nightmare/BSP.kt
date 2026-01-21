@@ -32,7 +32,7 @@ class BSP {
             val dx = player.xPos - node.xPartition
             val dy = player.yPos - node.yPartition
 
-            return dx * node.dxPartition - dy * node.dyPartition <= 0
+            return dx * node.dyPartition - dy * node.dxPartition <= 0
         }
 
         fun angleToX(angle: Float): Float {
