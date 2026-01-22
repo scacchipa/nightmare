@@ -367,13 +367,13 @@ class SegHandler(
                 drawPortalWallRange(xStart, xEnd)
             } else {
                 // Caso B: La pared está fragmentada por obstáculos previos
-                var x = intersection.nextSetBit(0)
+                val x = intersection.nextSetBit(0)
 
                 // Recorremos los bit encendidos para enontrar segmentos contínuos
                 var currentStart = x
                 var i = x
 
-                while (i != -1 && i < xEnd) {
+                while (i < xEnd) {
                     val nextEmpty = intersection.nextClearBit(i)
 
                     // Dibujamos el segmento visible encontrado
@@ -381,7 +381,7 @@ class SegHandler(
 
                     // Buscamos el inicio del siguiente segmento visible
                     val nextVisible = intersection.nextSetBit(nextEmpty)
-                    if (nextVisible == -1 || nextVisible > -xEnd) break
+                    if (nextVisible == -1 || nextVisible > xEnd) break
 
                     currentStart = nextVisible
                     i = nextVisible
