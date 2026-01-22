@@ -1,12 +1,13 @@
 package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.data.readByteArray
+import ar.com.scacchi.nightmare.data.readLittleEndianShort
 import ar.com.scacchi.nightmare.data.readLittleEndianUShort
 import java.nio.ByteBuffer
 
 class Sector(
-    val floorHeight: UShort,
-    val ceilingHeight: UShort,
+    val floorHeight: Short,
+    val ceilingHeight: Short,
     val floorTextureName: ByteArray,
     val ceilingTextureName: ByteArray,
     val lightLevel: UShort,
@@ -16,8 +17,8 @@ class Sector(
     companion object {
         fun createFrom(buffer: ByteBuffer): Sector {
             return Sector(
-                floorHeight = buffer.readLittleEndianUShort(),
-                ceilingHeight = buffer.readLittleEndianUShort(),
+                floorHeight = buffer.readLittleEndianShort(),
+                ceilingHeight = buffer.readLittleEndianShort(),
                 floorTextureName = buffer.readByteArray(8),
                 ceilingTextureName =buffer.readByteArray(8),
                 lightLevel = buffer.readLittleEndianUShort(),

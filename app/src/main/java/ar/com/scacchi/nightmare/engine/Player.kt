@@ -46,7 +46,7 @@ data class Player(
     }
 
     fun moveLeft(): Player {
-        val leftAngle = (angle - PI / 2).toFloat()
+        val leftAngle = (angle + PI / 2).toFloat()
 
         val dx = PLAYER_SPEED * cos(leftAngle)
         val dy = PLAYER_SPEED * sin(leftAngle)
@@ -58,7 +58,7 @@ data class Player(
     }
 
     fun moveRight(): Player {
-        val rightAngle = (angle + PI / 2).toFloat()
+        val rightAngle = (angle - PI / 2).toFloat()
 
         val dx = PLAYER_SPEED * cos(rightAngle)
         val dy = PLAYER_SPEED * sin(rightAngle)
@@ -71,13 +71,13 @@ data class Player(
 
     fun turnLeft(): Player {
         return this.copy(
-            angle = angle - PLAYER_ROT_SPEED
+            angle = angle + PLAYER_ROT_SPEED
         )
     }
 
     fun turnRight(): Player {
         return this.copy(
-            angle = angle + PLAYER_ROT_SPEED
+            angle = angle - PLAYER_ROT_SPEED
         )
     }
 }

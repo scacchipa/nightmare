@@ -49,6 +49,8 @@ class MainViewModel @Inject constructor(
                 }
             }
 
+            println(newPlayer)
+
             _uiState.emit(
                 _uiState.value.copy(
                     engine = _uiState.value.engine.copy(

@@ -36,7 +36,7 @@ class BSP {
         }
 
         fun angleToX(angle: Float): Float {
-            return H_WIDTH + SCREEN_DIST * tan(angle)
+            return H_WIDTH - SCREEN_DIST * tan(angle)
         }
 
         fun addSegmentToFov(player: Player, startVertex: Vertex, endVertex: Vertex): VertexOnScreen? {
