@@ -86,6 +86,7 @@ class User3dViewDrawScope(
                 color = getColor(tex, light),
                 start = Offset(x.toFloat(), y1.toFloat()),
                 end = Offset(x.toFloat(), y2.toFloat()),
+                strokeWidth = 2f
 
             )
         }
@@ -99,8 +100,8 @@ class User3dViewDrawScope(
             val rnd = Random(tex.hashCode())
             Color(
                 red = rnd.nextInt(50, 256) / 256f * intensity,
-                green = rnd.nextInt(50, 256) / 256 * intensity,
-                blue = rnd.nextInt(50, 256) / 256 * intensity,
+                green = rnd.nextInt(50, 256) / 256f * intensity,
+                blue = rnd.nextInt(50, 256) / 256f * intensity,
             )
         }
     }
