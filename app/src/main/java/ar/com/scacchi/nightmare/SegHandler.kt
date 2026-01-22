@@ -3,6 +3,7 @@ package ar.com.scacchi.nightmare
 import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
+import ar.com.scacchi.nightmare.ext.asString
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_DIST
@@ -73,7 +74,7 @@ class SegHandler(
         val worldFrontZ2 = (frontSector?.floorHeight?.toInt() ?: 0) - player.height.toInt()
 
         // check which parts must be rendered
-        val bDrawWall = side?.middleTextureName.toString() != "-"
+        val bDrawWall = side?.middleTextureName?.asString() != "-"
         val bDrawCeil = worldFrontZ1 > 0
         val bDrawFloor = worldFrontZ2 < 0
 
@@ -111,28 +112,28 @@ class SegHandler(
         val wallY2Step = rwScaleStep * worldFrontZ2
 
         for (x in startX until endX) {
-            val drawWallY1 = wallY1 - 1
+            val drawWallY1 = wallY1
             val drawWallY2 = wallY2
 
             if (bDrawCeil) {
-                val cy1 = upperClip[x] + 1
-                val cy2 = min(drawWallY1 - 1f, lowerClip[x] - 1f).toInt()
+                val cy1 = upperClip[x]
+                val cy2 = min(drawWallY1.toInt(), lowerClip[x])
                 userScope.drawVLine(
-                    x, cy1, cy2, ceilTexture?.toString() ?: "", lightLevel?.toInt() ?: 0
+                    x, cy1, cy2, ceilTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
                 )
             }
 
             if (bDrawWall) {
-                val wy1 = max(drawWallY1.toInt(), upperClip[x] + 1)
-                val wy2 = min(drawWallY2.toInt(), lowerClip[x] - 1)
-                userScope.drawVLine(x, wy1, wy2, wallTexture.toString(), lightLevel?.toInt() ?: 0)
+                val wy1 = max(drawWallY1.toInt(), upperClip[x])
+                val wy2 = min(drawWallY2.toInt(), lowerClip[x])
+                userScope.drawVLine(x, wy1, wy2, wallTexture?.asString() ?: "", lightLevel?.toInt() ?: 0)
             }
 
             if (bDrawFloor) {
-                val fy1 = max(drawWallY2.toInt() + 1, upperClip[x] + 1)
-                val fy2 = lowerClip[x] - 1
+                val fy1 = max(drawWallY2.toInt(), upperClip[x])
+                val fy2 = lowerClip[x]
                 userScope.drawVLine(
-                    x, fy1, fy2, floorTexture?.toString() ?: "", lightLevel?.toInt() ?: 0
+                    x, fy1, fy2, floorTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
                 )
             }
 
@@ -173,7 +174,7 @@ class SegHandler(
             !frontSector?.ceilingTextureName.contentEquals(backSector?.ceilingTextureName)
         ) {
             bDrawUpperWall =
-                side?.upperTextureName.toString().contentEquals("-").not() &&
+                side?.upperTextureName?.asString().contentEquals("-").not() &&
                 worldBackZ1 < worldFrontZ1
             bDrawCeil = worldFrontZ1 >= 0
         } else {
@@ -188,7 +189,7 @@ class SegHandler(
             frontSector?.lightLevel != backSector?.lightLevel
         ) {
             bDrawLowerWall =
-                side?.lowerTextureName.toString().contentEquals("-").not() &&
+                side?.lowerTextureName?.asString().contentEquals("-").not() &&
                 worldBackZ2 > worldFrontZ2
             bDrawFloor = worldFrontZ2 <= 0
         } else {
@@ -260,25 +261,25 @@ class SegHandler(
 
         //# now the rendering is carried out
         for (x in x1 until x2) {
-            val drawWallY1 = wallY1 - 1
+            val drawWallY1 = wallY1
             val drawWallY2 = wallY2
 
             if (bDrawUpperWall) {
-                val drawUpperWallY1 = wallY1 - 1
+                val drawUpperWallY1 = wallY1
                 val drawUpperWallY2 = portalY1
                 //
                 if (bDrawCeil) {
-                    val cy1 = upperClip[x] + 1
-                    val cy2 = min(drawWallY1.toInt() - 1, lowerClip[x] - 1)
+                    val cy1 = upperClip[x]
+                    val cy2 = min(drawWallY1.toInt(), lowerClip[x])
                     userScope.drawVLine(
-                        x, cy1, cy2, texCeilId.toString(), lightLevel?.toInt() ?: 0
+                        x, cy1, cy2, texCeilId?.asString() ?: "", lightLevel?.toInt() ?: 0
                     )
                 }
                 //
-                val wy1 = max(drawUpperWallY1.toInt(), upperClip[x] + 1)
-                val wy2 = min(drawUpperWallY2.toInt(), lowerClip[x] - 1)
+                val wy1 = max(drawUpperWallY1.toInt(), upperClip[x])
+                val wy2 = min(drawUpperWallY2.toInt(), lowerClip[x])
                 userScope.drawVLine(
-                    x, wy1, wy2, upperWallTexture.toString(), lightLevel?.toInt() ?: 0
+                    x, wy1, wy2, upperWallTexture?.asString()?: "", lightLevel?.toInt() ?: 0
                 )
                 //
                 if (upperClip[x] < wy2) {
@@ -290,10 +291,10 @@ class SegHandler(
             }
 
             if (bDrawCeil) {
-                val cy1 = upperClip[x] + 1
-                val cy2 = min(drawWallY1.toInt() - 1, lowerClip[x] - 1)
+                val cy1 = upperClip[x]
+                val cy2 = min(drawWallY1.toInt(), lowerClip[x])
                 userScope.drawVLine(
-                    x, cy1, cy2, texCeilId.toString(), lightLevel?.toInt() ?: 0
+                    x, cy1, cy2, texCeilId?.asString() ?: "", lightLevel?.toInt() ?: 0
                 )
                 //
                 if (upperClip[x] < cy2) {
@@ -304,20 +305,20 @@ class SegHandler(
             if (bDrawLowerWall) {
                 //
                 if (bDrawFloor) {
-                    val fy1 = max(drawWallY2.toInt() + 1, upperClip[x] + 1)
-                    val fy2 = lowerClip[x] - 1
+                    val fy1 = max(drawWallY2.toInt(), upperClip[x])
+                    val fy2 = lowerClip[x]
                     userScope.drawVLine(
-                        x, fy1, fy2, texFloorId.toString(), lightLevel?.toInt() ?: 0
+                        x, fy1, fy2, texFloorId?.asString() ?: "", lightLevel?.toInt() ?: 0
                     )
                 }
                 //
-                val drawLowerWallY1 = portalY2 - 1
+                val drawLowerWallY1 = portalY2
                 val drawLowerWallY2 = wallY2
                 //
-                val wy1 = max(drawLowerWallY1.toInt(), upperClip[x] + 1)
-                val wy2 = min(drawLowerWallY2.toInt(), lowerClip[x] - 1)
+                val wy1 = max(drawLowerWallY1.toInt(), upperClip[x])
+                val wy2 = min(drawLowerWallY2.toInt(), lowerClip[x])
                 userScope.drawVLine(
-                    x, wy1, wy2, lowerWallTexture?.toString() ?: "", lightLevel?.toInt() ?: 0
+                    x, wy1, wy2, lowerWallTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
                 )
                 //
                 if (lowerClip[x] > wy1) {
@@ -328,13 +329,13 @@ class SegHandler(
             }
 
             if (bDrawFloor) {
-                val fy1 = max(drawWallY2.toInt() + 1, upperClip[x] + 1)
-                val fy2 = lowerClip[x] - 1
+                val fy1 = max(drawWallY2.toInt(), upperClip[x])
+                val fy2 = lowerClip[x]
                 userScope.drawVLine(
-                    x, fy1, fy2, texFloorId?.toString() ?: "", lightLevel?.toInt() ?: 0
+                    x, fy1, fy2, texFloorId?.asString() ?: "", lightLevel?.toInt() ?: 0
                 )
                 //
-                if (lowerClip[x] > drawWallY2 + 1) {
+                if (lowerClip[x] > drawWallY2) {
                     lowerClip[x] = fy1
                 }
             }
@@ -376,7 +377,7 @@ class SegHandler(
                     val nextEmpty = intersection.nextClearBit(i)
 
                     // Dibujamos el segmento visible encontrado
-                    drawPortalWallRange(currentStart, nextEmpty - 1)
+                    drawPortalWallRange(currentStart, nextEmpty)
 
                     // Buscamos el inicio del siguiente segmento visible
                     val nextVisible = intersection.nextSetBit(nextEmpty)
@@ -422,7 +423,7 @@ class SegHandler(
                         val nextEmpty = intersection.nextClearBit(x1)
                         // dibujamos el segmento continuo encontrado
 
-                        drawSolidWallRange(x, nextEmpty - 1)
+                        drawSolidWallRange(x, nextEmpty)
 
                         // Buscamos el inicio del siguiente fragmento visible
                         val x2 = intersection.nextSetBit(nextEmpty)
