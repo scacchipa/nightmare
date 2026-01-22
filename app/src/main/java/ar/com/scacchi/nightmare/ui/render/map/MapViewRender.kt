@@ -53,7 +53,7 @@ fun ColumnScope.MapViewRender(
             }
             .graphicsLayer(
                 scaleX = scale,
-                scaleY = scale,
+                scaleY = -scale,
                 translationX = - offset.x * scale,
                 translationY = - offset.y * scale,
                 rotationZ = rotation,
