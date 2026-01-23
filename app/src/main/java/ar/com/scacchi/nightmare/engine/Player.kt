@@ -24,44 +24,31 @@ data class Player(
         height = PLAYER_HEIGHT
     )
 
-    fun advance(): Player {
+    fun advance(): Player = movePlayer(0f, PLAYER_SPEED)
 
-        val dx = PLAYER_SPEED * cos(angle)
-        val dy = PLAYER_SPEED * sin(angle)
+    fun reverse(): Player = movePlayer(PI.toFloat(), PLAYER_SPEED)
 
-        return this.copy(
-            xPos = xPos + dx,
-            yPos = yPos + dy,
-        )
-    }
+    fun moveLeft(): Player = movePlayer(PI.toFloat() / 2f, PLAYER_SPEED)
 
-    fun reverse(): Player {
-        val dx = PLAYER_SPEED * cos(angle)
-        val dy = PLAYER_SPEED * sin(angle)
+    fun moveRight(): Player = movePlayer(-PI.toFloat() / 2f, PLAYER_SPEED)
 
-        return this.copy(
-            xPos = xPos - dx,
-            yPos = yPos - dy,
-        )
-    }
+    fun moveLeftForward(): Player = movePlayer(PI.toFloat() / 4f, PLAYER_SPEED)
 
-    fun moveLeft(): Player {
-        val leftAngle = (angle + PI / 2).toFloat()
+    fun moveRightForward(): Player = movePlayer(-PI.toFloat() / 4f, PLAYER_SPEED)
 
-        val dx = PLAYER_SPEED * cos(leftAngle)
-        val dy = PLAYER_SPEED * sin(leftAngle)
+    fun moveLeftBackward(): Player = movePlayer(3 * PI.toFloat() / 4f, PLAYER_SPEED)
 
-        return this.copy(
-            xPos = xPos + dx,
-            yPos = yPos + dy,
-        )
-    }
+    fun moveRightBackward(): Player = movePlayer(-3 * PI.toFloat() / 4f, PLAYER_SPEED)
 
-    fun moveRight(): Player {
-        val rightAngle = (angle - PI / 2).toFloat()
+    fun turnLeft(): Player = turnPlayer(PLAYER_ROT_SPEED)
 
-        val dx = PLAYER_SPEED * cos(rightAngle)
-        val dy = PLAYER_SPEED * sin(rightAngle)
+    fun turnRight(): Player = turnPlayer(-PLAYER_ROT_SPEED)
+
+    private fun movePlayer(rotationAngle: Float, speed: Float): Player {
+        val newPlayerAngle = angle + rotationAngle
+
+        val dx = speed * cos(newPlayerAngle)
+        val dy = speed * sin(newPlayerAngle)
 
         return this.copy(
             xPos = xPos + dx,
@@ -69,15 +56,9 @@ data class Player(
         )
     }
 
-    fun turnLeft(): Player {
+    private fun turnPlayer(rotSpeed: Float): Player {
         return this.copy(
-            angle = angle + PLAYER_ROT_SPEED
-        )
-    }
-
-    fun turnRight(): Player {
-        return this.copy(
-            angle = angle - PLAYER_ROT_SPEED
+            angle = angle + rotSpeed
         )
     }
 }
