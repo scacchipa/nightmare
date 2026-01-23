@@ -39,7 +39,6 @@ fun ColumnScope.MapViewRender(
             .pointerInput(Unit) {
                 detectTransformGestures { centroid, pan, zoom, gestureRotation ->
                     println("centroid: $centroid, pan: $pan, zoom: $zoom, rotation: $gestureRotation")
-                    //println("scale: $scale, offset: $offset, rotation: $rotation")
 
                     val oldScale = scale
 
@@ -55,7 +54,7 @@ fun ColumnScope.MapViewRender(
                 scaleX = scale,
                 scaleY = -scale,
                 translationX = - offset.x * scale,
-                translationY = - offset.y * scale,
+                translationY = - offset.y * scale - 1200,
                 rotationZ = rotation,
                 transformOrigin = TransformOrigin(0f, 0f),
             )
