@@ -1,7 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.data.FileLump
-import ar.com.scacchi.nightmare.data.WadInfo
+import ar.com.scacchi.nightmare.data.WadHeader
 import java.nio.ByteBuffer
 
 
@@ -40,11 +40,11 @@ class LumpDirectory(
     companion object {
         fun createFrom(
             buffer: ByteBuffer,
-            wadInfo: WadInfo
+            wadHeader: WadHeader
         ): LumpDirectory {
-            buffer.position(wadInfo.infoTableOfs.toInt())
+            buffer.position(wadHeader.infoTableOfs.toInt())
             return LumpDirectory(
-                Array(wadInfo.numLumps.toInt()) {
+                Array(wadHeader.numLumps.toInt()) {
                     FileLump.createFrom(buffer)
                 }
             )

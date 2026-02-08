@@ -3,6 +3,8 @@ package ar.com.scacchi.nightmare.engine;
 import android.content.Context
 import androidx.annotation.RawRes
 import ar.com.scacchi.nightmare.R
+import ar.com.scacchi.nightmare.data.color.ColorMap
+import ar.com.scacchi.nightmare.data.color.PlayPal
 import java.nio.ByteBuffer
 
 data class Engine(
@@ -13,6 +15,8 @@ data class Engine(
     val segs: Segs,
     val things: Things,
     val player: Player,
+    val playPal: PlayPal,
+    val colorMap: ColorMap,
 ) {
     val rootNodeId: Int = this.nodes.count() - 1
 
@@ -24,6 +28,8 @@ data class Engine(
         segs = wadData.segs,
         things = wadData.things,
         player = wadData.player,
+        playPal = wadData.playPal,
+        colorMap = wadData.colorMap,
     )
 
     companion object {

@@ -13,10 +13,10 @@ class ColorTable {
     operator fun get(idx: Int): UByte = content[idx]
 
     companion object {
-        fun createColorTable(buffer: ByteBuffer): ColorTable? {
+        fun createColorTable(buffer: ByteBuffer): ColorTable {
             return ColorTable(
                 array = Array(256) {
-                    buffer.readUByte() ?: return null
+                    buffer.readUByte()
                 }
             )
         }

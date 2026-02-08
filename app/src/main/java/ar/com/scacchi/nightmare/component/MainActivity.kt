@@ -16,9 +16,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val gameEngine = Engine.createFrom(this, R.raw.doom)
-
-
         setContent {
             Surface(
                 modifier = Modifier.fillMaxSize()

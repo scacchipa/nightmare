@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import ar.com.scacchi.nightmare.ui.dev.DevScreen
 import ar.com.scacchi.nightmare.ui.pad.Pad
 import ar.com.scacchi.nightmare.ui.render.mainview.User3dViewRender
 import ar.com.scacchi.nightmare.ui.render.map.MapViewRender
@@ -28,6 +29,7 @@ fun MainScreen(
                 vm.onNewKeySet(it)
             }
         )
+        DevScreen()
 
         MapViewRender(
             modifier = Modifier.fillMaxSize(),
@@ -35,3 +37,4 @@ fun MainScreen(
         )
     }
 }
+

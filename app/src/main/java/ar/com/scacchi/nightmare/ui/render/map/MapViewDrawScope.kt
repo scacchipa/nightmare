@@ -27,7 +27,7 @@ class MapViewDrawScope(
     ) {
         lineDefs.content.forEach { line ->
             drawLine(
-                color = Color.Companion.Red,
+                color = Color.Red,
                 start = vertexes[line.startVertexId.toInt()].toOffset(),
                 end = vertexes[line.endVertexId.toInt()].toOffset(),
             )
@@ -42,16 +42,16 @@ class MapViewDrawScope(
 
         drawPoints(
             points = points,
-            pointMode = PointMode.Companion.Points,
-            color = Color.Companion.Red,
+            pointMode = PointMode.Points,
+            color = Color.Red,
             strokeWidth = 10f,
-            cap = StrokeCap.Companion.Round
+            cap = StrokeCap.Round
         )
     }
 
     fun drawPlayer(player: Player) {
         drawCircle(
-            color = Color.Companion.Black,
+            color = Color.Black,
             radius = 20f,
             center = Offset(player.xPos, player.yPos)
         )
@@ -64,20 +64,20 @@ class MapViewDrawScope(
         )
 
         val angle = engine.player.angle
-        val dirA1 = Offset.Companion.scalar(angle - H_FOV)
-        val dirA2 = Offset.Companion.scalar(angle + H_FOV)
+        val dirA1 = Offset.scalar(angle - H_FOV)
+        val dirA2 = Offset.scalar(angle + H_FOV)
 
         val lenRay = SCREEN_HEIGHT
 
         this.drawLine(
-            color = Color.Companion.Yellow,
+            color = Color.Yellow,
             strokeWidth = 10f,
             start = playerPos,
             end = playerPos + dirA1 * lenRay * 5f
         )
 
         this.drawLine(
-            color = Color.Companion.Yellow,
+            color = Color.Yellow,
             strokeWidth = 10f,
             start = playerPos,
             end = playerPos + dirA2 * lenRay * 5f
@@ -89,15 +89,15 @@ class MapViewDrawScope(
 
         drawBBox(
             bBox = node.frontBoundBox,
-            color = Color.Companion.Green
+            color = Color.Green
         )
         drawBBox(
             bBox = node.backBoundBox,
-            color = Color.Companion.Red
+            color = Color.Red
         )
 
         drawLine(
-            color = Color.Companion.Blue,
+            color = Color.Blue,
             start = Offset(
                 x = node.xPartition.toFloat(),
                 y = node.yPartition.toFloat()

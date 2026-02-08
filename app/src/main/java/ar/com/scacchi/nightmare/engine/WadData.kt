@@ -1,12 +1,16 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.WadInfo
+import ar.com.scacchi.nightmare.data.WadHeader
+import ar.com.scacchi.nightmare.data.color.ColorMap
+import ar.com.scacchi.nightmare.data.color.PlayPal
 import java.nio.ByteBuffer
 
 class WadData(
     val buffer: ByteBuffer,
-    val wadInfo: WadInfo,
+    val wadHeader: WadHeader,
     val lumpDirectory: LumpDirectory,
+    val playPal: PlayPal,
+    val colorMap: ColorMap,
     val vertexes: Vertexes,
     val lineDefs: LineDefs,
     val nodes: Nodes,
@@ -14,7 +18,7 @@ class WadData(
     val segs: Segs,
     val sectors: Sectors,
     val things: Things,
-    val player: Player
+    val player: Player,
 ) {
 
     companion object {
@@ -23,8 +27,8 @@ class WadData(
             nameMap: String = "E1M1"
         ): WadData {
 
-            val wadInfo = WadInfo.Companion.createFrom(buffer)
-            val lumpDirectory = LumpDirectory.createFrom(buffer, wadInfo)
+            val wadHeader = WadHeader.createFrom(buffer)
+            val lumpDirectory = LumpDirectory.createFrom(buffer, wadHeader)
             val idx = lumpDirectory.getIdxForName(nameMap)
             val vertexesLump = lumpDirectory[idx + (LUMP_INDICES["VERTEXES"] ?: 0)]
             val lineDefsLump = lumpDirectory[idx + (LUMP_INDICES["LINEDEFS"] ?: 0)]
@@ -34,8 +38,12 @@ class WadData(
             val thingsLump = lumpDirectory[idx + (LUMP_INDICES["THINGS"] ?: 0)]
             val sectorsLump = lumpDirectory[idx + (LUMP_INDICES["SECTORS"] ?: 0)]
             val sideDefLump = lumpDirectory[idx + (LUMP_INDICES["SIDEDEFS"] ?: 0)]
+            val playPalLump = lumpDirectory[lumpDirectory.getIdxForName("PLAYPAL")]
+            val colorMapLump = lumpDirectory[lumpDirectory.getIdxForName("COLORMAP")]
 
 
+            val playPal = PlayPal.createFromLump(playPalLump, buffer)
+            val colorMap = ColorMap.createFromLump(colorMapLump, buffer)
             val sectors = Sectors.createFrom(buffer, sectorsLump)
             val sideDefs = SideDefs.createFrom(buffer, sideDefLump, sectors)
             val vertexes = Vertexes.createFrom(buffer, vertexesLump)
@@ -47,8 +55,10 @@ class WadData(
 
             return WadData(
                 buffer = buffer,
-                wadInfo = WadInfo.Companion.createFrom(buffer),
+                wadHeader = WadHeader.createFrom(buffer),
                 lumpDirectory = lumpDirectory,
+                playPal = playPal,
+                colorMap = colorMap,
                 vertexes = vertexes,
                 lineDefs = lineDefs,
                 nodes = nodes,
@@ -59,6 +69,10 @@ class WadData(
                 player = Player(thingsWithPlayer[0])
             )
         }
+    }
+
+    fun getLumpIdx(name: String): Int? {
+        return lumpDirectory.getIdxForName(name)
     }
 }
 

@@ -3,7 +3,7 @@ package ar.com.scacchi.nightmare.data.color
 import ar.com.scacchi.nightmare.data.FileLump
 import java.nio.ByteBuffer
 
-class PlayPay {
+class PlayPal {
     val content: Array<Palette>
 
     constructor(array: Array<Palette>) {
@@ -12,13 +12,16 @@ class PlayPay {
 
     operator fun get(idx: Int) = content[idx]
 
-    companion object {
-        fun createFromLump(lump: FileLump, buffer: ByteBuffer): PlayPay? {
+    val paletteCount: Int
+        get() = content.size
 
-            buffer.position(lump.filePos.toInt())
-            return PlayPay(
+    companion object {
+        fun createFromLump(lump: FileLump, buffer: ByteBuffer): PlayPal {
+
+            buffer.position(lump.filePos)
+            return PlayPal(
                 array = Array(lump.size / 768) {
-                    Palette.createFrom(buffer) ?: return null
+                    Palette.createFrom(buffer)
                 }
             )
         }

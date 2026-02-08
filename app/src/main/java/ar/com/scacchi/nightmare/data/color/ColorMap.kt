@@ -13,12 +13,12 @@ class ColorMap {
     operator fun get(idx: Int): ColorTable = content[idx]
 
     companion object {
-        fun createColorMap(lump: FileLump, buffer: ByteBuffer): ColorMap? {
-            buffer.position(lump.filePos.toInt())
+        fun createFromLump(lump: FileLump, buffer: ByteBuffer): ColorMap {
+            buffer.position(lump.filePos)
 
             return ColorMap(
                 array = Array(lump.size / 256) {
-                    ColorTable.createColorTable(buffer) ?: return null
+                    ColorTable.createColorTable(buffer)
                 }
             )
         }
