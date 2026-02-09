@@ -12,6 +12,9 @@ class ColorMap {
 
     operator fun get(idx: Int): ColorTable = content[idx]
 
+    val tableCount
+        get() = content.size
+
     companion object {
         fun createFromLump(lump: FileLump, buffer: ByteBuffer): ColorMap {
             buffer.position(lump.filePos)

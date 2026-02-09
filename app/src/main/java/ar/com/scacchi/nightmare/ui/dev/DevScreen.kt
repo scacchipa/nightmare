@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ar.com.scacchi.nightmare.R
+import ar.com.scacchi.nightmare.ui.dev.colormap.ColorMap
 import ar.com.scacchi.nightmare.ui.dev.palette.PlayPal
 
 @Composable
@@ -48,6 +49,9 @@ fun DevScreen() {
             }
             if (showPlayPal) {
                 PlayPal()
+            }
+            if (showColorMap) {
+                ColorMap()
             }
         }
     }
