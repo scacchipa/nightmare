@@ -16,7 +16,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ar.com.scacchi.nightmare.ui.widget.NumSpinner
 
 @Composable
-fun PlayPal(
+fun PlayPalWidget(
     viewModel: PlayPalViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()

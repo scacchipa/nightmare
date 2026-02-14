@@ -1,7 +1,10 @@
 package ar.com.scacchi.nightmare.ui.dev.colormap
 
-import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.data.color.ColorMap
+import ar.com.scacchi.nightmare.data.color.PlayPal
 
 data class  ColorMapModel(
-    val engine: Engine,
+    val playPal: PlayPal,
+    val colorMap: ColorMap,
+    val paletteIdx: Int,
 )
