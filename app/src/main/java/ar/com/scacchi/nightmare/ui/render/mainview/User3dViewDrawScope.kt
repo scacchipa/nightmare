@@ -6,54 +6,55 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 import ar.com.scacchi.nightmare.ui.render.map.getColor
 import kotlin.random.Random
 
 class User3dViewDrawScope(
     private val parentScope: DrawScope,
-    private val engine: Engine,
+    gameState: GameState,
 ) : DrawScope by parentScope {
 
     var isTraverseBsp = true
-    var segHandler: SegHandler = SegHandler(engine, this)
+    var segHandler: SegHandler = SegHandler(this, gameState.player)
 
-    fun renderBspNode(engine: Engine, nodeId: Int) {
+    fun renderBspNode(gameState: GameState, nodeId: Int) {
         if (isTraverseBsp.not()) {
 
             if (nodeId >= BSP.SUB_SECTOR_IDENTIFIER) {
                 this.renderSubSector(
-                    engine = engine,
+                    gameState = gameState,
                     subSectorId = nodeId - BSP.SUB_SECTOR_IDENTIFIER
                 )
                 return
             }
 
-            val node = engine.nodes[nodeId]
+            val node = gameState.nodes[nodeId]
 
-            if (BSP.isOnBackSide(engine.player, node)) {
-                renderBspNode(engine, node.backChildId.toInt())
-                if (BSP.checkBBox(engine.player, node.frontBoundBox)) {
-                    renderBspNode(engine, node.frondChildId.toInt())
+            if (BSP.isOnBackSide(gameState.player, node)) {
+                renderBspNode(gameState, node.backChildId.toInt())
+                if (BSP.checkBBox(gameState.player, node.frontBoundBox)) {
+                    renderBspNode(gameState, node.frondChildId.toInt())
                 }
             } else {
-                renderBspNode(engine, node.frondChildId.toInt())
-                if (BSP.checkBBox(engine.player, node.backBoundBox)) {
-                    renderBspNode(engine, node.backChildId.toInt())
+                renderBspNode(gameState, node.frondChildId.toInt())
+                if (BSP.checkBBox(gameState.player, node.backBoundBox)) {
+                    renderBspNode(gameState, node.backChildId.toInt())
                 }
             }
         }
     }
 
-    fun renderSubSector(engine: Engine, subSectorId: Int) {
+    fun renderSubSector(gameState: GameState, subSectorId: Int) {
 
-        val subSector = engine.subSectors[subSectorId]
+        val subSector = gameState.subSectors[subSectorId]
 
         for (segId in 0 until subSector.segCount) {
-            val seg = engine.segs[subSector.firstSegId + segId]
+            val seg = gameState.segs[subSector.firstSegId + segId]
 
             val result = BSP.addSegmentToFov(
-                engine.player, seg.startVertex, seg.endVertex
+                gameState.player, seg.startVertex, seg.endVertex
             ) ?: continue
 
 //            drawVLines(engine, result.startX, result.endX, subSectorId)

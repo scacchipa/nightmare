@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import ar.com.scacchi.nightmare.R
-import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.ui.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
 

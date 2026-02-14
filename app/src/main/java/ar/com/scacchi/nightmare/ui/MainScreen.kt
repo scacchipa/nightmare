@@ -16,12 +16,12 @@ import ar.com.scacchi.nightmare.ui.render.map.MapViewRender
 fun MainScreen(
     vm: MainViewModel = hiltViewModel()
 ) {
-    val uiState by vm.uiState.collectAsState()
+    val uiState by vm.gameState.collectAsState()
 
     Column {
 
         User3dViewRender(
-            engine = uiState.engine
+            gameState = uiState
         )
         Pad(
             playerActionSetChanged = {
@@ -30,10 +30,9 @@ fun MainScreen(
             }
         )
         DevScreen()
-
         MapViewRender(
             modifier = Modifier.fillMaxSize(),
-            engine = uiState.engine
+            gameState = uiState
         )
     }
 }

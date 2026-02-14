@@ -1,8 +1,8 @@
 package ar.com.scacchi.nightmare.ui.dev.palette
 
-import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.data.color.PlayPal
 
 data class PlayPalModel(
-    val engine: Engine,
+    val playPal: PlayPal,
     val currentPaletteSelected: Int
 )

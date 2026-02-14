@@ -16,28 +16,27 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 
 @Composable
 fun ColorMap(
-    viewModel: ColorMapViewModel = hiltViewModel()
+    viewModel: ColorMapViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.uiState.collectAsState()
-    val colorMap = state.engine.colorMap
-    val playPal = state.engine.playPal[0]
+    val state by viewModel.uiStateFlow.collectAsState()
+    val colorMap  = state.colorMap
+    val playPal = state.playPal
     val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier.horizontalScroll(state = scrollState)
     ) {
-        for (idx in 0 until colorMap.tableCount) {
+        for (idx in 0 until playPal.paletteCount) {
             Row{
                 val colorTable = colorMap[idx]
                 for (idy in 0 until 0x100) {
                     Box(
                         modifier = Modifier
                             .size(4.dp)
-                            .background(playPal[colorTable[idy].toInt()])
+                            .background(playPal[idx][colorTable[idy].toInt()])
                     )
                 }
             }
         }
     }
 }
-

@@ -10,7 +10,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.onGloballyPositioned
-import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.settings.SCREEN_ASPECT
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
@@ -18,7 +18,7 @@ import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
 @Composable
 fun ColumnScope.User3dViewRender(
     modifier: Modifier = Modifier,
-    engine: Engine,
+    gameState: GameState,
 ) {
 
     var scaleX = 1080.0F
@@ -32,8 +32,8 @@ fun ColumnScope.User3dViewRender(
                 scaleX = coordinates.size.width / SCREEN_WIDTH
                 scaleY = coordinates.size.height / SCREEN_HEIGHT
             }
-
     ) {
+        if (gameState.lumpDirectory.lumpEntries.isEmpty()) return@Canvas
         withTransform(
             {
                 scale(scaleX, scaleY, Offset(0f, 0f))
@@ -45,14 +45,13 @@ fun ColumnScope.User3dViewRender(
                 center = Offset(160f, 100f)
             )
 
-            val user3dViewDrawScope = User3dViewDrawScope(this, engine)
+            val user3dViewDrawScope = User3dViewDrawScope(this, gameState)
 
             with(user3dViewDrawScope) {
                 isTraverseBsp = false
 
-                renderBspNode(engine, engine.rootNodeId)
+                renderBspNode(gameState, gameState.rootNodeId)
             }
         }
     }
 }
-

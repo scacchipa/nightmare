@@ -1,6 +1,5 @@
 package ar.com.scacchi.nightmare
 
-import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
 import ar.com.scacchi.nightmare.ext.asString
@@ -20,13 +19,10 @@ import kotlin.math.max
 import kotlin.math.min
 
 class SegHandler(
-    val engine: Engine,
-    val userScope: User3dViewDrawScope
+    val userScope: User3dViewDrawScope, var player: Player,
 ) {
     val MAX_SCALE = 64.0.toFloat()
     val MIN_SCALE = 0.00390625.toFloat()
-
-    var player: Player = engine.player
 
     lateinit var seg: Seg
     var rwAngle1: Float = 0f // first vertex of the segment
@@ -36,12 +32,10 @@ class SegHandler(
         set(0, SCREEN_WIDTH.toInt())
     }
 
-
     val xToAngleTable: FloatArray =
         FloatArray(SCREEN_WIDTH.toInt() + 1) {
             atan((H_WIDTH - it) / SCREEN_DIST)
         }
-
 
     fun scaleFromGlobalAngle(x: Int, rwNormalAngle: Float, rwDistance: Float): Float {
         val xAngle = this.xToAngleTable[x]
@@ -62,7 +56,6 @@ class SegHandler(
         val lowerClip = this.lowerClip
         val screenRange = this.screenRange
 
-
         // textures
         val wallTexture = seg.lineDef.frontSideDef?.middleTextureName
         val ceilTexture = frontSector?.ceilingTextureName
@@ -79,7 +72,6 @@ class SegHandler(
         val bDrawFloor = worldFrontZ2 < 0
 
         // calculate the scaling factors of the left and right edges of the wall range
-
         val hypotenuse = hypot(
             x = player.xPos - seg.startVertex.x,
             y = player.yPos - seg.startVertex.y
@@ -285,7 +277,6 @@ class SegHandler(
                 if (upperClip[x] < wy2) {
                     upperClip[x] = wy2
                 }
-
                 //
                 portalY1 += portalY1Step
             }
@@ -353,7 +344,6 @@ class SegHandler(
 
         // 2. Intersección: ¿Qué partes de la pared ven espacio vacio?)
         // Usamos clone para no modificar el screenRange global
-
         val intersection = (currWall.clone() as BitSet).apply {
             and(screenRange)
         }
@@ -406,7 +396,6 @@ class SegHandler(
             val intersection = (currWall.clone() as BitSet).apply {
                 and(screenRange)
             }
-
 
             if (intersection.isEmpty.not()) {
                 if (intersection.cardinality() == (xEnd - xStart).absoluteValue) {

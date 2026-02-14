@@ -5,7 +5,7 @@ import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
 import java.nio.ByteBuffer
 
-class WadData(
+data class GameState(
     val buffer: ByteBuffer,
     val wadHeader: WadHeader,
     val lumpDirectory: LumpDirectory,
@@ -19,13 +19,14 @@ class WadData(
     val sectors: Sectors,
     val things: Things,
     val player: Player,
+    val rootNodeId: Int
 ) {
 
     companion object {
         fun create(
             buffer: ByteBuffer,
             nameMap: String = "E1M1"
-        ): WadData {
+        ): GameState {
 
             val wadHeader = WadHeader.createFrom(buffer)
             val lumpDirectory = LumpDirectory.createFrom(buffer, wadHeader)
@@ -41,7 +42,6 @@ class WadData(
             val playPalLump = lumpDirectory[lumpDirectory.getIdxForName("PLAYPAL")]
             val colorMapLump = lumpDirectory[lumpDirectory.getIdxForName("COLORMAP")]
 
-
             val playPal = PlayPal.createFromLump(playPalLump, buffer)
             val colorMap = ColorMap.createFromLump(colorMapLump, buffer)
             val sectors = Sectors.createFrom(buffer, sectorsLump)
@@ -52,8 +52,9 @@ class WadData(
             val subSectors = SubSectors.createFrom(buffer, subSectorsLump)
             val segs = Segs.createFrom(buffer, segsLump, vertexes, lineDefs, sectors)
             val thingsWithPlayer = Things.createFrom(buffer, thingsLump)
+            val rootNodeId: Int = nodes.count() - 1
 
-            return WadData(
+            return GameState(
                 buffer = buffer,
                 wadHeader = WadHeader.createFrom(buffer),
                 lumpDirectory = lumpDirectory,
@@ -66,9 +67,27 @@ class WadData(
                 segs = segs,
                 sectors = sectors,
                 things = Things.createWithoutPlayer(thingsWithPlayer),
-                player = Player(thingsWithPlayer[0])
+                player = Player(thingsWithPlayer[0]),
+                rootNodeId = rootNodeId,
             )
         }
+
+        fun getEmpty(): GameState  = GameState(
+            buffer = ByteBuffer.allocate(0),
+            wadHeader = WadHeader(ByteArray(0), 0u, 0u),
+            lumpDirectory = LumpDirectory(emptyArray()),
+            playPal = PlayPal(emptyArray()),
+            colorMap = ColorMap(emptyArray()),
+            vertexes = Vertexes(emptyArray()),
+            lineDefs = LineDefs(emptyArray()),
+            nodes = Nodes(emptyArray()),
+            subSectors = SubSectors(emptyArray()),
+            segs = Segs(emptyArray()),
+            sectors = Sectors(emptyArray()),
+            things = Things(emptyArray()),
+            player = Player(0f, 0f, 0f, 0u, 0u, 0f),
+            rootNodeId = 0,
+        )
     }
 
     fun getLumpIdx(name: String): Int? {

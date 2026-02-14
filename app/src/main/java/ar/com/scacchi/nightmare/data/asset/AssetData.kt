@@ -60,13 +60,3 @@ class Patch(
         }
     }
 }
-
-
-
-//class AssetData(
-//    val lumpIdx: Int,
-//    val palette: Array<Palette>,
-//    val sprites: Array<Sprints>,
-//    val pNames:
-//) {
-//}

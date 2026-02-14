@@ -17,7 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.ext.rotateBy
 import ar.com.scacchi.nightmare.settings.SCALE
 import kotlin.random.Random
@@ -25,7 +25,7 @@ import kotlin.random.Random
 @Composable
 fun ColumnScope.MapViewRender(
     modifier: Modifier,
-    engine: Engine
+    gameState: GameState
 ) {
     var scale by remember { mutableFloatStateOf(1 / SCALE) }
     var offset by remember { mutableStateOf(Offset.Zero) }
@@ -69,19 +69,19 @@ fun ColumnScope.MapViewRender(
             )
 
             drawLineDefs(
-                lineDefs = engine.lineDefs,
-                vertexes = engine.vertexes
+                lineDefs = gameState.lineDefs,
+                vertexes = gameState.vertexes
             )
 
             drawVertexes(
-                vertexes = engine.vertexes
+                vertexes = gameState.vertexes
             )
 
             drawPlayer(
-                player = engine.player
+                player = gameState.player
             )
 
-            drawFov(engine)
+            drawFov(gameState)
         }
     }
 }

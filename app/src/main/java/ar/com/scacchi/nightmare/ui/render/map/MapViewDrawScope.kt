@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
@@ -57,13 +57,13 @@ class MapViewDrawScope(
         )
     }
 
-    fun drawFov(engine: Engine) {
+    fun drawFov(gameState: GameState) {
         val playerPos = Offset(
-            x = engine.player.xPos,
-            y = engine.player.yPos,
+            x = gameState.player.xPos,
+            y = gameState.player.yPos,
         )
 
-        val angle = engine.player.angle
+        val angle = gameState.player.angle
         val dirA1 = Offset.scalar(angle - H_FOV)
         val dirA2 = Offset.scalar(angle + H_FOV)
 
@@ -84,8 +84,8 @@ class MapViewDrawScope(
         )
     }
 
-    fun drawNode(engine: Engine, nodeId: Int) {
-        val node = engine.nodes[nodeId]
+    fun drawNode(gameState: GameState, nodeId: Int) {
+        val node = gameState.nodes[nodeId]
 
         drawBBox(
             bBox = node.frontBoundBox,
@@ -123,9 +123,9 @@ class MapViewDrawScope(
         )
     }
 
-    fun drawSeg(engine: Engine, seg: Seg, subSectorId: Int) {
-        val v1 = engine.vertexes[seg.startVertexId.toInt()]
-        val v2 = engine.vertexes[seg.endVertexId.toInt()]
+    fun drawSeg(gameState: GameState, seg: Seg, subSectorId: Int) {
+        val v1 = gameState.vertexes[seg.startVertexId.toInt()]
+        val v2 = gameState.vertexes[seg.endVertexId.toInt()]
         drawLine(
             color = getColor(subSectorId),
             start = v1.toOffset(),
