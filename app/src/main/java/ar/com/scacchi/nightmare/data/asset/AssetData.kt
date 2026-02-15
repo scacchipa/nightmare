@@ -24,11 +24,12 @@ class Patch(
             )
         }
 
+        @OptIn(ExperimentalUnsignedTypes::class)
         private fun getPosts(buffer: ByteBuffer, width: Int): Array<Post> {
             val posts = ArrayList<Post>()
 
             repeat(width) {
-                var post = Post(0, 0, 0, ByteArray(0), 0)
+                var post = Post(0, 0, 0, UByteArray(0), 0)
                 while (post.topDelta != 0xFF.toByte()) {
                     post = Post.createFrom(buffer)
                     posts.add(post)

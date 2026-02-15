@@ -30,7 +30,7 @@ class User3dViewDrawScope(
                 return
             }
 
-            val node = gameState.nodes[nodeId]
+            val node = gameState.episodeMap.nodes[nodeId]
 
             if (BSP.isOnBackSide(gameState.player, node)) {
                 renderBspNode(gameState, node.backChildId.toInt())
@@ -48,10 +48,10 @@ class User3dViewDrawScope(
 
     fun renderSubSector(gameState: GameState, subSectorId: Int) {
 
-        val subSector = gameState.subSectors[subSectorId]
+        val subSector = gameState.episodeMap.subSectors[subSectorId]
 
         for (segId in 0 until subSector.segCount) {
-            val seg = gameState.segs[subSector.firstSegId + segId]
+            val seg = gameState.episodeMap.segs[subSector.firstSegId + segId]
 
             val result = BSP.addSegmentToFov(
                 gameState.player, seg.startVertex, seg.endVertex

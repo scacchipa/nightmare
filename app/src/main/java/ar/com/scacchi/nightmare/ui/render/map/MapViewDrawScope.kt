@@ -85,7 +85,7 @@ class MapViewDrawScope(
     }
 
     fun drawNode(gameState: GameState, nodeId: Int) {
-        val node = gameState.nodes[nodeId]
+        val node = gameState.episodeMap.nodes[nodeId]
 
         drawBBox(
             bBox = node.frontBoundBox,
@@ -124,8 +124,8 @@ class MapViewDrawScope(
     }
 
     fun drawSeg(gameState: GameState, seg: Seg, subSectorId: Int) {
-        val v1 = gameState.vertexes[seg.startVertexId.toInt()]
-        val v2 = gameState.vertexes[seg.endVertexId.toInt()]
+        val v1 = gameState.episodeMap.vertexes[seg.startVertexId.toInt()]
+        val v2 = gameState.episodeMap.vertexes[seg.endVertexId.toInt()]
         drawLine(
             color = getColor(subSectorId),
             start = v1.toOffset(),

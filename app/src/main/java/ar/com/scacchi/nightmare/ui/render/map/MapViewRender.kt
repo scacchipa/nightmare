@@ -69,12 +69,12 @@ fun ColumnScope.MapViewRender(
             )
 
             drawLineDefs(
-                lineDefs = gameState.lineDefs,
-                vertexes = gameState.vertexes
+                lineDefs = gameState.episodeMap.lineDefs,
+                vertexes = gameState.episodeMap.vertexes
             )
 
             drawVertexes(
-                vertexes = gameState.vertexes
+                vertexes = gameState.episodeMap.vertexes
             )
 
             drawPlayer(
