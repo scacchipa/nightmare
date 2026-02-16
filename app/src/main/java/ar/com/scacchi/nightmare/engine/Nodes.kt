@@ -10,6 +10,8 @@ class Nodes(
 
     fun count() = content.size
 
+    fun isEmpty() = content.isEmpty()
+
     companion object {
         fun createFrom(buffer: ByteBuffer, lump: FileLump): Nodes {
             buffer.position(lump.filePos)

@@ -1,8 +1,11 @@
 package ar.com.scacchi.nightmare.engine;
 
 import android.content.Context
-import androidx.annotation.RawRes
 import ar.com.scacchi.nightmare.R
+import ar.com.scacchi.nightmare.data.WadManager
+import ar.com.scacchi.nightmare.data.asset.Patch
+import ar.com.scacchi.nightmare.data.color.ColorMap
+import ar.com.scacchi.nightmare.data.color.PlayPal
 import ar.com.scacchi.nightmare.di.ApplicationScope
 import ar.com.scacchi.nightmare.di.IoDispatcher
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,6 +24,14 @@ class Engine @Inject constructor(
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @param:ApplicationContext private val context: Context,
 ) {
+    var episodeName = "E1M1"
+    val wadPath = R.raw.doom
+    val wadManager: WadManager by lazy {
+        val file = context.resources.openRawResource(wadPath)
+        val buffer = ByteBuffer.wrap(file.readBytes())
+        WadManager.create(buffer)
+    }
+
     private val _gameState = MutableStateFlow(
         GameState.getEmpty(),
     )
@@ -28,7 +39,7 @@ class Engine @Inject constructor(
 
     init {
         externalScope.launch(ioDispatcher) {
-            initWithRawId(R.raw.doom)
+            initEpisode("E1M1")
         }
     }
 
@@ -46,10 +57,20 @@ class Engine @Inject constructor(
         )
     }
 
-    suspend fun initWithRawId(@RawRes wadPath: Int) {
-            val file = context.resources.openRawResource(wadPath)
-            val buffer = ByteBuffer.wrap(file.readBytes())
-
-            _gameState.emit(GameState.create(buffer, "E1M1"))
+    suspend fun initEpisode(episodeName: String) {
+        this.episodeName = episodeName
+        val episodeMap = wadManager.getEpisodeMap(episodeName)
+        _gameState.emit(
+            GameState(
+                playPal = wadManager.playPal,
+                colorMap = wadManager.colorMap,
+                episodeMap = episodeMap,
+                player = Player(episodeMap.things[0])
+            )
+        )
     }
+
+    fun getPlayPal(): PlayPal = wadManager.playPal
+    fun getColorMap(): ColorMap = wadManager.colorMap
+    fun getPatch(name: String): Patch = wadManager.getPatch(name)
 }

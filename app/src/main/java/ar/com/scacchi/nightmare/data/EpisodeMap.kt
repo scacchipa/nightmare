@@ -5,6 +5,7 @@ import ar.com.scacchi.nightmare.engine.Nodes
 import ar.com.scacchi.nightmare.engine.Sectors
 import ar.com.scacchi.nightmare.engine.Segs
 import ar.com.scacchi.nightmare.engine.SubSectors
+import ar.com.scacchi.nightmare.engine.Things
 import ar.com.scacchi.nightmare.engine.Vertexes
 
 data class EpisodeMap(
@@ -14,4 +15,6 @@ data class EpisodeMap(
     val subSectors: SubSectors,
     val segs: Segs,
     val sectors: Sectors,
+    val things: Things,
+    val rootNodeId: Int,
 )

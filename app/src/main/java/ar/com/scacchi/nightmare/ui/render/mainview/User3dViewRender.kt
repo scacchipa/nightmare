@@ -33,7 +33,7 @@ fun ColumnScope.User3dViewRender(
                 scaleY = coordinates.size.height / SCREEN_HEIGHT
             }
     ) {
-        if (gameState.lumpDirectory.lumpEntries.isEmpty()) return@Canvas
+//        if (gameState.lumpDirectory.lumpEntries.isEmpty()) return@Canvas
         withTransform(
             {
                 scale(scaleX, scaleY, Offset(0f, 0f))
@@ -50,7 +50,7 @@ fun ColumnScope.User3dViewRender(
             with(user3dViewDrawScope) {
                 isTraverseBsp = false
 
-                renderBspNode(gameState, gameState.rootNodeId)
+                renderBspNode(gameState, gameState.episodeMap.rootNodeId)
             }
         }
     }

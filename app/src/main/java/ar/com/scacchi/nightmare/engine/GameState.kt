@@ -7,23 +7,16 @@ import ar.com.scacchi.nightmare.data.color.PlayPal
 import java.nio.ByteBuffer
 
 data class GameState(
-    val buffer: ByteBuffer,
-    val wadHeader: WadHeader,
-    val lumpDirectory: LumpDirectory,
     val playPal: PlayPal,
     val colorMap: ColorMap,
     val episodeMap: EpisodeMap,
-    val things: Things,
     val player: Player,
-    val rootNodeId: Int
 ) {
-
     companion object {
         fun create(
             buffer: ByteBuffer,
             nameMap: String = "E1M1"
         ): GameState {
-
             val wadHeader = WadHeader.createFrom(buffer)
             val lumpDirectory = LumpDirectory.createFrom(buffer, wadHeader)
             val idx = lumpDirectory.getIdxForName(nameMap)
@@ -51,9 +44,6 @@ data class GameState(
             val rootNodeId: Int = nodes.count() - 1
 
             return GameState(
-                buffer = buffer,
-                wadHeader = WadHeader.createFrom(buffer),
-                lumpDirectory = lumpDirectory,
                 playPal = playPal,
                 colorMap = colorMap,
                 episodeMap = EpisodeMap(
@@ -63,17 +53,14 @@ data class GameState(
                     subSectors = subSectors,
                     segs = segs,
                     sectors = sectors,
+                    things = thingsWithPlayer,
+                    rootNodeId = rootNodeId,
                 ),
-                things = Things.createWithoutPlayer(thingsWithPlayer),
                 player = Player(thingsWithPlayer[0]),
-                rootNodeId = rootNodeId,
             )
         }
 
         fun getEmpty(): GameState = GameState(
-            buffer = ByteBuffer.allocate(0),
-            wadHeader = WadHeader(ByteArray(0), 0u, 0u),
-            lumpDirectory = LumpDirectory(emptyArray()),
             playPal = PlayPal(emptyArray()),
             colorMap = ColorMap(emptyArray()),
             EpisodeMap(
@@ -83,15 +70,11 @@ data class GameState(
                 subSectors = SubSectors(emptyArray()),
                 segs = Segs(emptyArray()),
                 sectors = Sectors(emptyArray()),
+                things = Things(emptyArray()),
+                rootNodeId = 0,
             ),
-            things = Things(emptyArray()),
             player = Player(0f, 0f, 0f, 0u, 0u, 0f),
-            rootNodeId = 0,
         )
-    }
-
-    fun getLumpIdx(name: String): Int? {
-        return lumpDirectory.getIdxForName(name)
     }
 }
 

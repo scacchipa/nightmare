@@ -20,6 +20,7 @@ class User3dViewDrawScope(
     var segHandler: SegHandler = SegHandler(this, gameState.player)
 
     fun renderBspNode(gameState: GameState, nodeId: Int) {
+        if (gameState.episodeMap.nodes.isEmpty()) return
         if (isTraverseBsp.not()) {
 
             if (nodeId >= BSP.SUB_SECTOR_IDENTIFIER) {

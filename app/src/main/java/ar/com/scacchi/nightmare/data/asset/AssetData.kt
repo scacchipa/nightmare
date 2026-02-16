@@ -7,20 +7,18 @@ import java.nio.ByteBuffer
 class Patch(
     val header: PatchHeader,
     val posts: Array<Post>,
-    val image: DoomImage,
 ) {
 
     companion object {
-        fun createFrom(buffer: ByteBuffer, lump: FileLump, palette: Palette): Patch {
+        fun createFrom(buffer: ByteBuffer, lump: FileLump): Patch {
             buffer.position(lump.filePos)
 
-            val header  = PatchHeader.createFromBuffer(buffer)
+            val header = PatchHeader.createFromBuffer(buffer)
             val posts = getPosts(buffer, header.width.toInt())
 
             return Patch(
                 header = header,
                 posts = posts,
-                image = buildDoomImage(header, posts, palette)
             )
         }
 
@@ -29,7 +27,7 @@ class Patch(
             val posts = ArrayList<Post>()
 
             repeat(width) {
-                var post = Post(0, 0, 0, UByteArray(0), 0)
+                var post = Post(0, 0u, 0, arrayOf(), 0)
                 while (post.topDelta != 0xFF.toByte()) {
                     post = Post.createFrom(buffer)
                     posts.add(post)
@@ -37,10 +35,9 @@ class Patch(
             }
             return posts.toTypedArray()
         }
+    }
 
-        private fun buildDoomImage(
-            header: PatchHeader, posts: Array<Post>, palette: Palette
-        ): DoomImage {
+        fun buildDoomImage(palette: Palette): DoomImage {
             val image = DoomImage(header.width.toInt(), header.height.toInt())
 
             var ix = 0
@@ -50,14 +47,14 @@ class Patch(
                     continue
                 }
 
-                for (iy in 0 until post.length) {
+                for (iy in 0 until post.length.toInt()) {
                     image.setAt(
                         x = ix,
                         y = iy + post.topDelta,
-                        color = palette[post.data[iy].toInt()])
+                        color = palette[post.data[iy].toInt()]
+                    )
                 }
             }
             return image
         }
-    }
 }

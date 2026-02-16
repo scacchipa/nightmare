@@ -21,7 +21,7 @@ import ar.com.scacchi.nightmare.ui.widget.NumSpinner
 fun ColorMap(
     viewModel: ColorMapViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.uiStateFlow.collectAsState()
+    val state by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
 
     Column {

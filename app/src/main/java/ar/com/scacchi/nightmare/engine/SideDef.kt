@@ -31,7 +31,6 @@ class SideDef(
                 middleTextureName = middleTextureName,
                 sectorId = sectorId,
                 sector = sectors[sectorId.toInt()],
-
             )
         }
     }
