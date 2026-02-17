@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.ui.dev.patch
+package ar.com.scacchi.nightmare.ui.dev.flat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,42 +13,41 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PatchViewModel @Inject constructor(
+class FlatViewModel @Inject constructor(
     val engine: Engine,
     @param:DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        PatchState(0, listOf(), DoomImage(100, 100))
+        FlatState(0, listOf(), DoomImage(100, 100))
     )
-    val uiState = _uiState as StateFlow<PatchState>
+    val uiState = _uiState as StateFlow<FlatState>
 
     fun updateBitmap() {
         viewModelScope.launch(defaultDispatcher) {
             val palette = engine.gameStateFlow.value.playPal[0]
-            val pName = engine.getPatchNameList()[0]
-            val patch = engine.getPatch(pName)
+            val fName = engine.getFlatNameList()[0]
+            val flat = engine.getFlat(fName)
             _uiState.emit(
-                PatchState(
+                FlatState(
                     spinnerPosition = 0,
-                    patchNameList = engine.getPatchNameList(),
-                    doomImage = patch.buildDoomImage(palette)
+                    flatNameList = engine.getFlatNameList() ,
+                    doomImage = flat.buildDoomImage(palette)
                 )
             )
-
-            println(engine.getPatchNameList())
+            println(engine.getFlatNameList())
         }
     }
 
     fun updateSpinnerPosition(position: Int) {
         viewModelScope.launch {
             val palette = engine.gameStateFlow.value.playPal[0]
-            val pName = engine.getPatchNameList()[position]
-            val patch = engine.getPatch(pName)
+            val pName = engine.getFlatNameList()[position]
+            val patch = engine.getFlat(pName)
             _uiState.emit(
-                PatchState(
+                FlatState(
                     spinnerPosition = position,
-                    patchNameList = engine.getPatchNameList(),
+                    flatNameList = engine.getFlatNameList(),
                     doomImage = patch.buildDoomImage(palette)
                 )
             )

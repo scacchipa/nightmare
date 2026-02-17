@@ -3,6 +3,7 @@ package ar.com.scacchi.nightmare.engine;
 import android.content.Context
 import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.data.WadManager
+import ar.com.scacchi.nightmare.data.asset.Flat
 import ar.com.scacchi.nightmare.data.asset.Patch
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
@@ -73,4 +74,9 @@ class Engine @Inject constructor(
     fun getPlayPal(): PlayPal = wadManager.playPal
     fun getColorMap(): ColorMap = wadManager.colorMap
     fun getPatch(name: String): Patch = wadManager.getPatch(name)
+    fun getFlat(name: String): Flat = wadManager.getFlat(name)
+    fun getPatchNameList(): List<String> = wadManager.getPatchNameList()
+    fun getFlatNameList(): List<String> = wadManager.getFlatNameList()
+    fun getSpriteNameList(): List<String> = wadManager.getSpriteNameList()
+
 }

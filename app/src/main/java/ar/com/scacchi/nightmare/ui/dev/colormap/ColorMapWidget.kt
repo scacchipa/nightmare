@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -23,6 +24,10 @@ fun ColorMap(
 ) {
     val state by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        viewModel.setPaletteSelected(0)
+    }
 
     Column {
         Row {
@@ -39,6 +44,7 @@ fun ColorMap(
             for (idx in 0 until state.colorMap.tableCount) {
                 Row {
                     for (idy in 0 until 0x100) {
+                        if (state.paletteIdx < 0) return
                         val colorIdx = state.colorMap[idx][idy]
                         Box(
                             modifier = Modifier

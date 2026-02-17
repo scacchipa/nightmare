@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.ui.dev.patch
+package ar.com.scacchi.nightmare.ui.dev.flat
 
 import androidx.compose.foundation.Image
 import androidx.compose.material3.Button
@@ -11,8 +11,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import ar.com.scacchi.nightmare.ui.widget.StringSpinner
 
 @Composable
-fun PatchWidget(
-    viewModel: PatchViewModel = hiltViewModel()
+fun FlatWidget(
+    viewModel: FlatViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
 
@@ -24,7 +24,7 @@ fun PatchWidget(
 
     StringSpinner(
         position = state.spinnerPosition,
-        values = state.patchNameList,
+        values = state.flatNameList,
         onValueChange = { viewModel.updateSpinnerPosition(it) }
     )
 

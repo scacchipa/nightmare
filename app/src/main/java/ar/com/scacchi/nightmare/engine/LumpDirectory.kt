@@ -33,11 +33,46 @@ val LINEDEF_FLAGS = mapOf(
 class LumpDirectory(
     val lumpEntries: Array<FileLump>
 ) {
+    val patchStartDelimiterRegex = Regex("^P[0-9]*_START$")
+    val patchEndDelimiterRegex = Regex("^P[0-9]*_END$")
+
+    val spriteStartDelimiterRegex = Regex("^S[0-9]*_(START)$")
+    val spriteEndDelimiterRegex = Regex("^S[0-9]*_(END)$")
+
+    val flatStartDelimiterRegex = Regex("^F[0-9]*_(START)$")
+    val flatEndDelimiterRegex = Regex("^F[0-9]*_(END)$")
+
     operator fun get(idx: Int) = lumpEntries[idx]
 
     operator fun get(pName: String) = this[getIdxForName(pName)]
 
     fun getIdxForName(name: String): Int = lumpEntries.indexOfFirst { it.name == name }
+
+    val patchListName:  List<String> by lazy {
+        getLNameBetweenMarks(patchStartDelimiterRegex, patchEndDelimiterRegex)
+
+    }
+    val spriteListName:  List<String> by lazy {
+        getLNameBetweenMarks(spriteStartDelimiterRegex, spriteEndDelimiterRegex)
+    }
+
+    val flatListName: List<String> by lazy {
+        getLNameBetweenMarks(flatStartDelimiterRegex, flatEndDelimiterRegex)
+    }
+
+    private fun getLNameBetweenMarks(openRegex: Regex, closeRegex: Regex): List<String> {
+        var nestLevel = 0
+        return lumpEntries.filter { lEntry ->
+            when {
+                lEntry.name.matches(openRegex) -> { nestLevel += 1; false }
+                lEntry.name.matches(closeRegex) -> { nestLevel -= 1; false }
+                nestLevel > 0 -> true
+                else -> false
+            }
+        }.map { it.name }
+    }
+
+
 
     companion object {
         fun createFrom(

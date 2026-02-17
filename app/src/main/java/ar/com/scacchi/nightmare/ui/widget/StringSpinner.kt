@@ -17,9 +17,9 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Composable
-fun NumSpinner(
-    value: Int,
-    maxValue: Int,
+fun StringSpinner(
+    position: Int,
+    values:  List<String>,
     onValueChange: (Int) -> Unit
 ) {
     Row(
@@ -29,22 +29,22 @@ fun NumSpinner(
             modifier = Modifier
                 .size(48.dp)
                 .clickable(
-                    enabled = value != 0,
-                    onClick = { onValueChange(max(1, value - 1)) }
+                    enabled = values.isNotEmpty() && position > 0,
+                    onClick = { onValueChange(max(0, position - 1)) }
                 ),
             painter = painterResource(R.drawable.left_direction_square_svgrepo_com),
             contentDescription = null
         )
         Text(
-            text = "$value/$maxValue",
+            text = if (values.isNotEmpty()) values[position] else "",
             fontSize = 32.sp
         )
         Image(
             modifier = Modifier
                 .size(48.dp)
                 .clickable(
-                    enabled = value != 0,
-                    onClick = { onValueChange(min(value + 1, maxValue)) }
+                    enabled = values.size > position,
+                    onClick = { onValueChange(min(position + 1, values.size)) }
                 ),
             painter = painterResource(R.drawable.right_direction_square_svgrepo_com),
             contentDescription = null
@@ -58,8 +58,8 @@ fun NumSpinner(
     showBackground = true
 )
 @Composable
-fun NumSpinnerPreview() = NumSpinner(
-    value = 3,
-    maxValue = 10,
+fun StringSpinnerPreview() = StringSpinner(
+    position = 2,
+    values = listOf("elem 1", "elem 2", "elem 3"),
     onValueChange = { }
 )

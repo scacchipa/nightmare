@@ -1,9 +1,9 @@
-package ar.com.scacchi.nightmare.ui.dev.patch
+package ar.com.scacchi.nightmare.ui.dev.flat
 
 import ar.com.scacchi.nightmare.data.asset.DoomImage
 
-data class PatchState(
+data class FlatState(
     val spinnerPosition: Int,
-    val patchNameList: List<String>,
+    val flatNameList: List<String>,
     val doomImage: DoomImage
 )

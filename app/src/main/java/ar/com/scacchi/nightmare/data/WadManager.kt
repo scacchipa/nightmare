@@ -1,5 +1,6 @@
 package ar.com.scacchi.nightmare.data
 
+import ar.com.scacchi.nightmare.data.asset.Flat
 import ar.com.scacchi.nightmare.data.asset.Patch
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
@@ -81,4 +82,12 @@ data class WadManager(
     fun getPatch(name: String): Patch {
         return Patch.createFrom(buffer, lumpDirectory[name])
     }
+
+    fun getFlat(name: String): Flat {
+        return Flat.createFrom(buffer, lumpDirectory[name])
+    }
+
+    fun getPatchNameList(): List<String> = this.lumpDirectory.patchListName
+    fun getFlatNameList(): List<String> = this.lumpDirectory.flatListName
+    fun getSpriteNameList(): List<String> = this.lumpDirectory.spriteListName
 }
