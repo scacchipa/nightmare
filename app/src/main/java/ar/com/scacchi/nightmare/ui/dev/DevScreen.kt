@@ -20,6 +20,7 @@ import ar.com.scacchi.nightmare.ui.dev.colormap.ColorMap
 import ar.com.scacchi.nightmare.ui.dev.flat.FlatWidget
 import ar.com.scacchi.nightmare.ui.dev.palette.PlayPalWidget
 import ar.com.scacchi.nightmare.ui.dev.patch.PatchWidget
+import ar.com.scacchi.nightmare.ui.dev.sprite.SpriteWidget
 
 @Composable
 fun DevScreen() {
@@ -37,29 +38,31 @@ fun DevScreen() {
             var showColorMap by remember { mutableStateOf(false) }
             var showPatch by remember { mutableStateOf(false) }
             var showFlat by remember { mutableStateOf(false) }
+            var showSprite by remember { mutableStateOf(false) }
             Row {
                 Text(
-                    modifier = Modifier
-                        .clickable(onClick = { showPlayPal = !showPlayPal }),
+                    modifier = Modifier.clickable(onClick = { showPlayPal = !showPlayPal }),
                     text = "PLAYPAL",
                     fontSize = 20.sp,
                 )
                 Text(
-                    modifier = Modifier
-                        .clickable(onClick = { showColorMap = !showColorMap }),
+                    modifier = Modifier.clickable(onClick = { showColorMap = !showColorMap }),
                     text = "COLORMAP",
                     fontSize = 20.sp,
                 )
                 Text(
-                    modifier = Modifier
-                        .clickable(onClick = { showPatch = !showPatch }),
+                    modifier = Modifier.clickable(onClick = { showPatch = !showPatch }),
                     text = "PATCH",
                     fontSize = 20.sp,
                 )
                 Text(
-                    modifier = Modifier
-                        .clickable(onClick = { showFlat = !showFlat }),
+                    modifier = Modifier.clickable(onClick = { showFlat = !showFlat }),
                     text = "FLAT",
+                    fontSize = 20.sp,
+                )
+                Text(
+                    modifier = Modifier.clickable(onClick = { showSprite = !showSprite }),
+                    text = "SPRITE",
                     fontSize = 20.sp,
                 )
 
@@ -68,6 +71,7 @@ fun DevScreen() {
             if (showColorMap) ColorMap()
             if (showPatch) PatchWidget()
             if (showFlat) FlatWidget()
+            if (showSprite) SpriteWidget()
         }
     }
 }

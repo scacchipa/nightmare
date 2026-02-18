@@ -2,6 +2,7 @@ package ar.com.scacchi.nightmare.data
 
 import ar.com.scacchi.nightmare.data.asset.Flat
 import ar.com.scacchi.nightmare.data.asset.Patch
+import ar.com.scacchi.nightmare.data.asset.Sprite
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
 import ar.com.scacchi.nightmare.engine.LUMP_INDICES
@@ -79,13 +80,9 @@ data class WadManager(
         )
     }
 
-    fun getPatch(name: String): Patch {
-        return Patch.createFrom(buffer, lumpDirectory[name])
-    }
-
-    fun getFlat(name: String): Flat {
-        return Flat.createFrom(buffer, lumpDirectory[name])
-    }
+    fun getPatch(name: String): Patch = Patch.createFrom(buffer, lumpDirectory[name])
+    fun getFlat(name: String): Flat = Flat.createFrom(buffer, lumpDirectory[name])
+    fun getSprite(name: String): Sprite = Sprite.createFrom(buffer, lumpDirectory[name])
 
     fun getPatchNameList(): List<String> = this.lumpDirectory.patchListName
     fun getFlatNameList(): List<String> = this.lumpDirectory.flatListName

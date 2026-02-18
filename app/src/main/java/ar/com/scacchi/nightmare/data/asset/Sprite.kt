@@ -4,18 +4,18 @@ import ar.com.scacchi.nightmare.data.FileLump
 import ar.com.scacchi.nightmare.data.color.Palette
 import java.nio.ByteBuffer
 
-data class Patch(
+data class Sprite(
     val header: PatchHeader,
     val posts: Array<Post>,
 ) {
     companion object {
-        fun createFrom(buffer: ByteBuffer, lump: FileLump): Patch {
+        fun createFrom(buffer: ByteBuffer, lump: FileLump): Sprite {
             buffer.position(lump.filePos)
 
             val header = PatchHeader.createFromBuffer(buffer)
             val posts = getPosts(buffer, header.width.toInt())
 
-            return Patch(header, posts)
+            return Sprite(header, posts)
         }
 
         @OptIn(ExperimentalUnsignedTypes::class)
@@ -46,7 +46,7 @@ data class Patch(
 
             iy = post.topDelta.toInt()
             for (postY in 0 until post.length.toInt()) {
-                image.setAt(ix, iy, color = palette[post.data[postY].toInt()])
+                image.setAt(ix, iy, palette[post.data[postY].toInt()])
                 iy += 1
             }
         }
