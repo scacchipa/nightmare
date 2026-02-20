@@ -5,7 +5,7 @@ import ar.com.scacchi.nightmare.data.readLittleEndianUInt
 import ar.com.scacchi.nightmare.data.readLittleEndianUShort
 import java.nio.ByteBuffer
 
-class PatchHeader(
+class PictureHeader(
     val width: UShort, // H
     val height: UShort,  // H
     val leftOffset: Short, // h
@@ -13,7 +13,7 @@ class PatchHeader(
     val columnOffset: Array<UInt>, // wi = dth x I
 ) {
     companion object {
-        fun createFromBuffer(buffer: ByteBuffer): PatchHeader {
+        fun createFromBuffer(buffer: ByteBuffer): PictureHeader {
             val width = buffer.readLittleEndianUShort()
             val height = buffer.readLittleEndianUShort()
             val leftOffset = buffer.readLittleEndianShort()
@@ -22,7 +22,7 @@ class PatchHeader(
             val columnOffset = Array(width.toInt()) {
                 buffer.readLittleEndianUInt()
             }
-            return PatchHeader(
+            return PictureHeader(
                 width = width,
                 height = height,
                 leftOffset = leftOffset,

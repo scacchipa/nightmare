@@ -72,8 +72,6 @@ class LumpDirectory(
         }.map { it.name }
     }
 
-
-
     companion object {
         fun createFrom(
             buffer: ByteBuffer,

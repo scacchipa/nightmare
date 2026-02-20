@@ -65,7 +65,6 @@ fun DevScreen() {
                     text = "SPRITE",
                     fontSize = 20.sp,
                 )
-
             }
             if (showPlayPal) PlayPalWidget()
             if (showColorMap) ColorMap()
