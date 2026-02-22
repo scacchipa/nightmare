@@ -11,6 +11,7 @@ class Things(
     fun dropFirstThing() = Things(content.drop(1).toTypedArray())
 
     companion object {
+        fun emptyThings(): Things = Things(emptyArray())
         fun createFrom(buffer: ByteBuffer, lump: FileLump): Things {
             buffer.position(lump.filePos)
             return Things(

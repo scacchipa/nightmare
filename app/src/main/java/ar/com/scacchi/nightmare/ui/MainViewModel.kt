@@ -3,6 +3,7 @@ package ar.com.scacchi.nightmare.ui
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ar.com.scacchi.nightmare.data.WadManager
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
 import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.ui.pad.PlayerAction
@@ -30,7 +31,7 @@ class MainViewModel @Inject constructor(
     val tickerJob: Job = viewModelScope.launch(defaultDispatcher) {
         while (true) {
             val newPlayer = with(_pressedKeySet) {
-                val player = gameState.value.player
+                val player = engine.player
                 when {
                     contains(PlayerAction.MOVE_FORWARD) -> player.advance()
                     contains(PlayerAction.MOVE_BACKWARD) -> player.reverse()
@@ -53,4 +54,6 @@ class MainViewModel @Inject constructor(
     fun onNewKeySet(newKeySet: Set<PlayerAction>) {
         _pressedKeySet = newKeySet
     }
+
+    fun getWadManager(): WadManager = engine.wadManager
 }

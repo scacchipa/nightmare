@@ -9,6 +9,7 @@ class Sectors(
     operator fun get(idx: Int) = content[idx]
 
     companion object {
+        fun emptySectors(): Sectors = Sectors(emptyArray())
         fun createFrom(
             buffer: ByteBuffer,
             lump: FileLump,

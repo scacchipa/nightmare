@@ -2,9 +2,10 @@ package ar.com.scacchi.nightmare.ui.dev.sprite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ar.com.scacchi.nightmare.data.asset.DoomImage
+import ar.com.scacchi.nightmare.data.WadManager
+import ar.com.scacchi.nightmare.data.asset.DoomBitmap
+import ar.com.scacchi.nightmare.data.color.Palette
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
-import ar.com.scacchi.nightmare.engine.Engine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,44 +15,46 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SpriteViewModel @Inject constructor(
-    val engine: Engine,
+    val wadManager: WadManager,
     @param:DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        SpriteState(0, listOf(), DoomImage(100, 100))
+        SpriteState(Palette(emptyArray()) ,0, listOf(), DoomBitmap(100, 100))
     )
     val uiState = _uiState as StateFlow<SpriteState>
 
     fun updateBitmap() {
         viewModelScope.launch(defaultDispatcher) {
-            val playPal = engine.gameStateFlow.value.playPal
+            val playPal = wadManager.playPal
             if (playPal.paletteCount == 0) return@launch
             val palette = playPal[0]
-            val sName = engine.getSpriteNameList()[0]
-            val sprite = engine.getSprite(sName)
+            val sName = wadManager.getSpriteNameList()[0]
+            val sprite = wadManager.getSprite(sName)
             _uiState.emit(
                 SpriteState(
+                    palette = palette,
                     spinnerPosition = 0,
-                    spriteNameList = engine.getSpriteNameList(),
-                    doomImage = sprite.buildDoomImage(palette)
+                    spriteNameList = wadManager.getSpriteNameList(),
+                    doomBitmap = sprite.buildDoomImage()
                 )
             )
 
-            println(engine.getSpriteNameList())
+            println(wadManager.getSpriteNameList())
         }
     }
 
     fun updateSpinnerPosition(position: Int) {
         viewModelScope.launch {
-            val palette = engine.gameStateFlow.value.playPal[0]
-            val sName = engine.getSpriteNameList()[position]
-            val sprite = engine.getSprite(sName)
+            val palette = wadManager.playPal[0]
+            val sName = wadManager.getSpriteNameList()[position]
+            val sprite = wadManager.getSprite(sName)
             _uiState.emit(
                 SpriteState(
+                    palette = palette,
                     spinnerPosition = position,
-                    spriteNameList = engine.getSpriteNameList(),
-                    doomImage = sprite.buildDoomImage(palette)
+                    spriteNameList = wadManager.getSpriteNameList(),
+                    doomBitmap = sprite.buildDoomImage()
                 )
             )
         }

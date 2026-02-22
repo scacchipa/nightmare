@@ -17,4 +17,17 @@ data class EpisodeMap(
     val sectors: Sectors,
     val things: Things,
     val rootNodeId: Int,
-)
+) {
+    companion object {
+        fun emptyEpisodeMap(): EpisodeMap = EpisodeMap(
+            vertexes = Vertexes.emptyVertexes(),
+            lineDefs = LineDefs.emptyLineDefs(),
+            nodes = Nodes.emptyNodes(),
+            subSectors = SubSectors.emptySubSectors(),
+            segs = Segs.emptySegs(),
+            sectors = Sectors.emptySectors(),
+            things = Things.emptyThings(),
+            rootNodeId = -1,
+        )
+    }
+}

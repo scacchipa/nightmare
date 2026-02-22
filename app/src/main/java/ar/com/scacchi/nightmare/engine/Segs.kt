@@ -9,6 +9,7 @@ class Segs(
     operator fun get(idx: Int) = content[idx]
 
     companion object {
+        fun emptySegs(): Segs = Segs(emptyArray())
         fun createFrom(
             buffer: ByteBuffer,
             lump: FileLump,

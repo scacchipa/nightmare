@@ -1,7 +1,6 @@
 package ar.com.scacchi.nightmare.engine;
 
 import android.content.Context
-import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.data.WadManager
 import ar.com.scacchi.nightmare.data.asset.Flat
 import ar.com.scacchi.nightmare.data.asset.Patch
@@ -16,62 +15,56 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import java.nio.ByteBuffer
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class Engine @Inject constructor(
+    val wadManager: WadManager,
     @param:ApplicationScope private val externalScope: CoroutineScope,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher,
     @param:ApplicationContext private val context: Context,
 ) {
-    var episodeName = "E1M1"
-    val wadPath = R.raw.doom
-    val wadManager: WadManager by lazy {
-        val file = context.resources.openRawResource(wadPath)
-        val buffer = ByteBuffer.wrap(file.readBytes())
-        WadManager.create(buffer)
-    }
+    val episodeName = "E1M1"
+    var player = wadManager.getInitialPlayer(episodeName)
 
-    private val _gameState = MutableStateFlow(
-        GameState.getEmpty(),
-    )
+    private val _gameState = MutableStateFlow(GameState.getEmpty())
     val gameStateFlow: StateFlow<GameState> = _gameState
 
-    init {
-        externalScope.launch(ioDispatcher) {
-            initEpisode("E1M1")
-        }
-    }
-
-    suspend fun update(
-        newGameState: GameState
-    ) {
-        _gameState.emit(newGameState)
+    suspend fun update() {
+        _gameState.emit(GameState(
+            playPal = wadManager.playPal,
+            colorMap = wadManager.colorMap,
+            episodeMap = wadManager.getEpisodeMap(episodeName),
+            skyTex = getGeneralPicture("SKY1"),
+            player = player,
+        ))
     }
 
     suspend fun updatePlayer(newPlayer: Player) {
-        _gameState.emit(
-            _gameState.value.copy(
-                player = newPlayer
-            )
-        )
-    }
-
-    suspend fun initEpisode(episodeName: String) {
-        this.episodeName = episodeName
-        val episodeMap = wadManager.getEpisodeMap(episodeName)
+        player = newPlayer
         _gameState.emit(
             GameState(
                 playPal = wadManager.playPal,
                 colorMap = wadManager.colorMap,
-                episodeMap = episodeMap,
-                player = Player(episodeMap.things[0])
+                episodeMap = wadManager.getEpisodeMap(episodeName),
+                skyTex = getGeneralPicture("SKY1"),
+                player = player,
             )
         )
     }
+
+    suspend fun emitState() {
+        _gameState.emit(GameState(
+            playPal = wadManager.playPal,
+            colorMap = wadManager.colorMap,
+            episodeMap = wadManager.getEpisodeMap(episodeName),
+            skyTex = getGeneralPicture("SKY1"),
+            player = player,
+        ))
+    }
+
+//    fun getEpisodeMap(name: String): EpisodeMap = wadManager.getEpisodeMap(name)
 
     fun getPlayPal(): PlayPal = wadManager.playPal
     fun getColorMap(): ColorMap = wadManager.colorMap
@@ -82,4 +75,6 @@ class Engine @Inject constructor(
     fun getPatchNameList(): List<String> = wadManager.getPatchNameList()
     fun getFlatNameList(): List<String> = wadManager.getFlatNameList()
     fun getSpriteNameList(): List<String> = wadManager.getSpriteNameList()
+
+//    fun getPlayer(): Player = player
 }

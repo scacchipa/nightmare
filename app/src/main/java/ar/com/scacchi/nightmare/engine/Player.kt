@@ -61,4 +61,8 @@ data class Player(
             angle = angle + rotSpeed
         )
     }
+
+    companion object {
+        fun emptyPlayer(): Player = Player(0f, 0f, 0f, 0u, 0u, 0f)
+    }
 }

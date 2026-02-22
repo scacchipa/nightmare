@@ -29,7 +29,7 @@ fun SpriteWidget(
     )
 
     Image(
-        bitmap = state.doomImage.toBitmap().asImageBitmap(),
+        bitmap = state.doomBitmap.toBitmap(state.palette).asImageBitmap(),
         contentDescription = null,
     )
 }

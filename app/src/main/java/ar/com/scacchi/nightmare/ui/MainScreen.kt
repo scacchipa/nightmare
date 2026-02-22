@@ -14,14 +14,15 @@ import ar.com.scacchi.nightmare.ui.render.map.MapViewRender
 
 @Composable
 fun MainScreen(
-    vm: MainViewModel = hiltViewModel()
+    vm: MainViewModel = hiltViewModel(),
 ) {
     val uiState by vm.gameState.collectAsState()
 
     Column {
 
         User3dViewRender(
-            gameState = uiState
+            gameState = uiState,
+            wadManager = vm.getWadManager(),
         )
         Pad(
             playerActionSetChanged = {

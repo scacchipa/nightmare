@@ -10,6 +10,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.onGloballyPositioned
+import ar.com.scacchi.nightmare.data.WadManager
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.settings.SCREEN_ASPECT
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
@@ -19,6 +20,7 @@ import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
 fun ColumnScope.User3dViewRender(
     modifier: Modifier = Modifier,
     gameState: GameState,
+    wadManager: WadManager,
 ) {
 
     var scaleX = 1080.0F
@@ -45,7 +47,7 @@ fun ColumnScope.User3dViewRender(
                 center = Offset(160f, 100f)
             )
 
-            val user3dViewDrawScope = User3dViewDrawScope(this, gameState)
+            val user3dViewDrawScope = User3dViewDrawScope(this, gameState, wadManager)
 
             with(user3dViewDrawScope) {
                 isTraverseBsp = false

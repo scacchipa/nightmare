@@ -38,7 +38,7 @@ class PlayPalViewModel @Inject constructor(
     fun setPaletteSelected(value: Int) {
         viewModelScope.launch(defaultDispatcher) {
             _uiState.emit(
-                PlayPalState(engine.gameStateFlow.value.playPal, value)
+                PlayPalState(engine.getPlayPal(), value)
             )
         }
     }

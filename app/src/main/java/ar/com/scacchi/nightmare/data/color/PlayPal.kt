@@ -16,6 +16,7 @@ class PlayPal {
         get() = content.size
 
     companion object {
+        fun emptyPlayPal(): PlayPal = PlayPal(emptyArray())
         fun createFromLump(lump: FileLump, buffer: ByteBuffer): PlayPal {
 
             buffer.position(lump.filePos)

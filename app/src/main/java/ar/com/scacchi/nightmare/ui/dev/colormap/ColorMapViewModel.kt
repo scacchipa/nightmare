@@ -2,9 +2,9 @@ package ar.com.scacchi.nightmare.ui.dev.colormap
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ar.com.scacchi.nightmare.data.WadManager
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
-import ar.com.scacchi.nightmare.engine.Engine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ColorMapViewModel @Inject constructor(
-    val engine: Engine,
+    val wadManager: WadManager,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ColorMapState(PlayPal(emptyArray()), ColorMap(emptyArray()), 0))
@@ -23,8 +23,8 @@ class ColorMapViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.emit(
                 ColorMapState(
-                    playPal = engine.getPlayPal(),
-                    colorMap = engine.getColorMap(),
+                    playPal = wadManager.playPal,
+                    colorMap = wadManager.colorMap,
                     paletteIdx = id
                 )
             )

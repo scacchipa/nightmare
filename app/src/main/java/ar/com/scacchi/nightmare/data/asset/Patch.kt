@@ -1,7 +1,6 @@
 package ar.com.scacchi.nightmare.data.asset
 
 import ar.com.scacchi.nightmare.data.FileLump
-import ar.com.scacchi.nightmare.data.color.Palette
 import java.nio.ByteBuffer
 
 typealias Sprite = Patch
@@ -11,7 +10,17 @@ data class Picture(
     val header: PictureHeader,
     val posts: Array<Post>,
 ) {
+    val width get() = header.width
+    val height get() = header.height
+
+    val bitmap by lazy { buildDoomImage() }
+
+    operator fun get(x: Int, y: Int): UByte? = bitmap[x, y]
+    operator fun set(x: Int, y: Int, value: UByte) = bitmap.set(x, y, value)
+
     companion object {
+        fun emptyPicture(): Picture = Picture(PictureHeader.emptyHeader(), emptyArray())
+
         fun createFrom(buffer: ByteBuffer, lump: FileLump): Picture {
             buffer.position(lump.filePos)
 
@@ -36,25 +45,23 @@ data class Picture(
         }
     }
 
-    fun buildDoomImage(palette: Palette): DoomImage {
-        val image = DoomImage(header.width.toInt(), header.height.toInt())
+    fun buildDoomImage(): DoomBitmap =
+        DoomBitmap(header.width.toInt(), header.height.toInt()).also { bitmap ->
+            var ix = 0
+            var iy: Int
+            for (post in posts) {
+                if (post.topDelta == 0xFF.toUByte()) {
+                    ix += 1
+                    continue
+                }
 
-        var ix = 0
-        var iy: Int
-        for (post in posts) {
-            if (post.topDelta == 0xFF.toUByte()) {
-                ix += 1
-                continue
-            }
-
-            iy = post.topDelta.toInt()
-            for (postY in 0 until post.length.toInt()) {
-                image.setAt(ix, iy, color = palette[post.data[postY].toInt()])
-                iy += 1
+                iy = post.topDelta.toInt()
+                for (postY in 0 until post.length.toInt()) {
+                    bitmap[ix, iy] = post.data[postY]
+                    iy += 1
+                }
             }
         }
-        return image
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

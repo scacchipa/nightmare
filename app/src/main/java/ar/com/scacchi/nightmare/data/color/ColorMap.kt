@@ -16,6 +16,7 @@ class ColorMap {
         get() = content.size
 
     companion object {
+        fun emptyColorMap(): ColorMap = ColorMap(emptyArray())
         fun createFromLump(lump: FileLump, buffer: ByteBuffer): ColorMap {
             buffer.position(lump.filePos)
 

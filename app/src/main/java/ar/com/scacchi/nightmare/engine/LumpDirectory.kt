@@ -73,6 +73,7 @@ class LumpDirectory(
     }
 
     companion object {
+        fun emptyDirectory(): LumpDirectory = LumpDirectory(emptyArray())
         fun createFrom(
             buffer: ByteBuffer,
             wadHeader: WadHeader

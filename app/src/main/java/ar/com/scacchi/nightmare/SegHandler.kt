@@ -32,13 +32,15 @@ class SegHandler(
         set(0, SCREEN_WIDTH.toInt())
     }
 
-    val xToAngleTable: FloatArray =
-        FloatArray(SCREEN_WIDTH.toInt() + 1) {
-            atan((H_WIDTH - it) / SCREEN_DIST)
-        }
+    companion object {
+        val xToAngleTable: FloatArray =
+            FloatArray(SCREEN_WIDTH.toInt() + 1) {
+                atan((H_WIDTH - it) / SCREEN_DIST)
+            }
+    }
 
     fun scaleFromGlobalAngle(x: Int, rwNormalAngle: Float, rwDistance: Float): Float {
-        val xAngle = this.xToAngleTable[x]
+        val xAngle = xToAngleTable[x]
         val num = SCREEN_DIST * cos(rwNormalAngle - xAngle - player.angle)
         val den = rwDistance * cos(xAngle)
 

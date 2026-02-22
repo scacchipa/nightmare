@@ -9,6 +9,7 @@ class LineDefs(
     operator fun get(idx: Int): LineDef = content[idx]
 
     companion object {
+        fun emptyLineDefs(): LineDefs = LineDefs(emptyArray())
         fun createFrom(buffer: ByteBuffer, lump: FileLump, sideDefs: SideDefs): LineDefs {
             buffer.position(lump.filePos)
             return LineDefs(

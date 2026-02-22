@@ -1,6 +1,7 @@
 package ar.com.scacchi.nightmare.di
 
 import android.content.Context
+import ar.com.scacchi.nightmare.data.WadManager
 import ar.com.scacchi.nightmare.engine.Engine
 import dagger.Module
 import dagger.Provides
@@ -18,10 +19,12 @@ class EngineModule {
     @Singleton
     @Provides
     fun provideEngine(
+        wadManager: WadManager,
         @ApplicationScope externalScope: CoroutineScope,
         @IoDispatcher ioDispatcher: CoroutineDispatcher,
         @ApplicationContext context: Context,
     ): Engine = Engine(
+        wadManager = wadManager,
         externalScope = externalScope,
         ioDispatcher = ioDispatcher,
         context = context,

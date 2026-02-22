@@ -17,6 +17,7 @@ class Vertexes(
     }
 
     companion object {
+        fun emptyVertexes(): Vertexes = Vertexes(emptyArray())
         fun createFrom(buffer: ByteBuffer, lump: FileLump): Vertexes {
             buffer.position(lump.filePos)
             return Vertexes(

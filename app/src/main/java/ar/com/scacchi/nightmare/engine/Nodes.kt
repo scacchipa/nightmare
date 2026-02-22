@@ -13,6 +13,7 @@ class Nodes(
     fun isEmpty() = content.isEmpty()
 
     companion object {
+        fun emptyNodes(): Nodes = Nodes(emptyArray())
         fun createFrom(buffer: ByteBuffer, lump: FileLump): Nodes {
             buffer.position(lump.filePos)
             return Nodes(

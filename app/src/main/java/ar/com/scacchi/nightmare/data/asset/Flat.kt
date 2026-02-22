@@ -1,7 +1,6 @@
 package ar.com.scacchi.nightmare.data.asset
 
 import ar.com.scacchi.nightmare.data.FileLump
-import ar.com.scacchi.nightmare.data.color.Palette
 import ar.com.scacchi.nightmare.data.readUByte
 import java.nio.ByteBuffer
 
@@ -22,21 +21,14 @@ data class Flat(
         }
     }
 
-    fun buildDoomImage(palette: Palette): DoomImage {
-        val image = DoomImage(64, 64)
-
-        for (idx in 0 until 64) {
-            for (idy in 0 until 64) {
-
-                image.setAt(
-                    x = idx,
-                    y = idy,
-                    color = palette[this.content[idx][idy].toInt()]
-                )
+    fun buildDoomImage(): DoomBitmap =
+        DoomBitmap(64, 64).also { image ->
+            for (idx in 0 until 64) {
+                for (idy in 0 until 64) {
+                    image[idx, idy] = this.content[idx][idy]
+                }
             }
         }
-        return image
-    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -50,5 +42,4 @@ data class Flat(
     override fun hashCode(): Int {
         return content.contentDeepHashCode()
     }
-
 }

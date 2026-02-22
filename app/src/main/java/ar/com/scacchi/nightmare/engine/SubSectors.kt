@@ -11,6 +11,7 @@ class SubSectors(
     fun count(): Int = content.size
 
     companion object {
+        fun emptySubSectors(): SubSectors = SubSectors(emptyArray())
         fun createFrom(buffer: ByteBuffer, lump: FileLump): SubSectors {
             buffer.position(lump.filePos)
             return SubSectors(
