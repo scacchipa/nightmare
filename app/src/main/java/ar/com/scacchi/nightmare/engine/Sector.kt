@@ -10,7 +10,7 @@ class Sector(
     val ceilingHeight: Short,
     val floorTextureName: ByteArray,
     val ceilingTextureName: ByteArray,
-    val lightLevel: UShort,
+    val lightLevel: Float,
     val type: UShort,
     val tag: UShort,
 ) {
@@ -21,7 +21,7 @@ class Sector(
                 ceilingHeight = buffer.readLittleEndianShort(),
                 floorTextureName = buffer.readByteArray(8),
                 ceilingTextureName =buffer.readByteArray(8),
-                lightLevel = buffer.readLittleEndianUShort(),
+                lightLevel = buffer.readLittleEndianUShort().toFloat() / 256f,
                 type = buffer.readLittleEndianUShort(),
                 tag = buffer.readLittleEndianUShort(),
             )

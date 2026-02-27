@@ -1,11 +1,11 @@
-package ar.com.scacchi.nightmare.data.asset
+package ar.com.scacchi.nightmare.data.asset.patch
 
 import ar.com.scacchi.nightmare.data.readLittleEndianShort
 import ar.com.scacchi.nightmare.data.readLittleEndianUInt
 import ar.com.scacchi.nightmare.data.readLittleEndianUShort
 import java.nio.ByteBuffer
 
-data class PictureHeader(
+data class PatchHeader(
     val width: UShort, // H
     val height: UShort,  // H
     val leftOffset: Short, // h
@@ -13,8 +13,8 @@ data class PictureHeader(
     val columnOffset: Array<UInt>, // wi = dth x I
 ) {
     companion object {
-        fun emptyHeader() = PictureHeader(0u, 0u, 0, 0, emptyArray())
-        fun createFromBuffer(buffer: ByteBuffer): PictureHeader {
+        fun emptyHeader() = PatchHeader(0u, 0u, 0, 0, emptyArray())
+        fun createFromBuffer(buffer: ByteBuffer): PatchHeader {
             val width = buffer.readLittleEndianUShort()
             val height = buffer.readLittleEndianUShort()
             val leftOffset = buffer.readLittleEndianShort()
@@ -23,7 +23,7 @@ data class PictureHeader(
             val columnOffset = Array(width.toInt()) {
                 buffer.readLittleEndianUInt()
             }
-            return PictureHeader(
+            return PatchHeader(
                 width = width,
                 height = height,
                 leftOffset = leftOffset,
@@ -37,7 +37,7 @@ data class PictureHeader(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PictureHeader
+        other as PatchHeader
 
         if (leftOffset != other.leftOffset) return false
         if (topOffset != other.topOffset) return false

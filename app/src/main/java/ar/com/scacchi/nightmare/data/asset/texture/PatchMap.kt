@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.data.asset
+package ar.com.scacchi.nightmare.data.asset.texture
 
 import ar.com.scacchi.nightmare.data.readLittleEndianShort
 import ar.com.scacchi.nightmare.data.readLittleEndianUShort
@@ -12,9 +12,7 @@ class PatchMap(
     val colorMap: UShort,
 ) {
     companion object {
-        fun createFrom(buffer: ByteBuffer, offset: Int): PatchMap {
-            buffer.position(offset)
-
+        fun createFrom(buffer: ByteBuffer): PatchMap {
             return PatchMap(
                 xOffset = buffer.readLittleEndianShort(),
                 yOffset = buffer.readLittleEndianShort(),

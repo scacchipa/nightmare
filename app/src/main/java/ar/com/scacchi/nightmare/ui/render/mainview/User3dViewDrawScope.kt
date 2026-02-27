@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.data.WadManager
-import ar.com.scacchi.nightmare.data.asset.Picture
+import ar.com.scacchi.nightmare.data.asset.patch.Picture
 import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.ext.light
@@ -151,7 +151,8 @@ class User3dViewDrawScope(
                     invScale = skyInvScale, lightLevel = 1.0f
                 )
             } else {
-                val flatTex = wadManager.getGeneralPicture(texId)
+
+                val flatTex = wadManager.getFlat(texId)
 
                 drawFlatCol(flatTex, x, y1, y2, lightLevel, worldZ)
             }

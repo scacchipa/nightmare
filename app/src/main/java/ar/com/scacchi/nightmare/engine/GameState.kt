@@ -1,7 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.data.EpisodeMap
-import ar.com.scacchi.nightmare.data.asset.Picture
+import ar.com.scacchi.nightmare.data.asset.patch.Picture
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
 

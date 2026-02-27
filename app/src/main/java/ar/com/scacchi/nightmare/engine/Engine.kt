@@ -3,9 +3,9 @@ package ar.com.scacchi.nightmare.engine;
 import android.content.Context
 import ar.com.scacchi.nightmare.data.WadManager
 import ar.com.scacchi.nightmare.data.asset.Flat
-import ar.com.scacchi.nightmare.data.asset.Patch
-import ar.com.scacchi.nightmare.data.asset.Picture
-import ar.com.scacchi.nightmare.data.asset.Sprite
+import ar.com.scacchi.nightmare.data.asset.patch.Patch
+import ar.com.scacchi.nightmare.data.asset.patch.Picture
+import ar.com.scacchi.nightmare.data.asset.patch.Sprite
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
 import ar.com.scacchi.nightmare.di.ApplicationScope
@@ -48,7 +48,7 @@ class Engine @Inject constructor(
                 playPal = wadManager.playPal,
                 colorMap = wadManager.colorMap,
                 episodeMap = wadManager.getEpisodeMap(episodeName),
-                skyTex = getGeneralPicture("SKY1"),
+                skyTex = getPatch("SKY1"),
                 player = player,
             )
         )

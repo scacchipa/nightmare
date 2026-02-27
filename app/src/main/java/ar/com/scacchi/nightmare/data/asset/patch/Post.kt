@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.data.asset
+package ar.com.scacchi.nightmare.data.asset.patch
 
 import ar.com.scacchi.nightmare.data.readByte
 import ar.com.scacchi.nightmare.data.readUByte

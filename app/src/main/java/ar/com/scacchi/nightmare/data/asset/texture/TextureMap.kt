@@ -1,5 +1,6 @@
-package ar.com.scacchi.nightmare.data.asset
+package ar.com.scacchi.nightmare.data.asset.texture
 
+import ar.com.scacchi.nightmare.data.asset.texture.PatchMap
 import ar.com.scacchi.nightmare.data.readByteArrayAsString
 import ar.com.scacchi.nightmare.data.readLittleEndianInt
 import ar.com.scacchi.nightmare.data.readLittleEndianUShort
@@ -12,20 +13,20 @@ class TextureMap(
     val height: UShort,
     val columnDir: Int,  // unused
     val patchCount: UShort,
-    val patchMaps: Array<PatchMap>,
+    val patchMapList: Array<PatchMap>,
 ) {
     companion object {
         fun createFrom(buffer: ByteBuffer, offset: Int): TextureMap {
-
             buffer.position(offset)
+
             val name = buffer.readByteArrayAsString(8)
             val flags = buffer.readLittleEndianInt()
             val width = buffer.readLittleEndianUShort()
             val height = buffer.readLittleEndianUShort()
             val columnDir = buffer.readLittleEndianInt()
             val patchCount = buffer.readLittleEndianUShort()
-            val patchMaps = Array(patchCount.toInt()) { idx ->
-                PatchMap.createFrom(buffer, offset + 22 + idx * 10)
+            val patchMapList = Array(patchCount.toInt()) {
+                PatchMap.Companion.createFrom(buffer)
             }
 
             return TextureMap(
@@ -35,7 +36,7 @@ class TextureMap(
                 height = height,
                 columnDir = columnDir,
                 patchCount = patchCount,
-                patchMaps = patchMaps,
+                patchMapList = patchMapList,
             )
         }
     }

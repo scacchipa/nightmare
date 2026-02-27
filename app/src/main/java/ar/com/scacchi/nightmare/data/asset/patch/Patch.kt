@@ -1,13 +1,16 @@
-package ar.com.scacchi.nightmare.data.asset
+package ar.com.scacchi.nightmare.data.asset.patch
 
 import ar.com.scacchi.nightmare.data.FileLump
+import ar.com.scacchi.nightmare.data.asset.DoomBitmap
+import ar.com.scacchi.nightmare.data.asset.patch.PatchHeader
+import ar.com.scacchi.nightmare.data.asset.patch.Post
 import java.nio.ByteBuffer
 
 typealias Sprite = Patch
-typealias Patch = Picture
+typealias Picture = Patch
 
-data class Picture(
-    val header: PictureHeader,
+data class Patch(
+    val header: PatchHeader,
     val posts: Array<Post>,
 ) {
     val width get() = header.width
@@ -19,12 +22,12 @@ data class Picture(
     operator fun set(x: Int, y: Int, value: UByte) = bitmap.set(x, y, value)
 
     companion object {
-        fun emptyPicture(): Picture = Picture(PictureHeader.emptyHeader(), emptyArray())
+        fun emptyPicture(): Picture = Picture(PatchHeader.Companion.emptyHeader(), emptyArray())
 
         fun createFrom(buffer: ByteBuffer, lump: FileLump): Picture {
             buffer.position(lump.filePos)
 
-            val header = PictureHeader.createFromBuffer(buffer)
+            val header = PatchHeader.Companion.createFromBuffer(buffer)
             val posts = getPosts(buffer, header.width.toInt())
 
             return Picture(header, posts)
@@ -37,7 +40,7 @@ data class Picture(
             repeat(width) {
                 var post = Post(0u, 0u, 0, arrayOf(), 0)
                 while (post.topDelta != 0xFF.toUByte()) {
-                    post = Post.createFrom(buffer)
+                    post = Post.Companion.createFrom(buffer)
                     posts.add(post)
                 }
             }

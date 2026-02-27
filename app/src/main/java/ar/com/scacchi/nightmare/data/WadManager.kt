@@ -3,9 +3,9 @@ package ar.com.scacchi.nightmare.data
 import android.content.Context
 import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.data.asset.Flat
-import ar.com.scacchi.nightmare.data.asset.Patch
-import ar.com.scacchi.nightmare.data.asset.Picture
-import ar.com.scacchi.nightmare.data.asset.Sprite
+import ar.com.scacchi.nightmare.data.asset.patch.Patch
+import ar.com.scacchi.nightmare.data.asset.patch.Picture
+import ar.com.scacchi.nightmare.data.asset.patch.Sprite
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
 import ar.com.scacchi.nightmare.engine.LUMP_INDICES
