@@ -44,7 +44,9 @@ class LumpDirectory(
 
     operator fun get(idx: Int) = lumpEntries[idx]
 
-    operator fun get(pName: String) = this[getIdxForName(pName)]
+    operator fun get(pName: String) = this[getIdxForName(pName)].also {
+        println("Search: $pName" )
+    }
 
     fun getIdxForName(name: String): Int = lumpEntries.indexOfFirst { it.name == name }
 

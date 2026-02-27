@@ -151,7 +151,8 @@ class User3dViewDrawScope(
                     invScale = skyInvScale, lightLevel = 1.0f
                 )
             } else {
-                val flatTex = wadManager.getGeneralPicture(texId)
+
+                val flatTex = wadManager.getFlat(texId)
 
                 drawFlatCol(flatTex, x, y1, y2, lightLevel, worldZ)
             }

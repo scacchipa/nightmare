@@ -48,7 +48,7 @@ class Engine @Inject constructor(
                 playPal = wadManager.playPal,
                 colorMap = wadManager.colorMap,
                 episodeMap = wadManager.getEpisodeMap(episodeName),
-                skyTex = getGeneralPicture("SKY1"),
+                skyTex = getPatch("SKY1"),
                 player = player,
             )
         )

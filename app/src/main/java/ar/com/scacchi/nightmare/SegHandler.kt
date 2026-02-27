@@ -112,8 +112,16 @@ class SegHandler(
             if (bDrawCeil) {
                 val cy1 = upperClip[x]
                 val cy2 = min(drawWallY1.toInt(), lowerClip[x])
-                userScope.drawVLine(
-                    x, cy1, cy2, ceilTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
+//                userScope.drawVLine(
+//                    x, cy1, cy2, ceilTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
+//                )
+                userScope.drawFlat(
+                    texId = ceilTexture?.asString() ?: "",
+                    lightLevel = lightLevel ?: 255f,
+                    x = x.toFloat(),
+                    y1 = cy1.toFloat(),
+                    y2 = cy2.toFloat(),
+                    worldZ = worldFrontZ1.toFloat()
                 )
             }
 
