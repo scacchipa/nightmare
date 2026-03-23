@@ -3,9 +3,9 @@ package ar.com.scacchi.nightmare.engine;
 import android.content.Context
 import ar.com.scacchi.nightmare.data.WadManager
 import ar.com.scacchi.nightmare.data.asset.Flat
-import ar.com.scacchi.nightmare.data.asset.Patch
-import ar.com.scacchi.nightmare.data.asset.Picture
-import ar.com.scacchi.nightmare.data.asset.Sprite
+import ar.com.scacchi.nightmare.data.asset.patch.Patch
+import ar.com.scacchi.nightmare.data.asset.patch.Picture
+import ar.com.scacchi.nightmare.data.asset.patch.Sprite
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
 import ar.com.scacchi.nightmare.di.ApplicationScope
@@ -36,7 +36,7 @@ class Engine @Inject constructor(
             playPal = wadManager.playPal,
             colorMap = wadManager.colorMap,
             episodeMap = wadManager.getEpisodeMap(episodeName),
-            skyTex = getGeneralPicture("SKY1"),
+            skyTex = "SKY1",
             player = player,
         ))
     }
@@ -48,7 +48,7 @@ class Engine @Inject constructor(
                 playPal = wadManager.playPal,
                 colorMap = wadManager.colorMap,
                 episodeMap = wadManager.getEpisodeMap(episodeName),
-                skyTex = getPatch("SKY1"),
+                skyTex = "SKY1",
                 player = player,
             )
         )
@@ -59,7 +59,7 @@ class Engine @Inject constructor(
             playPal = wadManager.playPal,
             colorMap = wadManager.colorMap,
             episodeMap = wadManager.getEpisodeMap(episodeName),
-            skyTex = getGeneralPicture("SKY1"),
+            skyTex = "SKY1",
             player = player,
         ))
     }
@@ -68,13 +68,13 @@ class Engine @Inject constructor(
 
     fun getPlayPal(): PlayPal = wadManager.playPal
     fun getColorMap(): ColorMap = wadManager.colorMap
-    fun getPatch(name: String): Patch = wadManager.getPatch(name)
-    fun getFlat(name: String): Flat = wadManager.getFlat(name)
-    fun getSprite(name: String): Sprite = wadManager.getSprite(name)
-    fun getGeneralPicture(name: String): Picture = wadManager.getPicture(name)
-    fun getPatchNameList(): List<String> = wadManager.getPatchNameList()
-    fun getFlatNameList(): List<String> = wadManager.getFlatNameList()
-    fun getSpriteNameList(): List<String> = wadManager.getSpriteNameList()
+    fun getPatch(name: String): Patch = wadManager.readPatch(name)
+    fun getFlat(name: String): Flat = wadManager.readFlat(name)
+    fun getSprite(name: String): Sprite = wadManager.readSprite(name)
+    fun getGeneralPicture(name: String): Picture = wadManager.readPicture(name)
+    fun getPatchNameList(): List<String> = wadManager.readPatchNameList()
+    fun getFlatNameList(): List<String> = wadManager.readFlatNameList()
+    fun getSpriteNameList(): List<String> = wadManager.readSpriteNameList()
 
 //    fun getPlayer(): Player = player
 }

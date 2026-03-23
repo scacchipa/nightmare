@@ -33,14 +33,14 @@ val LINEDEF_FLAGS = mapOf(
 class LumpDirectory(
     val lumpEntries: Array<FileLump>
 ) {
-    val patchStartDelimiterRegex = Regex("^P[0-9]*_START$")
-    val patchEndDelimiterRegex = Regex("^P[0-9]*_END$")
+    val patchStartDelimiterRegex = Regex("^P[0-9]?_START$")
+    val patchEndDelimiterRegex = Regex("^P[0-9]?_END$")
 
-    val spriteStartDelimiterRegex = Regex("^S[0-9]*_(START)$")
-    val spriteEndDelimiterRegex = Regex("^S[0-9]*_(END)$")
+    val spriteStartDelimiterRegex = Regex("^S[0-9]?_(START)$")
+    val spriteEndDelimiterRegex = Regex("^S[0-9]?_(END)$")
 
-    val flatStartDelimiterRegex = Regex("^F[0-9]*_(START)$")
-    val flatEndDelimiterRegex = Regex("^F[0-9]*_(END)$")
+    val flatStartDelimiterRegex = Regex("^F[0-9]?_(START)$")
+    val flatEndDelimiterRegex = Regex("^F[0-9]?_(END)$")
 
     operator fun get(idx: Int) = lumpEntries[idx]
 

@@ -9,6 +9,7 @@ class SideDefs(
     operator fun get(idx: Int) = content[idx]
 
     companion object {
+        fun emptySideDefs(): SideDefs = SideDefs(emptyArray())
         fun createFrom(
             buffer: ByteBuffer,
             lump: FileLump,

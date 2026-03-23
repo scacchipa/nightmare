@@ -29,31 +29,31 @@ class SpriteViewModel @Inject constructor(
             val playPal = wadManager.playPal
             if (playPal.paletteCount == 0) return@launch
             val palette = playPal[0]
-            val sName = wadManager.getSpriteNameList()[0]
-            val sprite = wadManager.getSprite(sName)
+            val sName = wadManager.readSpriteNameList()[0]
+            val sprite = wadManager.readSprite(sName)
             _uiState.emit(
                 SpriteState(
                     palette = palette,
                     spinnerPosition = 0,
-                    spriteNameList = wadManager.getSpriteNameList(),
+                    spriteNameList = wadManager.readSpriteNameList(),
                     doomBitmap = sprite.buildDoomImage()
                 )
             )
 
-            println(wadManager.getSpriteNameList())
+            println(wadManager.readSpriteNameList())
         }
     }
 
     fun updateSpinnerPosition(position: Int) {
         viewModelScope.launch {
             val palette = wadManager.playPal[0]
-            val sName = wadManager.getSpriteNameList()[position]
-            val sprite = wadManager.getSprite(sName)
+            val sName = wadManager.readSpriteNameList()[position]
+            val sprite = wadManager.readSprite(sName)
             _uiState.emit(
                 SpriteState(
                     palette = palette,
                     spinnerPosition = position,
-                    spriteNameList = wadManager.getSpriteNameList(),
+                    spriteNameList = wadManager.readSpriteNameList(),
                     doomBitmap = sprite.buildDoomImage()
                 )
             )

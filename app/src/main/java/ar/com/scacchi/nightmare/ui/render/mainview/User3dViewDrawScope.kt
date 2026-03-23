@@ -7,10 +7,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.SegHandler
-import ar.com.scacchi.nightmare.data.WadManager
-import ar.com.scacchi.nightmare.data.asset.Picture
+import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.engine.GameState
+import ar.com.scacchi.nightmare.engine.ImageProvider
 import ar.com.scacchi.nightmare.ext.light
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
@@ -24,7 +24,7 @@ import kotlin.random.Random
 class User3dViewDrawScope(
     private val parentScope: DrawScope,
     private val gameState: GameState,
-    private val wadManager: WadManager,
+    private val imageProvider: ImageProvider,
 ) : DrawScope by parentScope {
 
     var isTraverseBsp = true
@@ -142,7 +142,7 @@ class User3dViewDrawScope(
                     2.2f * (this.gameState.player.angle + SegHandler.xToAngleTable[x.toInt()])
 
                 this.drawWallCol(
-                    tex = wadManager.getGeneralPicture(skyId),
+                    tex = imageProvider.getPictureDoomBitmap(skyId),
                     texCol = texColumn.toInt(),
                     x = x,
                     y1 = y1,
@@ -152,7 +152,7 @@ class User3dViewDrawScope(
                 )
             } else {
 
-                val flatTex = wadManager.getFlat(texId)
+                val flatTex = imageProvider.getFlatDoomBitmap(texId)
 
                 drawFlatCol(flatTex, x, y1, y2, lightLevel, worldZ)
             }
@@ -160,7 +160,7 @@ class User3dViewDrawScope(
     }
 
     fun drawFlatCol(
-        flatTex: Picture, x: Float, y1: Float, y2: Float, lightLevel: Float, worldZ: Float,
+        flatTex: DoomBitmap, x: Float, y1: Float, y2: Float, lightLevel: Float, worldZ: Float,
     ) {
         val playerDirX = cos(gameState.player.angle)
         val playerDirY = sin(gameState.player.angle)
@@ -197,7 +197,7 @@ class User3dViewDrawScope(
     }
 
     fun drawWallCol(
-        tex: Picture,
+        tex: DoomBitmap,
         texCol: Int,
         x: Float,
         y1: Float,
@@ -207,9 +207,8 @@ class User3dViewDrawScope(
         lightLevel: Float,
     ) {
         if (y1 < y2) {
-
-            val texW = tex.width.toInt()
-            val texH = tex.height.toInt()
+            val texW = tex.width
+            val texH = tex.height
             val texCol = texCol % texW
             var texY = texAlt + (y1 - H_HEIGHT) * invScale
 

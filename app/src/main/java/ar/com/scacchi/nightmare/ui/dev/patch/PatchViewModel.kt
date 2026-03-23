@@ -27,31 +27,31 @@ class PatchViewModel @Inject constructor(
     fun updateBitmap() {
         viewModelScope.launch(defaultDispatcher) {
             val palette = wadManager.playPal[0]
-            val pName = wadManager.getPatchNameList()[0]
-            val patch = wadManager.getPatch(pName)
+            val pName = wadManager.readPatchNameList()[0]
+            val patch = wadManager.readPatch(pName)
             _uiState.emit(
                 PatchState(
                     palette = palette,
                     spinnerPosition = 0,
-                    patchNameList = wadManager.getPatchNameList(),
+                    patchNameList = wadManager.readPatchNameList(),
                     doomBitmap = patch.buildDoomImage()
                 )
             )
 
-            println(wadManager.getPatchNameList())
+            println(wadManager.readPatchNameList())
         }
     }
 
     fun updateSpinnerPosition(position: Int) {
         viewModelScope.launch {
             val palette = wadManager.playPal[0]
-            val pName = wadManager.getPatchNameList()[position]
-            val patch = wadManager.getPatch(pName)
+            val pName = wadManager.readPatchNameList()[position]
+            val patch = wadManager.readPatch(pName)
             _uiState.emit(
                 PatchState(
                     palette = palette,
                     spinnerPosition = position,
-                    patchNameList = wadManager.getPatchNameList(),
+                    patchNameList = wadManager.readPatchNameList(),
                     doomBitmap = patch.buildDoomImage()
                 )
             )

@@ -27,30 +27,30 @@ class FlatViewModel @Inject constructor(
     fun updateBitmap() {
         viewModelScope.launch(defaultDispatcher) {
             val palette = wadManager.playPal[0]
-            val fName = wadManager.getFlatNameList()[0]
-            val flat = wadManager.getFlat(fName)
+            val fName = wadManager.readFlatNameList()[0]
+            val flat = wadManager.readFlat(fName)
             _uiState.emit(
                 FlatState(
                     palette = palette,
                     spinnerPosition = 0,
-                    flatNameList = wadManager.getFlatNameList() ,
+                    flatNameList = wadManager.readFlatNameList() ,
                     doomBitmap = flat.buildDoomImage(),
                 )
             )
-            println(wadManager.getFlatNameList())
+            println(wadManager.readFlatNameList())
         }
     }
 
     fun updateSpinnerPosition(position: Int) {
         viewModelScope.launch {
             val palette = wadManager.playPal[0]
-            val pName = wadManager.getFlatNameList()[position]
-            val patch = wadManager.getFlat(pName)
+            val pName = wadManager.readFlatNameList()[position]
+            val patch = wadManager.readFlat(pName)
             _uiState.emit(
                 FlatState(
                     palette = palette,
                     spinnerPosition = position,
-                    flatNameList = wadManager.getFlatNameList(),
+                    flatNameList = wadManager.readFlatNameList(),
                     doomBitmap = patch.buildDoomImage()
                 )
             )

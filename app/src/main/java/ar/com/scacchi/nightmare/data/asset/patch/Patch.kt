@@ -1,13 +1,12 @@
-package ar.com.scacchi.nightmare.data.asset
+package ar.com.scacchi.nightmare.data.asset.patch
 
-import ar.com.scacchi.nightmare.data.FileLump
-import java.nio.ByteBuffer
+import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 
 typealias Sprite = Patch
-typealias Patch = Picture
+typealias Picture = Patch
 
-data class Picture(
-    val header: PictureHeader,
+data class Patch(
+    val header: PatchHeader,
     val posts: Array<Post>,
 ) {
     val width get() = header.width
@@ -19,30 +18,7 @@ data class Picture(
     operator fun set(x: Int, y: Int, value: UByte) = bitmap.set(x, y, value)
 
     companion object {
-        fun emptyPicture(): Picture = Picture(PictureHeader.emptyHeader(), emptyArray())
-
-        fun createFrom(buffer: ByteBuffer, lump: FileLump): Picture {
-            buffer.position(lump.filePos)
-
-            val header = PictureHeader.createFromBuffer(buffer)
-            val posts = getPosts(buffer, header.width.toInt())
-
-            return Picture(header, posts)
-        }
-
-        @OptIn(ExperimentalUnsignedTypes::class)
-        private fun getPosts(buffer: ByteBuffer, width: Int): Array<Post> {
-            val posts = ArrayList<Post>()
-
-            repeat(width) {
-                var post = Post(0u, 0u, 0, arrayOf(), 0)
-                while (post.topDelta != 0xFF.toUByte()) {
-                    post = Post.createFrom(buffer)
-                    posts.add(post)
-                }
-            }
-            return posts.toTypedArray()
-        }
+        fun emptyPicture(): Picture = Picture(PatchHeader.Companion.emptyHeader(), emptyArray())
     }
 
     fun buildDoomImage(): DoomBitmap =
