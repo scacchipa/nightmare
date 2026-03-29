@@ -11,7 +11,7 @@ import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
-import ar.com.scacchi.nightmare.engine.Seg
+import ar.com.scacchi.nightmare.engine.SegLump
 import ar.com.scacchi.nightmare.engine.Vertexes
 import ar.com.scacchi.nightmare.ext.scalar
 import ar.com.scacchi.nightmare.settings.H_FOV
@@ -28,8 +28,8 @@ class MapViewDrawScope(
         lineDefs.content.forEach { line ->
             drawLine(
                 color = Color.Red,
-                start = vertexes[line.startVertexId.toInt()].toOffset(),
-                end = vertexes[line.endVertexId.toInt()].toOffset(),
+                start = vertexes[line.startVertexId].toOffset(),
+                end = vertexes[line.endVertexId].toOffset(),
             )
         }
     }
@@ -123,7 +123,7 @@ class MapViewDrawScope(
         )
     }
 
-    fun drawSeg(gameState: GameState, seg: Seg, subSectorId: Int) {
+    fun drawSeg(gameState: GameState, seg: SegLump, subSectorId: Int) {
         val v1 = gameState.episodeMap.vertexes[seg.startVertexId.toInt()]
         val v2 = gameState.episodeMap.vertexes[seg.endVertexId.toInt()]
         drawLine(

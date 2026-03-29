@@ -2,7 +2,6 @@ package ar.com.scacchi.nightmare
 
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
-import ar.com.scacchi.nightmare.ext.asString
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_DIST
@@ -65,11 +64,11 @@ class SegHandler(
         val lightLevel = frontSector?.lightLevel
 
         // calculate the relative plane heights of the front sector
-        val worldFrontZ1 = (frontSector?.ceilingHeight?.toInt() ?: 0) - player.height.toInt()
-        val worldFrontZ2 = (frontSector?.floorHeight?.toInt() ?: 0) - player.height.toInt()
+        val worldFrontZ1 = (frontSector?.ceilingHeight ?: 0) - player.height.toInt()
+        val worldFrontZ2 = (frontSector?.floorHeight ?: 0) - player.height.toInt()
 
         // check which parts must be rendered
-        val bDrawWall = side?.middleTextureName?.asString() != "-"
+        val bDrawWall = side?.middleTextureName != "-"
         val bDrawCeil = worldFrontZ1 > 0
         val bDrawFloor = worldFrontZ2 < 0
 
@@ -112,31 +111,27 @@ class SegHandler(
             if (bDrawCeil) {
                 val cy1 = upperClip[x]
                 val cy2 = min(drawWallY1.toInt(), lowerClip[x])
-//                userScope.drawVLine(
-//                    x, cy1, cy2, ceilTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
+                userScope.drawVLine(x, cy1, cy2, ceilTexture ?: "", lightLevel ?: 0f)
+//                userScope.drawFlat(
+//                    texId = ceilTexture ?: "",
+//                    lightLevel = lightLevel ?: 255f,
+//                    x = x.toFloat(),
+//                    y1 = cy1.toFloat(),
+//                    y2 = cy2.toFloat(),
+//                    worldZ = worldFrontZ1.toFloat()
 //                )
-                userScope.drawFlat(
-                    texId = ceilTexture?.asString() ?: "",
-                    lightLevel = lightLevel ?: 255f,
-                    x = x.toFloat(),
-                    y1 = cy1.toFloat(),
-                    y2 = cy2.toFloat(),
-                    worldZ = worldFrontZ1.toFloat()
-                )
             }
 
             if (bDrawWall) {
                 val wy1 = max(drawWallY1.toInt(), upperClip[x])
                 val wy2 = min(drawWallY2.toInt(), lowerClip[x])
-                userScope.drawVLine(x, wy1, wy2, wallTexture?.asString() ?: "", lightLevel?.toInt() ?: 0)
+                userScope.drawVLine(x, wy1, wy2, wallTexture ?: "", lightLevel ?: 0f)
             }
 
             if (bDrawFloor) {
                 val fy1 = max(drawWallY2.toInt(), upperClip[x])
                 val fy2 = lowerClip[x]
-                userScope.drawVLine(
-                    x, fy1, fy2, floorTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
-                )
+                userScope.drawVLine(x, fy1, fy2, floorTexture ?: "", lightLevel ?: 0f)
             }
 
             wallY1 += wallY1Step
@@ -163,10 +158,10 @@ class SegHandler(
         val lightLevel = frontSector?.lightLevel
 
         // calculate the relative plane heights of front and back sector
-        val worldFrontZ1 = (frontSector?.ceilingHeight?.toInt() ?: 0) - player.height
-        val worldBackZ1 = (backSector?.ceilingHeight?.toInt() ?: 0) - player.height
-        val worldFrontZ2 = (frontSector?.floorHeight?.toInt() ?: 0) - player.height
-        val worldBackZ2 = (backSector?.floorHeight?.toInt() ?: 0) - player.height
+        val worldFrontZ1 = (frontSector?.ceilingHeight ?: 0) - player.height
+        val worldBackZ1 = (backSector?.ceilingHeight ?: 0) - player.height
+        val worldFrontZ2 = (frontSector?.floorHeight ?: 0) - player.height
+        val worldBackZ2 = (backSector?.floorHeight ?: 0) - player.height
 
         //  check which parts must be rendered
         val bDrawUpperWall: Boolean
@@ -176,7 +171,7 @@ class SegHandler(
             !frontSector?.ceilingTextureName.contentEquals(backSector?.ceilingTextureName)
         ) {
             bDrawUpperWall =
-                side?.upperTextureName?.asString().contentEquals("-").not() &&
+                side?.upperTextureName.contentEquals("-").not() &&
                 worldBackZ1 < worldFrontZ1
             bDrawCeil = worldFrontZ1 >= 0
         } else {
@@ -191,7 +186,7 @@ class SegHandler(
             frontSector?.lightLevel != backSector?.lightLevel
         ) {
             bDrawLowerWall =
-                side?.lowerTextureName?.asString().contentEquals("-").not() &&
+                side?.lowerTextureName.contentEquals("-").not() &&
                 worldBackZ2 > worldFrontZ2
             bDrawFloor = worldFrontZ2 <= 0
         } else {
@@ -273,16 +268,12 @@ class SegHandler(
                 if (bDrawCeil) {
                     val cy1 = upperClip[x]
                     val cy2 = min(drawWallY1.toInt(), lowerClip[x])
-                    userScope.drawVLine(
-                        x, cy1, cy2, texCeilId?.asString() ?: "", lightLevel?.toInt() ?: 0
-                    )
+                    userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                 }
                 //
                 val wy1 = max(drawUpperWallY1.toInt(), upperClip[x])
                 val wy2 = min(drawUpperWallY2.toInt(), lowerClip[x])
-                userScope.drawVLine(
-                    x, wy1, wy2, upperWallTexture?.asString()?: "", lightLevel?.toInt() ?: 0
-                )
+                userScope.drawVLine(x, wy1, wy2, upperWallTexture ?: "", lightLevel ?: 0f)
                 //
                 if (upperClip[x] < wy2) {
                     upperClip[x] = wy2
@@ -294,9 +285,7 @@ class SegHandler(
             if (bDrawCeil) {
                 val cy1 = upperClip[x]
                 val cy2 = min(drawWallY1.toInt(), lowerClip[x])
-                userScope.drawVLine(
-                    x, cy1, cy2, texCeilId?.asString() ?: "", lightLevel?.toInt() ?: 0
-                )
+                userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                 //
                 if (upperClip[x] < cy2) {
                     upperClip[x] = cy2
@@ -308,9 +297,7 @@ class SegHandler(
                 if (bDrawFloor) {
                     val fy1 = max(drawWallY2.toInt(), upperClip[x])
                     val fy2 = lowerClip[x]
-                    userScope.drawVLine(
-                        x, fy1, fy2, texFloorId?.asString() ?: "", lightLevel?.toInt() ?: 0
-                    )
+                    userScope.drawVLine(x, fy1, fy2, texFloorId ?: "", lightLevel ?: 0f)
                 }
                 //
                 val drawLowerWallY1 = portalY2
@@ -318,9 +305,7 @@ class SegHandler(
                 //
                 val wy1 = max(drawLowerWallY1.toInt(), upperClip[x])
                 val wy2 = min(drawLowerWallY2.toInt(), lowerClip[x])
-                userScope.drawVLine(
-                    x, wy1, wy2, lowerWallTexture?.asString() ?: "", lightLevel?.toInt() ?: 0
-                )
+                userScope.drawVLine(x, wy1, wy2, lowerWallTexture ?: "", lightLevel ?: 0f)
                 //
                 if (lowerClip[x] > wy1) {
                     lowerClip[x] = wy1
@@ -332,9 +317,7 @@ class SegHandler(
             if (bDrawFloor) {
                 val fy1 = max(drawWallY2.toInt(), upperClip[x])
                 val fy2 = lowerClip[x]
-                userScope.drawVLine(
-                    x, fy1, fy2, texFloorId?.asString() ?: "", lightLevel?.toInt() ?: 0
-                )
+                userScope.drawVLine(x, fy1, fy2, texFloorId ?: "", lightLevel ?: 0f)
                 //
                 if (lowerClip[x] > drawWallY2) {
                     lowerClip[x] = fy1
@@ -473,7 +456,7 @@ class SegHandler(
         if (backSector.ceilingTextureName.contentEquals(frontSector.ceilingTextureName) &&
             backSector.floorTextureName.contentEquals(frontSector.floorTextureName) &&
             backSector.lightLevel == frontSector.lightLevel &&
-            frontSideDef?.middleTextureName.contentEquals("-".toByteArray())
+            frontSideDef?.middleTextureName?.contentEquals("-") == true
         ) {
             return
         }

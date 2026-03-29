@@ -1,8 +1,5 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.FileLump
-import java.nio.ByteBuffer
-
 class Segs(
     val content: Array<Seg>,
 ) {
@@ -10,19 +7,11 @@ class Segs(
 
     companion object {
         fun emptySegs(): Segs = Segs(emptyArray())
-        fun createFrom(
-            buffer: ByteBuffer,
-            lump: FileLump,
-            vertexes: Vertexes,
-            lineDefs: LineDefs,
-            sectors: Sectors,
-        ): Segs {
-            buffer.position(lump.filePos)
-            return Segs(
-                content = Array(lump.size / 12) {
-                    Seg.createFrom(buffer, vertexes, lineDefs, sectors)
-                }
-            )
-        }
     }
 }
+
+fun SegsLump.toSegs(vertexes: Vertexes, lineDefs: LineDefs): Segs = Segs(
+    content = Array(content.size) { idx ->
+        content[idx].toSeg(idx, vertexes, lineDefs)
+    }
+)

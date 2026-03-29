@@ -1,49 +1,37 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.readLittleEndianShort
-import ar.com.scacchi.nightmare.data.readLittleEndianUShort
-import java.nio.ByteBuffer
-
 class Node(
-    val xPartition: Short,
-    val yPartition: Short,
-    val dxPartition: Short,
-    val dyPartition: Short,
+    val xPartition: Int,
+    val yPartition: Int,
+    val dxPartition: Int,
+    val dyPartition: Int,
     val frontBoundBox: BoundBox = BoundBox(0, 0, 0, 0),
     val backBoundBox: BoundBox = BoundBox(0, 0, 0, 0),
-    val frondChildId: UShort,
-    val backChildId: UShort,
-){
+    val frondChildId: Int,
+    val backChildId: Int,
+) {
     class BoundBox(
-        val top: Short,
-        val bottom: Short,
-        val left:Short,
-        val right: Short,
-    ) {
-        companion object {
-            fun createFrom(buffer: ByteBuffer): BoundBox {
-                return BoundBox(
-                    top = buffer.readLittleEndianShort(),
-                    bottom = buffer.readLittleEndianShort(),
-                    left = buffer.readLittleEndianShort(),
-                    right = buffer.readLittleEndianShort(),
-                )
-            }
-        }
-    }
-
-    companion object {
-        fun createFrom(buffer: ByteBuffer): Node {
-            return Node(
-                xPartition = buffer.readLittleEndianShort(),
-                yPartition = buffer.readLittleEndianShort(),
-                dxPartition = buffer.readLittleEndianShort(),
-                dyPartition = buffer.readLittleEndianShort(),
-                frontBoundBox = BoundBox.createFrom(buffer),
-                backBoundBox = BoundBox.createFrom(buffer),
-                frondChildId = buffer.readLittleEndianUShort(),
-                backChildId = buffer.readLittleEndianUShort(),
-                )
-        }
-    }
+        val top: Int,
+        val bottom: Int,
+        val left: Int,
+        val right: Int,
+    )
 }
+
+fun NodeLump.BoundBox.toNodeBoundBox(): Node.BoundBox = Node.BoundBox(
+    top = top.toInt(),
+    bottom = bottom.toInt(),
+    left = left.toInt(),
+    right = right.toInt(),
+)
+
+fun NodeLump.toNode(): Node = Node(
+    xPartition = xPartition.toInt(),
+    yPartition = yPartition.toInt(),
+    dxPartition = dxPartition.toInt(),
+    dyPartition = dxPartition.toInt(),
+    frontBoundBox = frontBoundBox.toNodeBoundBox(),
+    backBoundBox = backBoundBox.toNodeBoundBox(),
+    frondChildId = frondChildId.toInt(),
+    backChildId = backChildId.toInt(),
+)

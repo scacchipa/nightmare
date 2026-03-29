@@ -24,6 +24,14 @@ import ar.com.scacchi.nightmare.engine.SideDefs
 import ar.com.scacchi.nightmare.engine.SubSectors
 import ar.com.scacchi.nightmare.engine.Things
 import ar.com.scacchi.nightmare.engine.Vertexes
+import ar.com.scacchi.nightmare.engine.toLineDefs
+import ar.com.scacchi.nightmare.engine.toNodes
+import ar.com.scacchi.nightmare.engine.toSectors
+import ar.com.scacchi.nightmare.engine.toSegs
+import ar.com.scacchi.nightmare.engine.toSideDefs
+import ar.com.scacchi.nightmare.engine.toSubSectors
+import ar.com.scacchi.nightmare.engine.toThings
+import ar.com.scacchi.nightmare.engine.toVertexes
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
@@ -54,14 +62,14 @@ class WadManager @Inject constructor(
             println("Creating Episode: $name")
 
             lumpProvider.episodeName = name
-            val sectors: Sectors = lumpProvider.fetchSectors()
-            val sideDefs: SideDefs = lumpProvider.fetchSideDef(sectors)
-            val vertexes: Vertexes = lumpProvider.fetchVertexes()
-            val lineDefs: LineDefs = lumpProvider.fetchLineDefs(sideDefs)
-            val nodes: Nodes = lumpProvider.fetchNodesLump()
-            val subSectors: SubSectors = lumpProvider.fetchSubSectors()
-            val segs: Segs = lumpProvider.fetchSegs(vertexes, lineDefs, sectors)
-            val thingsWithPlayer: Things = lumpProvider.fetchThings()
+            val sectors: Sectors = lumpProvider.fetchSectorsLump().toSectors()
+            val sideDefs: SideDefs = lumpProvider.fetchSideDefLump().toSideDefs(sectors)
+            val vertexes: Vertexes = lumpProvider.fetchVertexesLump().toVertexes()
+            val lineDefs: LineDefs = lumpProvider.fetchLineDefsLump().toLineDefs(sideDefs)
+            val nodes: Nodes = lumpProvider.fetchNodesLump().toNodes()
+            val subSectors: SubSectors = lumpProvider.fetchSubSectorsLump().toSubSectors()
+            val segs: Segs = lumpProvider.fetchSegsLump().toSegs(vertexes, lineDefs)
+            val thingsWithPlayer: Things = lumpProvider.fetchThingsLump().toThings()
             val rootNodeId: Int = nodes.count() - 1
 
             return@computeIfAbsent EpisodeMap(
@@ -75,7 +83,8 @@ class WadManager @Inject constructor(
                 rootNodeId = rootNodeId,
             )
         }
-    fun getInitialPlayer(episodeName: String): Player = Player(getEpisodeMap(episodeName).things[0])
+    fun getInitialPlayer(episodeName: String): Player =
+        getEpisodeMap(episodeName).things[0].toPlayer()
 
     fun readPatch(name: String): Patch {
         buffer.position(lumpDirectory[name].filePos)

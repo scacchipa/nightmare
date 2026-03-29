@@ -1,8 +1,5 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.FileLump
-import java.nio.ByteBuffer
-
 class Things(
     val content: Array<Thing>,
 ) {
@@ -12,16 +9,13 @@ class Things(
 
     companion object {
         fun emptyThings(): Things = Things(emptyArray())
-        fun createFrom(buffer: ByteBuffer, lump: FileLump): Things {
-            buffer.position(lump.filePos)
-            return Things(
-                content = Array(lump.size / 10) {
-                    Thing.createFrom(buffer)
-                }
-            )
-        }
-        fun createWithoutPlayer(things: Things): Things {
-            return things.dropFirstThing()
-        }
     }
 }
+
+fun ThingsLump.toThings(): Things = Things(
+    content = Array(content.size) { idx ->
+        content[idx].toThing()
+    }
+)
+
+fun ThingsLump.toThingsWithoutPlayer(): Things = this.toThings().dropFirstThing()

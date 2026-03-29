@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
-import ar.com.scacchi.nightmare.engine.Engine
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.ImageProvider
 import ar.com.scacchi.nightmare.ext.light
@@ -49,14 +48,14 @@ class User3dViewDrawScope(
             val node = gameState.episodeMap.nodes[nodeId]
 
             if (BSP.isOnBackSide(gameState.player, node)) {
-                renderBspNode(gameState, node.backChildId.toInt())
+                renderBspNode(gameState, node.backChildId)
                 if (BSP.checkBBox(gameState.player, node.frontBoundBox)) {
-                    renderBspNode(gameState, node.frondChildId.toInt())
+                    renderBspNode(gameState, node.frondChildId)
                 }
             } else {
-                renderBspNode(gameState, node.frondChildId.toInt())
+                renderBspNode(gameState, node.frondChildId)
                 if (BSP.checkBBox(gameState.player, node.backBoundBox)) {
-                    renderBspNode(gameState, node.backChildId.toInt())
+                    renderBspNode(gameState, node.backChildId)
                 }
             }
         }
@@ -73,18 +72,15 @@ class User3dViewDrawScope(
                 gameState.player, seg.startVertex, seg.endVertex
             ) ?: continue
 
-//            drawVLines(engine, result.startX, result.endX, subSectorId)
+//            drawVLines(result.startX, result.endX, subSectorId)
             segHandler.classifySegment(
-                seg,
-                result.startX.toInt(),
-                result.endX.toInt(),
-                result.realWallAngle
+                seg, result.startX.toInt(), result.endX.toInt(), result.realWallAngle
             )
         }
     }
 
 
-    fun drawVLines(engine: Engine, x1: Float, x2: Float, subSectorId: Int) {
+    fun drawVLines(x1: Float, x2: Float, subSectorId: Int) {
         val color = getColor(subSectorId)
 
         this.drawLine(
@@ -102,7 +98,7 @@ class User3dViewDrawScope(
     }
 
     val colorMap = mutableMapOf<String, Color>()
-    fun drawVLine(x: Int, y1: Int, y2: Int, tex: String, light: Int) {
+    fun drawVLine(x: Int, y1: Int, y2: Int, tex: String, light: Float) {
         if (y1 < y2) {
             this.drawLine(
                 color = getColor(tex, light),
@@ -114,16 +110,17 @@ class User3dViewDrawScope(
         }
     }
 
-    fun getColor(tex: String, lightLevel: Int): Color {
+    fun getColor(tex: String, lightLevel: Float): Color {
         val colorLabel = tex + lightLevel.toString()
 
         return colorMap.getOrPut(colorLabel) {
-            val intensity = lightLevel / 255f
+            val intensity = lightLevel
             val rnd = Random(tex.hashCode())
+
             Color(
-                red = rnd.nextInt(50, 256) / 256f * intensity,
-                green = rnd.nextInt(50, 256) / 256f * intensity,
-                blue = rnd.nextInt(50, 256) / 256f * intensity,
+                red = (rnd.nextInt(50, 256) * intensity).toInt(),
+                green = (rnd.nextInt(50, 256) * intensity).toInt(),
+                blue = (rnd.nextInt(50, 256) * intensity).toInt(),
             )
         }
     }

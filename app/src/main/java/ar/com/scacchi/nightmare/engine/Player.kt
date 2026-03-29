@@ -15,7 +15,7 @@ data class Player(
     val flags: UShort,
     val height: Float,
 ) {
-    constructor(thing: Thing) : this(
+    constructor(thing: ThingLump) : this(
         xPos = thing.xPos.toFloat(),
         yPos = thing.yPos.toFloat(),
         angle = (thing.angle.toFloat() * PI / 180.0f).toFloat(),
