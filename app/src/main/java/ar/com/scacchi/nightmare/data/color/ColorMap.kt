@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.data.color
 
-import ar.com.scacchi.nightmare.data.FileLump
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import java.nio.ByteBuffer
 
 class ColorMap {

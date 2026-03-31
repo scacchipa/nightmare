@@ -1,7 +1,6 @@
-package ar.com.scacchi.nightmare.engine
+package ar.com.scacchi.nightmare.source.wad.lump
 
-import ar.com.scacchi.nightmare.data.FileLump
-import ar.com.scacchi.nightmare.data.WadHeader
+import ar.com.scacchi.nightmare.source.wad.WadHeader
 import java.nio.ByteBuffer
 
 

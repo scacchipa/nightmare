@@ -1,6 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.settings.PLAYER_HEIGHT
+import ar.com.scacchi.nightmare.source.wad.lump.ThingLump
 import kotlin.math.PI
 
 class Thing(

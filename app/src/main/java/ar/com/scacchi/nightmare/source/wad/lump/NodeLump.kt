@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.engine
+package ar.com.scacchi.nightmare.source.wad.lump
 
 import ar.com.scacchi.nightmare.data.readLittleEndianShort
 import ar.com.scacchi.nightmare.data.readLittleEndianUShort
@@ -47,4 +47,3 @@ class NodeLump(
         }
     }
 }
-

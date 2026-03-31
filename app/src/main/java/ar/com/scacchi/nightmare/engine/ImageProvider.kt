@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.WadManager
+import ar.com.scacchi.nightmare.source.wad.WadManager
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import javax.inject.Inject
 

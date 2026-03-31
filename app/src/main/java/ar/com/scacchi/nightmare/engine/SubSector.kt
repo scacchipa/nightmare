@@ -1,5 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
+import ar.com.scacchi.nightmare.source.wad.lump.SubSectorLump
+
 class SubSector(
     val segCount: Int,
     val firstSegId: Int,

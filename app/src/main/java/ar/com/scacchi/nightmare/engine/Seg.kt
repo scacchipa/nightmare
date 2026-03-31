@@ -1,6 +1,8 @@
 package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.ext.bamToRadian
+import ar.com.scacchi.nightmare.source.wad.lump.LINEDEF_FLAGS
+import ar.com.scacchi.nightmare.source.wad.lump.SegLump
 
 class Seg(
     val idx: Int,

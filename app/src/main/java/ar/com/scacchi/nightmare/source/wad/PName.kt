@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.data
+package ar.com.scacchi.nightmare.source.wad
 
 class PName(
     private val numMapPatches: Int,

@@ -1,5 +1,7 @@
-package ar.com.scacchi.nightmare.data
+package ar.com.scacchi.nightmare.source.wad.lump
 
+import ar.com.scacchi.nightmare.data.readByteArrayAsString
+import ar.com.scacchi.nightmare.data.readLittleEndianInt
 import java.nio.ByteBuffer
 
 class FileLump {

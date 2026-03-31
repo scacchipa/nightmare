@@ -1,6 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.ext.asString
+import ar.com.scacchi.nightmare.source.wad.lump.SectorLump
 
 class Sector(
     val floorHeight: Int,

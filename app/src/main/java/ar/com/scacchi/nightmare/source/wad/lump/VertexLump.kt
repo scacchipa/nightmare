@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.engine
+package ar.com.scacchi.nightmare.source.wad.lump
 
 import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.data.readLittleEndianShort
@@ -9,9 +9,9 @@ class VertexLump(
     val y: Short,
 ) {
     fun toOffset(): Offset = Offset(
-            x = this.x.toFloat(),
-            y = this.y.toFloat(),
-        )
+        x = this.x.toFloat(),
+        y = this.y.toFloat(),
+    )
 
     companion object {
         fun createFrom(buffer: ByteBuffer): VertexLump {

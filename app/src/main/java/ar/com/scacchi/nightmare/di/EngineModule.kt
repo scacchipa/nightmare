@@ -1,7 +1,7 @@
 package ar.com.scacchi.nightmare.di
 
 import android.content.Context
-import ar.com.scacchi.nightmare.data.WadManager
+import ar.com.scacchi.nightmare.source.wad.WadManager
 import ar.com.scacchi.nightmare.engine.Engine
 import dagger.Module
 import dagger.Provides

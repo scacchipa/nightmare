@@ -1,7 +1,8 @@
-package ar.com.scacchi.nightmare.data
+package ar.com.scacchi.nightmare.source.wad
 
 import android.content.Context
 import ar.com.scacchi.nightmare.R
+import ar.com.scacchi.nightmare.data.EpisodeMap
 import ar.com.scacchi.nightmare.data.asset.Flat
 import ar.com.scacchi.nightmare.data.asset.patch.Patch
 import ar.com.scacchi.nightmare.data.asset.patch.PatchHeader
@@ -14,8 +15,14 @@ import ar.com.scacchi.nightmare.data.asset.texture.TextureHeader
 import ar.com.scacchi.nightmare.data.asset.texture.TextureMap
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
+import ar.com.scacchi.nightmare.data.readByte
+import ar.com.scacchi.nightmare.data.readByteArrayAsString
+import ar.com.scacchi.nightmare.data.readLittleEndianInt
+import ar.com.scacchi.nightmare.data.readLittleEndianShort
+import ar.com.scacchi.nightmare.data.readLittleEndianUInt
+import ar.com.scacchi.nightmare.data.readLittleEndianUShort
+import ar.com.scacchi.nightmare.data.readUByte
 import ar.com.scacchi.nightmare.engine.LineDefs
-import ar.com.scacchi.nightmare.engine.LumpDirectory
 import ar.com.scacchi.nightmare.engine.Nodes
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Sectors
@@ -32,6 +39,8 @@ import ar.com.scacchi.nightmare.engine.toSideDefs
 import ar.com.scacchi.nightmare.engine.toSubSectors
 import ar.com.scacchi.nightmare.engine.toThings
 import ar.com.scacchi.nightmare.engine.toVertexes
+import ar.com.scacchi.nightmare.source.wad.lump.LumpDirectory
+import ar.com.scacchi.nightmare.source.wad.lump.LumpProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
@@ -45,12 +54,12 @@ class WadManager @Inject constructor(
 ) {
     val wadPath = R.raw.doom
     val buffer: ByteBuffer = ByteBuffer.wrap(context.resources.openRawResource(wadPath).readBytes())
-    val wadHeader: WadHeader = WadHeader.createFrom(buffer)
+    val wadHeader: WadHeader = WadHeader.Companion.createFrom(buffer)
     val lumpDirectory: LumpDirectory = LumpDirectory.createFrom(buffer, wadHeader)
-    val playPal: PlayPal = PlayPal.createFromLump(
+    val playPal: PlayPal = PlayPal.Companion.createFromLump(
         lumpDirectory[lumpDirectory.getIdxForName("PLAYPAL")], buffer
     )
-    val colorMap: ColorMap = ColorMap.createFromLump(
+    val colorMap: ColorMap = ColorMap.Companion.createFromLump(
         lumpDirectory[lumpDirectory.getIdxForName("COLORMAP")], buffer
     )
     val pName: PName = readPName()

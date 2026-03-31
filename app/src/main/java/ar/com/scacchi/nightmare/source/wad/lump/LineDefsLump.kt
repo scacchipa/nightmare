@@ -1,6 +1,5 @@
-package ar.com.scacchi.nightmare.engine
+package ar.com.scacchi.nightmare.source.wad.lump
 
-import ar.com.scacchi.nightmare.data.FileLump
 import java.nio.ByteBuffer
 
 class LineDefsLump(
@@ -14,10 +13,9 @@ class LineDefsLump(
             buffer.position(lump.filePos)
             return LineDefsLump(
                 content = Array(lump.size / 14) {
-                    LineDefLump.createFrom(buffer)
+                    LineDefLump.Companion.createFrom(buffer)
                 }
             )
         }
     }
 }
-

@@ -1,6 +1,5 @@
-package ar.com.scacchi.nightmare.engine
+package ar.com.scacchi.nightmare.source.wad.lump
 
-import ar.com.scacchi.nightmare.data.FileLump
 import java.nio.ByteBuffer
 
 class ThingsLump(
@@ -16,7 +15,7 @@ class ThingsLump(
             buffer.position(lump.filePos)
             return ThingsLump(
                 content = Array(lump.size / 10) {
-                    ThingLump.createFrom(buffer)
+                    ThingLump.Companion.createFrom(buffer)
                 }
             )
         }
@@ -26,4 +25,3 @@ class ThingsLump(
         }
     }
 }
-

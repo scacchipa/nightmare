@@ -1,5 +1,7 @@
-package ar.com.scacchi.nightmare.data
+package ar.com.scacchi.nightmare.source.wad
 
+import ar.com.scacchi.nightmare.data.readByteArray
+import ar.com.scacchi.nightmare.data.readLittleEndianUInt
 import java.nio.ByteBuffer
 
 class WadHeader(

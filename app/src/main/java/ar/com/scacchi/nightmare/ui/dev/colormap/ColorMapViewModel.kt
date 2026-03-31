@@ -2,7 +2,7 @@ package ar.com.scacchi.nightmare.ui.dev.colormap
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ar.com.scacchi.nightmare.data.WadManager
+import ar.com.scacchi.nightmare.source.wad.WadManager
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
 import dagger.hilt.android.lifecycle.HiltViewModel
