@@ -4,18 +4,20 @@ import ar.com.scacchi.nightmare.source.wad.WadHeader
 import java.nio.ByteBuffer
 
 
-val LUMP_INDICES = mapOf(
-    "THINGS" to 1,
-    "LINEDEFS" to 2,
-    "SIDEDEFS" to 3,
-    "VERTEXES" to 4,
-    "SEGS" to 5,
-    "SSECTORS" to 6,
-    "NODES" to 7,
-    "SECTORS" to 8,
-    "REJECT" to 9,
-    "BLOCKMAP" to 10
-)
+class Lump {
+    companion object {
+        const val thingsIndex = 1
+        const val lineDefsIndex = 2
+        const val sideDefsIndex = 3
+        const val vertexesIndex = 4
+        const val segsIndex = 5
+        const val subsectorsIndex = 6
+        const val nodesIndex = 7
+        const val sectorsIndex = 8
+        const val rejectIndex = 9
+        const val blockMapIndex = 1
+    }
+}
 
 val LINEDEF_FLAGS = mapOf(
     "BLOCKING" to 1.toUShort(),
@@ -31,7 +33,7 @@ val LINEDEF_FLAGS = mapOf(
 
 class LumpDirectory(
     val lumpEntries: Array<FileLump>
-) {
+) {val x = Lump.thingsIndex
     val patchStartDelimiterRegex = Regex("^P[0-9]?_START$")
     val patchEndDelimiterRegex = Regex("^P[0-9]?_END$")
 
