@@ -1,4 +1,9 @@
-package ar.com.scacchi.nightmare.data.asset.patch
+package ar.com.scacchi.nightmare.source.wad.lump.data.patch
+
+import ar.com.scacchi.nightmare.data.readLittleEndianShort
+import ar.com.scacchi.nightmare.data.readLittleEndianUInt
+import ar.com.scacchi.nightmare.data.readLittleEndianUShort
+import java.nio.ByteBuffer
 
 data class PatchHeader(
     val width: UShort, // H
@@ -9,6 +14,25 @@ data class PatchHeader(
 ) {
     companion object {
         fun emptyHeader() = PatchHeader(0u, 0u, 0, 0, emptyArray())
+        fun createFrom(buffer: ByteBuffer): PatchHeader {
+            val width = buffer.readLittleEndianUShort()
+            val height = buffer.readLittleEndianUShort()
+            val leftOffset = buffer.readLittleEndianShort()
+            val topOffset = buffer.readLittleEndianShort()
+
+            val columnOffset = Array(width.toInt()) {
+                buffer.readLittleEndianUInt()
+            }
+            return PatchHeader(
+                width = width,
+                height = height,
+                leftOffset = leftOffset,
+                topOffset = topOffset,
+                columnOffset = columnOffset
+            )
+        }
+
+
     }
 
     override fun equals(other: Any?): Boolean {

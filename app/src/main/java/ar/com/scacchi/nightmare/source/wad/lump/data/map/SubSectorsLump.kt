@@ -1,5 +1,6 @@
-package ar.com.scacchi.nightmare.source.wad.lump
+package ar.com.scacchi.nightmare.source.wad.lump.data.map
 
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import java.nio.ByteBuffer
 
 class SubSectorsLump(
@@ -15,7 +16,7 @@ class SubSectorsLump(
             buffer.position(lump.filePos)
             return SubSectorsLump(
                 content = Array(lump.size / 4) {
-                    SubSectorLump.Companion.createFrom(buffer)
+                    SubSectorLump.createFrom(buffer)
                 }
             )
         }

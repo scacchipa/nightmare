@@ -1,4 +1,4 @@
-package ar.com.scacchi.nightmare.source.wad.lump
+package ar.com.scacchi.nightmare.source.wad.lump.data.map
 
 import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.data.readLittleEndianShort

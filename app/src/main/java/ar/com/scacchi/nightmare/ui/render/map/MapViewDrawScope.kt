@@ -11,7 +11,7 @@ import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
-import ar.com.scacchi.nightmare.source.wad.lump.SegLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SegLump
 import ar.com.scacchi.nightmare.engine.Vertexes
 import ar.com.scacchi.nightmare.ext.scalar
 import ar.com.scacchi.nightmare.settings.H_FOV

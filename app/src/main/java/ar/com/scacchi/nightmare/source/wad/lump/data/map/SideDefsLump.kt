@@ -1,5 +1,6 @@
-package ar.com.scacchi.nightmare.source.wad.lump
+package ar.com.scacchi.nightmare.source.wad.lump.data.map
 
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import java.nio.ByteBuffer
 
 class SideDefsLump(
@@ -16,7 +17,7 @@ class SideDefsLump(
             buffer.position(lump.filePos)
             return SideDefsLump(
                 content = Array(lump.size / 30) {
-                    SideDefLump.Companion.createFrom(buffer)
+                    SideDefLump.createFrom(buffer)
                 }
             )
         }

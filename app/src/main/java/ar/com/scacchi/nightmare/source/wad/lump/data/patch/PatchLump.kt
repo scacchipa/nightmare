@@ -1,13 +1,15 @@
-package ar.com.scacchi.nightmare.data.asset.patch
+package ar.com.scacchi.nightmare.source.wad.lump.data.patch
 
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
+import java.nio.ByteBuffer
 
-typealias Sprite = Patch
-typealias Picture = Patch
+typealias SpriteLump = PatchLump
+typealias PictureLump = PatchLump
 
-data class Patch(
+class PatchLump(
     val header: PatchHeader,
-    val posts: Array<Post>,
+    val posts: Posts,
 ) {
     val width get() = header.width
     val height get() = header.height
@@ -18,14 +20,25 @@ data class Patch(
     operator fun set(x: Int, y: Int, value: UByte) = bitmap.set(x, y, value)
 
     companion object {
-        fun emptyPicture(): Picture = Picture(PatchHeader.Companion.emptyHeader(), emptyArray())
+        fun emptyPicture(): PictureLump = PictureLump(PatchHeader.emptyHeader(),
+            Posts(emptyArray())
+        )
+
+        fun createFrom(buffer: ByteBuffer, fileLump: FileLump): PatchLump {
+            buffer.position(fileLump.filePos)
+
+            val header = PatchHeader.createFrom(buffer)
+            val posts = Posts.createFrom(buffer, header.width.toInt())
+
+            return PictureLump(header, posts)
+        }
     }
 
     fun buildDoomImage(): DoomBitmap =
         DoomBitmap(header.width.toInt(), header.height.toInt()).also { bitmap ->
             var ix = 0
             var iy: Int
-            for (post in posts) {
+            for (post in posts.content) {
                 if (post.topDelta == 0xFF.toUByte()) {
                     ix += 1
                     continue
@@ -38,22 +51,4 @@ data class Patch(
                 }
             }
         }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Picture
-
-        if (header != other.header) return false
-        if (!posts.contentEquals(other.posts)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = header.hashCode()
-        result = 31 * result + posts.contentHashCode()
-        return result
-    }
 }

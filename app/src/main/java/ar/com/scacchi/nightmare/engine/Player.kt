@@ -3,7 +3,7 @@ package ar.com.scacchi.nightmare.engine
 import ar.com.scacchi.nightmare.settings.PLAYER_HEIGHT
 import ar.com.scacchi.nightmare.settings.PLAYER_ROT_SPEED
 import ar.com.scacchi.nightmare.settings.PLAYER_SPEED
-import ar.com.scacchi.nightmare.source.wad.lump.ThingLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.ThingLump
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin

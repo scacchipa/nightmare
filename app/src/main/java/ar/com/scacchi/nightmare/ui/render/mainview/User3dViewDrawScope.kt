@@ -9,7 +9,7 @@ import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.engine.GameState
-import ar.com.scacchi.nightmare.engine.ImageProvider
+import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.ext.light
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
@@ -23,7 +23,7 @@ import kotlin.random.Random
 class User3dViewDrawScope(
     private val parentScope: DrawScope,
     private val gameState: GameState,
-    private val imageProvider: ImageProvider,
+    private val imageRepository: ImageRepository,
 ) : DrawScope by parentScope {
 
     var isTraverseBsp = true
@@ -139,7 +139,7 @@ class User3dViewDrawScope(
                     2.2f * (this.gameState.player.angle + SegHandler.xToAngleTable[x.toInt()])
 
                 this.drawWallCol(
-                    tex = imageProvider.getPictureDoomBitmap(skyId),
+                    tex = imageRepository.getPictureDoomBitmap(skyId),
                     texCol = texColumn.toInt(),
                     x = x,
                     y1 = y1,
@@ -149,7 +149,7 @@ class User3dViewDrawScope(
                 )
             } else {
 
-                val flatTex = imageProvider.getFlatDoomBitmap(texId)
+                val flatTex = imageRepository.getFlatDoomBitmap(texId)
 
                 drawFlatCol(flatTex, x, y1, y2, lightLevel, worldZ)
             }

@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.source.wad.lump.LineDefsLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.LineDefsLump
 
 class LineDefs(
     val content: Array<LineDef>

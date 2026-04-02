@@ -1,5 +1,6 @@
-package ar.com.scacchi.nightmare.source.wad.lump
+package ar.com.scacchi.nightmare.source.wad.lump.data.map
 
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import java.nio.ByteBuffer
 
 class SectorsLump(
@@ -13,7 +14,7 @@ class SectorsLump(
             buffer.position(lump.filePos)
             return SectorsLump(
                 content = Array(lump.size / 26) {
-                    SectorLump.Companion.createFrom(buffer)
+                    SectorLump.createFrom(buffer)
                 }
             )
         }

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
 import ar.com.scacchi.nightmare.engine.Engine
-import ar.com.scacchi.nightmare.engine.ImageProvider
+import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.ui.pad.PlayerAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,7 +20,7 @@ import kotlin.time.toDuration
 @HiltViewModel
 class MainViewModel @Inject constructor(
     val engine: Engine,
-    private val imageProvider: ImageProvider,
+    private val imageRepository: ImageRepository,
     @param:ApplicationContext private val context: Context,
     @param:DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
@@ -56,5 +56,5 @@ class MainViewModel @Inject constructor(
         _pressedKeySet = newKeySet
     }
 
-    fun getImageProvider(): ImageProvider = imageProvider
+    fun imageRepository(): ImageRepository = imageRepository
 }

@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.source.wad.lump.LineDefLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.LineDefLump
 
 class LineDef(
     val startVertexId: Int,

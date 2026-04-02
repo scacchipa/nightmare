@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.source.wad.lump.SegsLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SegsLump
 
 class Segs(
     val content: Array<Seg>,

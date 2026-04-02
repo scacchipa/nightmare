@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.source.wad.lump.NodeLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.NodeLump
 
 class Node(
     val xPartition: Int,

@@ -2,10 +2,10 @@ package ar.com.scacchi.nightmare.ui.dev.sprite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ar.com.scacchi.nightmare.source.wad.WadManager
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.data.color.Palette
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
+import ar.com.scacchi.nightmare.source.wad.WadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ class SpriteViewModel @Inject constructor(
             if (playPal.paletteCount == 0) return@launch
             val palette = playPal[0]
             val sName = wadManager.readSpriteNameList()[0]
-            val sprite = wadManager.readSprite(sName)
+            val sprite = wadManager.getSprite(sName)
             _uiState.emit(
                 SpriteState(
                     palette = palette,
@@ -48,7 +48,7 @@ class SpriteViewModel @Inject constructor(
         viewModelScope.launch {
             val palette = wadManager.playPal[0]
             val sName = wadManager.readSpriteNameList()[position]
-            val sprite = wadManager.readSprite(sName)
+            val sprite = wadManager.getSprite(sName)
             _uiState.emit(
                 SpriteState(
                     palette = palette,

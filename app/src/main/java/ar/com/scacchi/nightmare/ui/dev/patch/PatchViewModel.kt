@@ -28,7 +28,7 @@ class PatchViewModel @Inject constructor(
         viewModelScope.launch(defaultDispatcher) {
             val palette = wadManager.playPal[0]
             val pName = wadManager.readPatchNameList()[0]
-            val patch = wadManager.readPatch(pName)
+            val patch = wadManager.getPatch(pName)
             _uiState.emit(
                 PatchState(
                     palette = palette,
@@ -46,7 +46,7 @@ class PatchViewModel @Inject constructor(
         viewModelScope.launch {
             val palette = wadManager.playPal[0]
             val pName = wadManager.readPatchNameList()[position]
-            val patch = wadManager.readPatch(pName)
+            val patch = wadManager.getPatch(pName)
             _uiState.emit(
                 PatchState(
                     palette = palette,

@@ -22,7 +22,7 @@ fun MainScreen(
 
         User3dViewRender(
             gameState = uiState,
-            imageProvider = vm.getImageProvider(),
+            imageRepository = vm.imageRepository(),
         )
         Pad(
             playerActionSetChanged = {

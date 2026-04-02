@@ -1,7 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.ext.asString
-import ar.com.scacchi.nightmare.source.wad.lump.SideDefLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SideDefLump
 
 class SideDef(
     val xOffset: Int,

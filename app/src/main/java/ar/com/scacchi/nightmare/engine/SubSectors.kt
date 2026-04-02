@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.source.wad.lump.SubSectorsLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SubSectorsLump
 
 class SubSectors(
     val content: Array<SubSector>,

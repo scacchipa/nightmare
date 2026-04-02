@@ -1,7 +1,7 @@
-package ar.com.scacchi.nightmare.source.wad.lump
+package ar.com.scacchi.nightmare.source.wad.lump.data.map
 
 import androidx.compose.ui.geometry.Offset
-import ar.com.scacchi.nightmare.source.wad.lump.VertexLump
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import java.nio.ByteBuffer
 
 class VertexesLump(
@@ -22,7 +22,7 @@ class VertexesLump(
             buffer.position(lump.filePos)
             return VertexesLump(
                 content = Array(lump.size / 4) {
-                    VertexLump.Companion.createFrom(buffer)
+                    VertexLump.createFrom(buffer)
                 }
             )
         }

@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.source.wad.lump.ThingsLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.ThingsLump
 
 class Things(
     val content: Array<Thing>,

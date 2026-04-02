@@ -2,10 +2,10 @@ package ar.com.scacchi.nightmare.ui.dev.flat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ar.com.scacchi.nightmare.source.wad.WadManager
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.data.color.Palette
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
+import ar.com.scacchi.nightmare.source.wad.WadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,7 @@ class FlatViewModel @Inject constructor(
         viewModelScope.launch(defaultDispatcher) {
             val palette = wadManager.playPal[0]
             val fName = wadManager.readFlatNameList()[0]
-            val flat = wadManager.readFlat(fName)
+            val flat = wadManager.getFlat(fName)
             _uiState.emit(
                 FlatState(
                     palette = palette,
@@ -45,7 +45,7 @@ class FlatViewModel @Inject constructor(
         viewModelScope.launch {
             val palette = wadManager.playPal[0]
             val pName = wadManager.readFlatNameList()[position]
-            val patch = wadManager.readFlat(pName)
+            val patch = wadManager.getFlat(pName)
             _uiState.emit(
                 FlatState(
                     palette = palette,

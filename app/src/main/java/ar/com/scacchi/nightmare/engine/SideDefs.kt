@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.source.wad.lump.SideDefsLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SideDefsLump
 
 class SideDefs(
     val content: Array<SideDef>,

@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.layout.onGloballyPositioned
 import ar.com.scacchi.nightmare.engine.GameState
-import ar.com.scacchi.nightmare.engine.ImageProvider
+import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.settings.SCREEN_ASPECT
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
@@ -20,7 +20,7 @@ import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
 fun ColumnScope.User3dViewRender(
     modifier: Modifier = Modifier,
     gameState: GameState,
-    imageProvider: ImageProvider,
+    imageRepository: ImageRepository,
 ) {
 
     var scaleX = 1080.0F
@@ -47,7 +47,7 @@ fun ColumnScope.User3dViewRender(
                 center = Offset(160f, 100f)
             )
 
-            val user3dViewDrawScope = User3dViewDrawScope(this, gameState, imageProvider)
+            val user3dViewDrawScope = User3dViewDrawScope(this, gameState, imageRepository)
 
             with(user3dViewDrawScope) {
                 isTraverseBsp = false

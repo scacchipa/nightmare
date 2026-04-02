@@ -3,25 +3,8 @@ package ar.com.scacchi.nightmare.source.wad
 import android.content.Context
 import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.data.EpisodeMap
-import ar.com.scacchi.nightmare.data.asset.Flat
-import ar.com.scacchi.nightmare.data.asset.patch.Patch
-import ar.com.scacchi.nightmare.data.asset.patch.PatchHeader
-import ar.com.scacchi.nightmare.data.asset.patch.Picture
-import ar.com.scacchi.nightmare.data.asset.patch.Post
-import ar.com.scacchi.nightmare.data.asset.patch.Sprite
-import ar.com.scacchi.nightmare.data.asset.texture.PatchMap
-import ar.com.scacchi.nightmare.data.asset.texture.Texture
-import ar.com.scacchi.nightmare.data.asset.texture.TextureHeader
-import ar.com.scacchi.nightmare.data.asset.texture.TextureMap
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
-import ar.com.scacchi.nightmare.data.readByte
-import ar.com.scacchi.nightmare.data.readByteArrayAsString
-import ar.com.scacchi.nightmare.data.readLittleEndianInt
-import ar.com.scacchi.nightmare.data.readLittleEndianShort
-import ar.com.scacchi.nightmare.data.readLittleEndianUInt
-import ar.com.scacchi.nightmare.data.readLittleEndianUShort
-import ar.com.scacchi.nightmare.data.readUByte
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Nodes
 import ar.com.scacchi.nightmare.engine.Player
@@ -41,6 +24,11 @@ import ar.com.scacchi.nightmare.engine.toThings
 import ar.com.scacchi.nightmare.engine.toVertexes
 import ar.com.scacchi.nightmare.source.wad.lump.LumpDirectory
 import ar.com.scacchi.nightmare.source.wad.lump.LumpProvider
+import ar.com.scacchi.nightmare.source.wad.lump.data.FlatLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.patch.PatchLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.patch.PictureLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.patch.SpriteLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.texture.TextureMap
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.nio.ByteBuffer
 import java.util.concurrent.ConcurrentHashMap
@@ -54,17 +42,27 @@ class WadManager @Inject constructor(
 ) {
     val wadPath = R.raw.doom
     val buffer: ByteBuffer = ByteBuffer.wrap(context.resources.openRawResource(wadPath).readBytes())
-    val wadHeader: WadHeader = WadHeader.Companion.createFrom(buffer)
+    val wadHeader: WadHeader = WadHeader.createFrom(buffer)
     val lumpDirectory: LumpDirectory = LumpDirectory.createFrom(buffer, wadHeader)
-    val playPal: PlayPal = PlayPal.Companion.createFromLump(
+    val playPal: PlayPal = PlayPal.createFromLump(
         lumpDirectory[lumpDirectory.getIdxForName("PLAYPAL")], buffer
     )
-    val colorMap: ColorMap = ColorMap.Companion.createFromLump(
+    val colorMap: ColorMap = ColorMap.createFromLump(
         lumpDirectory[lumpDirectory.getIdxForName("COLORMAP")], buffer
     )
-    val pName: PName = readPName()
+    val pNameLump by lazy { lumpProvider.fetchPNameLump() }
+    val textureMapList by lazy {
+        lumpProvider.fetchTextureLump(1).mapTextureList +
+                lumpProvider.fetchTextureLump(2).mapTextureList
+    }
 
     private val episodeMapMap: ConcurrentHashMap<String, EpisodeMap> = ConcurrentHashMap()
+    private val patchMap: ConcurrentHashMap<String, PatchLump> = ConcurrentHashMap()
+    private val flatMap: ConcurrentHashMap<String, FlatLump> = ConcurrentHashMap()
+    private val spriteMap: ConcurrentHashMap<String, SpriteLump> = ConcurrentHashMap()
+    private val pictureMap: ConcurrentHashMap<String, PictureLump> = ConcurrentHashMap()
+
+
     fun getEpisodeMap(name: String): EpisodeMap =
         episodeMapMap.computeIfAbsent(name) {
 
@@ -92,170 +90,28 @@ class WadManager @Inject constructor(
                 rootNodeId = rootNodeId,
             )
         }
+
     fun getInitialPlayer(episodeName: String): Player =
         getEpisodeMap(episodeName).things[0].toPlayer()
 
-    fun readPatch(name: String): Patch {
-        buffer.position(lumpDirectory[name].filePos)
-
-        val header = readPatchHeader()
-        val posts = readPosts(header.width.toInt())
-
-        return Picture(header, posts)
+    fun getPatch(name: String): PatchLump = patchMap.computeIfAbsent(name) {
+        lumpProvider.fetchPatch(name)
     }
 
-    private fun readPatchHeader(): PatchHeader {
-        val width = buffer.readLittleEndianUShort()
-        val height = buffer.readLittleEndianUShort()
-        val leftOffset = buffer.readLittleEndianShort()
-        val topOffset = buffer.readLittleEndianShort()
-
-        val columnOffset = Array(width.toInt()) {
-            buffer.readLittleEndianUInt()
-        }
-        return PatchHeader(
-            width = width,
-            height = height,
-            leftOffset = leftOffset,
-            topOffset = topOffset,
-            columnOffset = columnOffset
-        )
+    fun getFlat(name: String): FlatLump = flatMap.computeIfAbsent(name) {
+        lumpProvider.fetchFlat(name)
     }
 
-    private fun readPosts(width: Int): Array<Post> {
-        val posts = ArrayList<Post>()
-
-        repeat(width) {
-            var post = Post(0u, 0u, 0, arrayOf(), 0)
-            while (post.topDelta != 0xFF.toUByte()) {
-                post = readPost()
-                posts.add(post)
-            }
-        }
-        return posts.toTypedArray()
+    fun getSprite(name: String): SpriteLump = spriteMap.computeIfAbsent(name) {
+        lumpProvider.fetchPatch(name)
     }
 
-    private fun readPost(): Post {
-
-        val topDelta = buffer.readUByte()
-        if (topDelta != 0xFF.toUByte()) {
-            val length = buffer.readUByte()
-            val paddingPre = buffer.readByte()  // unused
-            val data = Array(length.toInt()) { buffer.readUByte() }
-            val paddingPost = buffer.readByte()  // unused
-
-            return Post(
-                topDelta = topDelta,
-                length = length,
-                paddingPre = paddingPre,
-                data = data,
-                paddingPost = paddingPost
-            )
-        }
-        return Post(
-            topDelta = topDelta,
-            length = 0u,
-            paddingPre = 0,
-            data = arrayOf(),
-            paddingPost = 0,
-        )
+    fun getPicture(name: String): PictureLump = pictureMap.computeIfAbsent(name) {
+        lumpProvider.fetchPatch(name)
     }
 
-    fun readFlat(name: String): Flat {
-        buffer.position(lumpDirectory[name].filePos)
+    fun getTextureMap(textureMapId: Int): TextureMap = textureMapList[textureMapId]
 
-        return Flat(
-            content = Array(64) {
-                Array(64) {
-                    buffer.readUByte()
-                }
-            },
-        )
-    }
-    fun readSprite(name: String): Sprite = readPatch(name)
-    fun readPicture(name: String): Picture = readPatch(name)
-    fun readGeneralPicture(name: String): Picture = readPatch(name)
-
-    fun readPName(): PName {
-        buffer.position(lumpDirectory["PNAMES"].filePos)
-
-        val numMapPatches = buffer.readLittleEndianInt()
-        val pName = Array(numMapPatches) {
-            buffer.readByteArrayAsString(8)
-        }
-
-        return PName(
-            numMapPatches = buffer.readLittleEndianInt(),
-            pName = pName,
-        )
-    }
-
-    fun getTextureList(): List<TextureMap> =
-        readTexture(1).mapTextureList + readTexture(1).mapTextureList
-
-    fun readTexture(num: Int): Texture {
-
-        val offset = lumpDirectory["TEXTURE$num"].filePos
-
-        buffer.position(offset)
-
-        val header = readTextureHeader()
-
-        val mapTextureMap = header.textureDataOffset.map { mapOffset ->
-            readTextureMap(offset + mapOffset.toInt())
-        }
-
-        return Texture(
-            header = header,
-            mapTextureList = mapTextureMap
-        )
-    }
-
-    private fun readTextureHeader(): TextureHeader {
-        val textureCount = buffer.readLittleEndianUInt()
-        val textureDataOffset = Array(textureCount.toInt()) {
-            buffer.readLittleEndianUInt()
-        }
-
-        return TextureHeader(
-            textureCount = textureCount,
-            textureDataOffset = textureDataOffset
-        )
-    }
-
-    private fun readTextureMap(offset: Int): TextureMap {
-        buffer.position(offset)
-
-        val name = buffer.readByteArrayAsString(8)
-        val flags = buffer.readLittleEndianInt()
-        val width = buffer.readLittleEndianUShort()
-        val height = buffer.readLittleEndianUShort()
-        val columnDir = buffer.readLittleEndianInt()
-        val patchCount = buffer.readLittleEndianUShort()
-        val patchMapList = Array(patchCount.toInt()) {
-            readPatchMap()
-        }
-
-        return TextureMap(
-            name = name,
-            flags = flags,
-            width = width,
-            height = height,
-            columnDir = columnDir,
-            patchCount = patchCount,
-            patchMapList = patchMapList,
-        )
-    }
-
-    private fun readPatchMap(): PatchMap {
-        return PatchMap(
-            xOffset = buffer.readLittleEndianShort(),
-            yOffset = buffer.readLittleEndianShort(),
-            pNameIndex = buffer.readLittleEndianUShort(),
-            stepDir = buffer.readLittleEndianUShort(),
-            colorMap = buffer.readLittleEndianUShort(),
-        )
-    }
 
     fun readPatchNameList(): List<String> = this.lumpDirectory.patchListName
     fun readFlatNameList(): List<String> = this.lumpDirectory.flatListName
