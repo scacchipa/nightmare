@@ -1,7 +1,6 @@
 package ar.com.scacchi.nightmare.data.asset
 
 import android.graphics.Bitmap
-import android.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
@@ -27,10 +26,8 @@ class DoomBitmap(
         createBitmap(width, height).also { bitmap ->
             for (x in 0 until width) {
                 for (y in 0 until height) {
-                    val palettePos = pixels[x][y]
-                    bitmap[x, y] =
-                        if (palettePos == null) Color.TRANSPARENT
-                        else palette[palettePos.toInt()].toArgb()
+                    val palettePos = pixels[x][y] ?: continue
+                    bitmap[x, y] = palette[palettePos.toInt()].toArgb()
                 }
             }
         }
@@ -45,7 +42,8 @@ class DoomBitmap(
 
         for (x in xStart until xEnd)
             for(y in yStart until yEnd) {
-                this[x, y] = bitmap[x - xOffset, y - yOffset]
+                val pixel = bitmap[x - xOffset, y - yOffset] ?: continue
+                this[x, y] = pixel
             }
     }
 }
