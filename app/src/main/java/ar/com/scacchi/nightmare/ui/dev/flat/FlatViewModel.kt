@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.data.color.Palette
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
+import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.source.wad.WadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FlatViewModel @Inject constructor(
-    val wadManager: WadManager,
+    private val wadManager: WadManager,
+    private val imageRepository: ImageRepository,
     @param:DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -28,13 +30,13 @@ class FlatViewModel @Inject constructor(
         viewModelScope.launch(defaultDispatcher) {
             val palette = wadManager.playPal[0]
             val fName = wadManager.readFlatNameList()[0]
-            val flat = wadManager.getFlat(fName)
+            val flat = imageRepository.getFlatDoomBitmap(fName)
             _uiState.emit(
                 FlatState(
                     palette = palette,
                     spinnerPosition = 0,
                     flatNameList = wadManager.readFlatNameList() ,
-                    doomBitmap = flat.buildDoomImage(),
+                    doomBitmap = flat,
                 )
             )
             println(wadManager.readFlatNameList())
