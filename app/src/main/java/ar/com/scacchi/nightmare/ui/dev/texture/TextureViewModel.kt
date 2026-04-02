@@ -22,7 +22,7 @@ class TextureViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        TextureState(Palette(emptyArray()) ,0, 0, emptyList(), DoomBitmap(100, 100))
+        TextureState(Palette(emptyArray()), 0, 0, emptyList(), DoomBitmap(100, 100))
     )
     val uiState = _uiState as StateFlow<TextureState>
 
@@ -37,7 +37,9 @@ class TextureViewModel @Inject constructor(
                     palette = palette,
                     spinnerPosition = _uiState.value.spinnerPosition,
                     itemCount = wadManager.textureMapList.size,
-                    spinnerValues = (0 until wadManager.textureMapList.size).map { it.toString() },
+                    spinnerValues = (0 until wadManager.textureMapList.size).map {
+                        "$it - ${wadManager.textureMapList[it].name}"
+                    },
                     doomBitmap = textureMap
                 )
             )
