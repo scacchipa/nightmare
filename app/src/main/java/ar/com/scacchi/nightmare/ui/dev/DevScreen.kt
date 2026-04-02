@@ -21,6 +21,7 @@ import ar.com.scacchi.nightmare.ui.dev.flat.FlatWidget
 import ar.com.scacchi.nightmare.ui.dev.palette.PlayPalWidget
 import ar.com.scacchi.nightmare.ui.dev.patch.PatchWidget
 import ar.com.scacchi.nightmare.ui.dev.sprite.SpriteWidget
+import ar.com.scacchi.nightmare.ui.dev.texture.TextureWidget
 
 @Composable
 fun DevScreen() {
@@ -39,6 +40,7 @@ fun DevScreen() {
             var showPatch by remember { mutableStateOf(false) }
             var showFlat by remember { mutableStateOf(false) }
             var showSprite by remember { mutableStateOf(false) }
+            var showTextureMap by remember { mutableStateOf(false) }
             Row {
                 Text(
                     modifier = Modifier.clickable(onClick = { showPlayPal = !showPlayPal }),
@@ -65,12 +67,17 @@ fun DevScreen() {
                     text = "SPRITE",
                     fontSize = 20.sp,
                 )
+                Text(modifier = Modifier.clickable(onClick = { showTextureMap = !showTextureMap }),
+                    text = "TEXTURE",
+                    fontSize = 20.sp,
+                )
             }
             if (showPlayPal) PlayPalWidget()
             if (showColorMap) ColorMap()
             if (showPatch) PatchWidget()
             if (showFlat) FlatWidget()
             if (showSprite) SpriteWidget()
+            if (showTextureMap) TextureWidget()
         }
     }
 }

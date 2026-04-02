@@ -43,8 +43,8 @@ class DoomBitmap(
         val xEnd = min(xOffset + bitmap.width, width)
         val yEnd = min(yOffset + bitmap.height, height)
 
-        for (x in xStart..xEnd)
-            for(y in yStart..yEnd) {
+        for (x in xStart until xEnd)
+            for(y in yStart until yEnd) {
                 this[x, y] = bitmap[x - xOffset, y - yOffset]
             }
     }

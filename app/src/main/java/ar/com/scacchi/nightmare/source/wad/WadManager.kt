@@ -50,7 +50,7 @@ class WadManager @Inject constructor(
     val colorMap: ColorMap = ColorMap.createFromLump(
         lumpDirectory[lumpDirectory.getIdxForName("COLORMAP")], buffer
     )
-    val pNameLump by lazy { lumpProvider.fetchPNameLump() }
+    val pNames by lazy { PNames(lumpProvider.fetchPNameLump()) }
     val textureMapList by lazy {
         lumpProvider.fetchTextureLump(1).mapTextureList +
                 lumpProvider.fetchTextureLump(2).mapTextureList

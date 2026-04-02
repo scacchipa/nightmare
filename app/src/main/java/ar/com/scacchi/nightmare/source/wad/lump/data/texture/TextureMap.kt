@@ -21,7 +21,7 @@ class TextureMap(
 
     fun buildDoomImage(imageRepository: ImageRepository, wadManager: WadManager): DoomBitmap = DoomBitmap(width.toInt(), height.toInt()).also {
         patchMapList.forEach { patchMap: PatchMap ->
-            val pName: String = wadManager.pNameLump[patchMap.pNameIndex.toInt()]
+            val pName: String = wadManager.pNames[patchMap.pNameIndex.toInt()]
             it.print(
                 xOffset = patchMap.xOffset.toInt(),
                 yOffset = patchMap.yOffset.toInt(),

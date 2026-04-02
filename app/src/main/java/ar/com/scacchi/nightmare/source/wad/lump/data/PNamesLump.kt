@@ -1,27 +1,24 @@
 package ar.com.scacchi.nightmare.source.wad.lump.data
 
-import ar.com.scacchi.nightmare.data.readByteArrayAsString
+import ar.com.scacchi.nightmare.data.readByteArray
 import ar.com.scacchi.nightmare.data.readLittleEndianInt
 import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import java.nio.ByteBuffer
 
-class PNameLump(
-    private val numMapPatches: Int,
-    private val pName: Array<String>
-
+class PNamesLump(
+    val numMapPatches: Int,
+    val pName: Array<ByteArray>
 ) {
-    operator fun get(idx: Int) = pName[idx]
-
     companion object {
-        fun createFrom(buffer: ByteBuffer, pNameFileLump: FileLump): PNameLump {
+        fun createFrom(buffer: ByteBuffer, pNameFileLump: FileLump): PNamesLump {
             buffer.position(pNameFileLump.filePos)
 
             val numMapPatches = buffer.readLittleEndianInt()
             val pName = Array(numMapPatches) {
-                buffer.readByteArrayAsString(8)
+                buffer.readByteArray(8)
             }
 
-            return PNameLump(
+            return PNamesLump(
                 numMapPatches = numMapPatches,
                 pName = pName,
             )

@@ -4,7 +4,7 @@ import android.content.Context
 import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.source.wad.WadHeader
 import ar.com.scacchi.nightmare.source.wad.lump.data.FlatLump
-import ar.com.scacchi.nightmare.source.wad.lump.data.PNameLump
+import ar.com.scacchi.nightmare.source.wad.lump.data.PNamesLump
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.LineDefsLump
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.NodesLump
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.SectorsLump
@@ -96,9 +96,9 @@ class LumpProvider @Inject constructor(
         return TextureLump.createFrom(buffer.duplicate(), textureLump)
     }
 
-    fun fetchPNameLump(): PNameLump {
-        val pNameLump = lumpDirectory["PNAME"]
-        return PNameLump.createFrom(buffer.duplicate(), pNameLump)
+    fun fetchPNameLump(): PNamesLump {
+        val pNameLump = lumpDirectory["PNAMES"]
+        return PNamesLump.createFrom(buffer.duplicate(), pNameLump)
     }
 
     fun fetchPatch(name: String): PatchLump = PatchLump.createFrom(buffer.duplicate(), lumpDirectory[name])
