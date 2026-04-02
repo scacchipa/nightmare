@@ -35,7 +35,7 @@ class TextureViewModel @Inject constructor(
             _uiState.emit(
                 TextureState(
                     palette = palette,
-                    spinnerPosition = 250,//_uiState.value.spinnerPosition,
+                    spinnerPosition = _uiState.value.spinnerPosition,
                     itemCount = wadManager.textureMapList.size,
                     spinnerValues = (0 until wadManager.textureMapList.size).map { it.toString() },
                     doomBitmap = textureMap

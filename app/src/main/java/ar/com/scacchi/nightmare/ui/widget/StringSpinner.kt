@@ -44,7 +44,7 @@ fun StringSpinner(
                 .size(48.dp)
                 .clickable(
                     enabled = values.size > position,
-                    onClick = { onValueChange(min(position + 1, values.size)) }
+                    onClick = { onValueChange(min(position + 1, values.size - 1)) }
                 ),
             painter = painterResource(R.drawable.right_direction_square_svgrepo_com),
             contentDescription = null
