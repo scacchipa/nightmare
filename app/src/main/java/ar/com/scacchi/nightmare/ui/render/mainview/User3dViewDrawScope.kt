@@ -11,6 +11,7 @@ import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.ext.light
+import ar.com.scacchi.nightmare.ext.normalize
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
@@ -31,7 +32,7 @@ class User3dViewDrawScope(
 
     val skyTexAlt = 100
     val skyInvScale = 160 / SCREEN_HEIGHT
-    val skyId = "SKY1"
+    val skyId = "F_SKY1"
 
     fun renderBspNode(gameState: GameState, nodeId: Int) {
         if (gameState.episodeMap.nodes.isEmpty()) return
@@ -136,10 +137,10 @@ class User3dViewDrawScope(
         if (y1 < y2) {
             if (texId == skyId) {
                 val texColumn =
-                    2.2f * (this.gameState.player.angle + SegHandler.xToAngleTable[x.toInt()])
+                    2.2f * (this.gameState.player.angle + SegHandler.xToAngleTable[x.toInt()]) * 90
 
                 this.drawWallCol(
-                    tex = imageRepository.getPictureDoomBitmap(skyId),
+                    tex = imageRepository.getPictureDoomBitmap("SKY1"),
                     texCol = texColumn.toInt(),
                     x = x,
                     y1 = y1,
@@ -206,14 +207,16 @@ class User3dViewDrawScope(
         if (y1 < y2) {
             val texW = tex.width
             val texH = tex.height
-            val texCol = texCol % texW
+            val texCol = (texCol + texW) % texW
             var texY = texAlt + (y1 - H_HEIGHT) * invScale
 
             for (iy in y1.toInt() until y2.toInt()) {
-                val col = tex[texCol, (texY % texH).toInt()]
+                val xp = texCol.normalize(texW)
+                val yp = texY.toInt().normalize(texH)
+                val paletteColor = tex[xp, yp]
                 val color =
-                    if (col == null) Color.Transparent
-                    else gameState.playPal[0][col.toInt()].light(lightLevel)
+                    if (paletteColor == null) Color.Transparent
+                    else gameState.playPal[0][paletteColor.toInt()].light(lightLevel)
                 this.drawPoints(
                     points = listOf(Offset(x, iy.toFloat())),
                     pointMode = PointMode.Points,
