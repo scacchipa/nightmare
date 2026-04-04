@@ -142,7 +142,7 @@ class SegHandler(
                 val cy2 = min(drawWallY1.toInt(), lowerClip[x])
 //                userScope.drawVLine(x, cy1, cy2, ceilTexture ?: "", lightLevel ?: 0f)
                 userScope.drawFlat(
-                    texId = ceilTextureName ?: "",
+                    texName = ceilTextureName ?: "",
                     lightLevel = lightLevel ?: 255f,
                     x = x.toFloat(),
                     y1 = cy1.toFloat(),
@@ -175,7 +175,15 @@ class SegHandler(
             if (bDrawFloor) {
                 val fy1 = max(drawWallY2.toInt(), upperClip[x])
                 val fy2 = lowerClip[x]
-                userScope.drawVLine(x, fy1, fy2, floorTextureName ?: "", lightLevel ?: 0f)
+//                userScope.drawVLine(x, fy1, fy2, floorTextureName ?: "", lightLevel ?: 0f)
+                userScope.drawFlat(
+                    texName = floorTextureName ?: "",
+                    lightLevel = 1f,
+                    x = x.toFloat(),
+                    y1 = fy1.toFloat(),
+                    y2 = fy2.toFloat(),
+                    worldZ = worldFrontZ2.toFloat()
+                )
             }
             wallY1 += wallY1Step
             wallY2 += wallY2Step
@@ -317,7 +325,7 @@ class SegHandler(
                     val cy2 = min(drawWallY1.toInt(), lowerClip[x])
 //                    userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                     userScope.drawFlat(
-                        texId = ceilTexture ?: "",
+                        texName = ceilTexture ?: "",
                         lightLevel = lightLevel ?: 255f,
                         x = x.toFloat(),
                         y1 = cy1.toFloat(),
@@ -343,7 +351,7 @@ class SegHandler(
                 val cy2 = min(drawWallY1.toInt(), lowerClip[x])
 //                userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                 userScope.drawFlat(
-                    texId = ceilTexture ?: "",
+                    texName = ceilTexture ?: "",
                     lightLevel = lightLevel ?: 255f,
                     x = x.toFloat(),
                     y1 = cy1.toFloat(),

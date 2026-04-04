@@ -127,7 +127,7 @@ class User3dViewDrawScope(
     }
 
     fun drawFlat(
-        texId: String,
+        texName: String,
         lightLevel: Float,
         x: Float,
         y1: Float,
@@ -135,7 +135,7 @@ class User3dViewDrawScope(
         worldZ: Float,
     ) {
         if (y1 < y2) {
-            if (texId == skyId) {
+            if (texName == skyId) {
                 val texColumn =
                     2.2f * (this.gameState.player.angle + SegHandler.xToAngleTable[x.toInt()]) * 90
 
@@ -151,7 +151,7 @@ class User3dViewDrawScope(
                 )
             } else {
 
-                val flatTex = imageRepository.getFlatDoomBitmap(texId)
+                val flatTex = imageRepository.getFlatDoomBitmap(texName)
 
                 drawFlatCol(flatTex, x, y1, y2, lightLevel, worldZ)
             }
