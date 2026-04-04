@@ -2,6 +2,7 @@ package ar.com.scacchi.nightmare.source.wad.lump
 
 import android.content.Context
 import ar.com.scacchi.nightmare.R
+import ar.com.scacchi.nightmare.data.endoom.EndoomLump
 import ar.com.scacchi.nightmare.source.wad.WadHeader
 import ar.com.scacchi.nightmare.source.wad.lump.data.FlatLump
 import ar.com.scacchi.nightmare.source.wad.lump.data.PNamesLump
@@ -34,6 +35,11 @@ class LumpProvider @Inject constructor(
             field = name
             episodeIdx = lumpDirectory.getIdxForName(name)
         }
+
+    fun fetchEndoom(): EndoomLump {
+        val endoomLump = lumpDirectory["ENDOOM"]
+        return EndoomLump.createFromLump(buffer.duplicate(), endoomLump)
+    }
 
     fun fetchVertexesLump(): VertexesLump {
         val episodeIdx = this@LumpProvider.episodeIdx ?: return VertexesLump.emptyVertexes()

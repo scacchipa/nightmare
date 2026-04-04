@@ -26,7 +26,7 @@ class FlatLump(
         DoomBitmap(64, 64).also { image ->
             for (idx in 0 until 64) {
                 for (idy in 0 until 64) {
-                    image[idx, idy] = this.content[idx][idy]
+                    image[idx, idy] = this.content[idx][idy].toShort()
                 }
             }
         }

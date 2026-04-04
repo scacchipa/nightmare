@@ -20,6 +20,8 @@ import ar.com.scacchi.nightmare.ui.render.map.getColor
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class User3dViewDrawScope(
     private val parentScope: DrawScope,
@@ -34,7 +36,9 @@ class User3dViewDrawScope(
     val skyInvScale = 160 / SCREEN_HEIGHT
     val skyId = "F_SKY1"
 
+    @OptIn(ExperimentalTime::class)
     fun renderBspNode(gameState: GameState, nodeId: Int) {
+        val startNow = Clock.System.now()
         if (gameState.episodeMap.nodes.isEmpty()) return
         if (isTraverseBsp.not()) {
 
@@ -60,6 +64,7 @@ class User3dViewDrawScope(
                 }
             }
         }
+        println("Time to draw a frame ${Clock.System.now() - startNow}")
     }
 
     fun renderSubSector(gameState: GameState, subSectorId: Int) {

@@ -12,22 +12,26 @@ class DoomBitmap(
     val width: Int,
     val height: Int,
 ) {
-    val pixels: Array<Array<UByte?>> = Array(width) {
-        arrayOfNulls(height)
+    val pixels: ShortArray = ShortArray(width * height) { -1 }
+
+    operator fun set(x: Int, y: Int, palettePos: Short) {
+        pixels[x * height + y] = palettePos
+    }
+    operator fun set(x: Int, y: Int, palettePos: Byte) {
+        pixels[x * height + y] = palettePos.toShort()
     }
 
-    operator fun set(x: Int, y: Int, palettePos: UByte?) {
-        pixels[x][y] = palettePos
-    }
-
-    operator fun get(x: Int, y: Int): UByte? = pixels[x][y]
+    operator fun get(x: Int, y: Int): Short = pixels[x * height + y]
 
     fun toBitmap(palette: Palette): Bitmap =
         createBitmap(width, height).also { bitmap ->
             for (x in 0 until width) {
                 for (y in 0 until height) {
-                    val palettePos = pixels[x][y] ?: continue
-                    bitmap[x, y] = palette[palettePos.toInt()].toArgb()
+                    val index = pixels[x * height + y]
+
+                    if (index != (-1).toShort()) {
+                        bitmap[x, y] = palette[index.toInt()].toArgb()
+                    }
                 }
             }
         }
@@ -41,9 +45,10 @@ class DoomBitmap(
         val yEnd = min(yOffset + bitmap.height, height)
 
         for (x in xStart until xEnd)
-            for(y in yStart until yEnd) {
-                val pixel = bitmap[x - xOffset, y - yOffset] ?: continue
-                this[x, y] = pixel
+            for (y in yStart until yEnd) {
+                val pixel = bitmap[x - xOffset, y - yOffset]
+                if (pixel != (-1).toShort())
+                    this[x, y] = pixel
             }
     }
 }

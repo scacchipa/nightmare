@@ -5,6 +5,7 @@ import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.data.EpisodeMap
 import ar.com.scacchi.nightmare.data.color.ColorMap
 import ar.com.scacchi.nightmare.data.color.PlayPal
+import ar.com.scacchi.nightmare.data.endoom.EndoomLump
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Nodes
 import ar.com.scacchi.nightmare.engine.Player
@@ -90,6 +91,8 @@ class WadManager @Inject constructor(
                 rootNodeId = rootNodeId,
             )
         }
+
+    fun getEndoom(): EndoomLump = lumpProvider.fetchEndoom()
 
     fun getInitialPlayer(episodeName: String): Player =
         getEpisodeMap(episodeName).things[0].toPlayer()

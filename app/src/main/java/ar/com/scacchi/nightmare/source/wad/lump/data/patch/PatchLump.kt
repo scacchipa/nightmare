@@ -16,8 +16,10 @@ class PatchLump(
 
     val bitmap by lazy { buildDoomImage() }
 
-    operator fun get(x: Int, y: Int): UByte? = bitmap[x, y]
-    operator fun set(x: Int, y: Int, value: UByte) = bitmap.set(x, y, value)
+    operator fun get(x: Int, y: Int): Short = bitmap[x, y]
+    operator fun set(x: Int, y: Int, value: Short) {
+        bitmap.set(x, y, value)
+    }
 
     companion object {
         fun emptyPicture(): PictureLump = PictureLump(PatchHeader.emptyHeader(),
@@ -46,7 +48,7 @@ class PatchLump(
 
                 iy = post.topDelta.toInt()
                 for (postY in 0 until post.length.toInt()) {
-                    bitmap[ix, iy] = post.data[postY]
+                    bitmap[ix, iy] = post.data[postY].toShort()
                     iy += 1
                 }
             }
