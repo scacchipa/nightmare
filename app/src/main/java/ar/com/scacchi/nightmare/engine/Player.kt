@@ -3,6 +3,7 @@ package ar.com.scacchi.nightmare.engine
 import ar.com.scacchi.nightmare.settings.PLAYER_HEIGHT
 import ar.com.scacchi.nightmare.settings.PLAYER_ROT_SPEED
 import ar.com.scacchi.nightmare.settings.PLAYER_SPEED
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.ThingLump
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -15,7 +16,7 @@ data class Player(
     val flags: UShort,
     val height: Float,
 ) {
-    constructor(thing: Thing) : this(
+    constructor(thing: ThingLump) : this(
         xPos = thing.xPos.toFloat(),
         yPos = thing.yPos.toFloat(),
         angle = (thing.angle.toFloat() * PI / 180.0f).toFloat(),
@@ -60,5 +61,9 @@ data class Player(
         return this.copy(
             angle = angle + rotSpeed
         )
+    }
+
+    companion object {
+        fun emptyPlayer(): Player = Player(0f, 0f, 0f, 0u, 0u, 0f)
     }
 }

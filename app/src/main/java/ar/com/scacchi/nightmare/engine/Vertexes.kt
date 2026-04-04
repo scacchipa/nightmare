@@ -1,8 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
 import androidx.compose.ui.geometry.Offset
-import ar.com.scacchi.nightmare.data.FileLump
-import java.nio.ByteBuffer
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.VertexesLump
 
 class Vertexes(
     val content: Array<Vertex>
@@ -17,13 +16,12 @@ class Vertexes(
     }
 
     companion object {
-        fun createFrom(buffer: ByteBuffer, lump: FileLump): Vertexes {
-            buffer.position(lump.filePos)
-            return Vertexes(
-                content = Array(lump.size / 4) {
-                    Vertex.createFrom(buffer)
-                }
-            )
-        }
+        fun emptyVertexes(): Vertexes = Vertexes(emptyArray())
     }
 }
+
+fun VertexesLump.toVertexes(): Vertexes = Vertexes(
+    content = Array(content.size) { idx ->
+        content[idx].toVertex()
+    }
+)

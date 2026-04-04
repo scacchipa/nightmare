@@ -1,7 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.FileLump
-import java.nio.ByteBuffer
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SectorsLump
 
 class Sectors(
     val content: Array<Sector>,
@@ -9,16 +8,12 @@ class Sectors(
     operator fun get(idx: Int) = content[idx]
 
     companion object {
-        fun createFrom(
-            buffer: ByteBuffer,
-            lump: FileLump,
-        ): Sectors {
-            buffer.position(lump.filePos)
-            return Sectors(
-                content = Array(lump.size / 26) {
-                    Sector.createFrom(buffer)
-                }
-            )
-        }
+        fun emptySectors() = Sectors(emptyArray())
     }
 }
+
+fun SectorsLump.toSectors(): Sectors = Sectors(
+    content = Array(content.size) { idx ->
+        this.content[idx].toSector()
+    }
+)

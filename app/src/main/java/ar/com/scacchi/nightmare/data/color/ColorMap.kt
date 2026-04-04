@@ -1,6 +1,6 @@
 package ar.com.scacchi.nightmare.data.color
 
-import ar.com.scacchi.nightmare.data.FileLump
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import java.nio.ByteBuffer
 
 class ColorMap {
@@ -12,13 +12,17 @@ class ColorMap {
 
     operator fun get(idx: Int): ColorTable = content[idx]
 
+    val tableCount
+        get() = content.size
+
     companion object {
-        fun createColorMap(lump: FileLump, buffer: ByteBuffer): ColorMap? {
-            buffer.position(lump.filePos.toInt())
+        fun emptyColorMap(): ColorMap = ColorMap(emptyArray())
+        fun createFromLump(lump: FileLump, buffer: ByteBuffer): ColorMap {
+            buffer.position(lump.filePos)
 
             return ColorMap(
                 array = Array(lump.size / 256) {
-                    ColorTable.createColorTable(buffer) ?: return null
+                    ColorTable.createColorTable(buffer)
                 }
             )
         }

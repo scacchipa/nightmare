@@ -1,7 +1,7 @@
 package ar.com.scacchi.nightmare.data.endoom
 
 import androidx.compose.ui.graphics.Color
-import ar.com.scacchi.nightmare.data.FileLump
+import ar.com.scacchi.nightmare.source.wad.lump.FileLump
 import ar.com.scacchi.nightmare.data.readUByte
 import java.nio.ByteBuffer
 

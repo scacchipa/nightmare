@@ -14,12 +14,12 @@ class Palette {
     operator fun get(idx: Int): Color = content[idx]
 
     companion object {
-        fun createFrom(buffer: ByteBuffer): Palette? {
+        fun createFrom(buffer: ByteBuffer): Palette {
             return Palette(Array(256) {
                 Color(
-                    red = buffer.readUByte()?.toInt() ?: return null,
-                    green = buffer.readUByte()?.toInt() ?: return null,
-                    blue = buffer.readUByte()?.toInt() ?: return null,
+                    red = buffer.readUByte().toInt(),
+                    green = buffer.readUByte().toInt(),
+                    blue = buffer.readUByte().toInt(),
                     alpha = 255,
                 )
             })

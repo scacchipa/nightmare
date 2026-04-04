@@ -7,11 +7,11 @@ import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
-import ar.com.scacchi.nightmare.engine.Seg
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SegLump
 import ar.com.scacchi.nightmare.engine.Vertexes
 import ar.com.scacchi.nightmare.ext.scalar
 import ar.com.scacchi.nightmare.settings.H_FOV
@@ -27,9 +27,9 @@ class MapViewDrawScope(
     ) {
         lineDefs.content.forEach { line ->
             drawLine(
-                color = Color.Companion.Red,
-                start = vertexes[line.startVertexId.toInt()].toOffset(),
-                end = vertexes[line.endVertexId.toInt()].toOffset(),
+                color = Color.Red,
+                start = vertexes[line.startVertexId].toOffset(),
+                end = vertexes[line.endVertexId].toOffset(),
             )
         }
     }
@@ -42,62 +42,62 @@ class MapViewDrawScope(
 
         drawPoints(
             points = points,
-            pointMode = PointMode.Companion.Points,
-            color = Color.Companion.Red,
+            pointMode = PointMode.Points,
+            color = Color.Red,
             strokeWidth = 10f,
-            cap = StrokeCap.Companion.Round
+            cap = StrokeCap.Round
         )
     }
 
     fun drawPlayer(player: Player) {
         drawCircle(
-            color = Color.Companion.Black,
+            color = Color.Black,
             radius = 20f,
             center = Offset(player.xPos, player.yPos)
         )
     }
 
-    fun drawFov(engine: Engine) {
+    fun drawFov(gameState: GameState) {
         val playerPos = Offset(
-            x = engine.player.xPos,
-            y = engine.player.yPos,
+            x = gameState.player.xPos,
+            y = gameState.player.yPos,
         )
 
-        val angle = engine.player.angle
-        val dirA1 = Offset.Companion.scalar(angle - H_FOV)
-        val dirA2 = Offset.Companion.scalar(angle + H_FOV)
+        val angle = gameState.player.angle
+        val dirA1 = Offset.scalar(angle - H_FOV)
+        val dirA2 = Offset.scalar(angle + H_FOV)
 
         val lenRay = SCREEN_HEIGHT
 
         this.drawLine(
-            color = Color.Companion.Yellow,
+            color = Color.Yellow,
             strokeWidth = 10f,
             start = playerPos,
             end = playerPos + dirA1 * lenRay * 5f
         )
 
         this.drawLine(
-            color = Color.Companion.Yellow,
+            color = Color.Yellow,
             strokeWidth = 10f,
             start = playerPos,
             end = playerPos + dirA2 * lenRay * 5f
         )
     }
 
-    fun drawNode(engine: Engine, nodeId: Int) {
-        val node = engine.nodes[nodeId]
+    fun drawNode(gameState: GameState, nodeId: Int) {
+        val node = gameState.episodeMap.nodes[nodeId]
 
         drawBBox(
             bBox = node.frontBoundBox,
-            color = Color.Companion.Green
+            color = Color.Green
         )
         drawBBox(
             bBox = node.backBoundBox,
-            color = Color.Companion.Red
+            color = Color.Red
         )
 
         drawLine(
-            color = Color.Companion.Blue,
+            color = Color.Blue,
             start = Offset(
                 x = node.xPartition.toFloat(),
                 y = node.yPartition.toFloat()
@@ -123,9 +123,9 @@ class MapViewDrawScope(
         )
     }
 
-    fun drawSeg(engine: Engine, seg: Seg, subSectorId: Int) {
-        val v1 = engine.vertexes[seg.startVertexId.toInt()]
-        val v2 = engine.vertexes[seg.endVertexId.toInt()]
+    fun drawSeg(gameState: GameState, seg: SegLump, subSectorId: Int) {
+        val v1 = gameState.episodeMap.vertexes[seg.startVertexId.toInt()]
+        val v2 = gameState.episodeMap.vertexes[seg.endVertexId.toInt()]
         drawLine(
             color = getColor(subSectorId),
             start = v1.toOffset(),

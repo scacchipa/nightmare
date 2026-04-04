@@ -3,17 +3,15 @@ package ar.com.scacchi.nightmare.ui
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
 import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.ui.pad.PlayerAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.time.DurationUnit
@@ -21,23 +19,20 @@ import kotlin.time.toDuration
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
+    val engine: Engine,
+    private val imageRepository: ImageRepository,
     @param:ApplicationContext private val context: Context,
     @param:DefaultDispatcher val defaultDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        MainState(
-            engine = Engine.createFrom(context, R.raw.doom),
-        )
-    )
-    val uiState: StateFlow<MainState> = _uiState
+    val gameState = engine.gameStateFlow
 
     private var _pressedKeySet = emptySet<PlayerAction>()
 
     val tickerJob: Job = viewModelScope.launch(defaultDispatcher) {
         while (true) {
             val newPlayer = with(_pressedKeySet) {
-                val player = _uiState.value.engine.player
+                val player = engine.player
                 when {
                     contains(PlayerAction.MOVE_FORWARD) -> player.advance()
                     contains(PlayerAction.MOVE_BACKWARD) -> player.reverse()
@@ -52,13 +47,7 @@ class MainViewModel @Inject constructor(
                     else -> player
                 }
             }
-            _uiState.emit(
-                _uiState.value.copy(
-                    engine = _uiState.value.engine.copy(
-                        player = newPlayer
-                    )
-                )
-            )
+            engine.updatePlayer(newPlayer)
             delay(35.toDuration(DurationUnit.MILLISECONDS))
         }
     }
@@ -66,4 +55,6 @@ class MainViewModel @Inject constructor(
     fun onNewKeySet(newKeySet: Set<PlayerAction>) {
         _pressedKeySet = newKeySet
     }
+
+    fun imageRepository(): ImageRepository = imageRepository
 }

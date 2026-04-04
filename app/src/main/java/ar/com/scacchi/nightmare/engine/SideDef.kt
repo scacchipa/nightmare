@@ -1,39 +1,37 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.readByteArray
-import ar.com.scacchi.nightmare.data.readLittleEndianShort
-import ar.com.scacchi.nightmare.data.readLittleEndianUShort
-import java.nio.ByteBuffer
+import ar.com.scacchi.nightmare.ext.asString
+import ar.com.scacchi.nightmare.source.wad.TextureMapContainer
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SideDefLump
 
 class SideDef(
-    val xOffset: Short,
-    val yOffset: Short,
-    val upperTextureName: ByteArray,
-    val lowerTextureName: ByteArray,
-    val middleTextureName: ByteArray,
-    val sectorId: UShort,
-    val sector: Sector
-) {
-    companion object {
-        fun createFrom(buffer: ByteBuffer, sectors: Sectors): SideDef {
-            val xOffset = buffer.readLittleEndianShort()
-            val yOffset = buffer.readLittleEndianShort()
-            val upperTextureName = buffer.readByteArray(8)
-            val lowerTextureName = buffer.readByteArray(8)
-            val middleTextureName = buffer.readByteArray(8)
-            val sectorId = buffer.readLittleEndianUShort()
+    val xOffset: Int,
+    val yOffset: Int,
+    val upperTextureName: String,
+    val middleTextureName: String,
+    val lowerTextureName: String,
+    val lowerTextureIdx: Int,
+    val middleTextureIdx: Int,
+    val upperTextureIdx: Int,
+    val sectorId: Int,
+    val sector: Sector,
+)
 
-            return SideDef(
-                xOffset = xOffset,
-                yOffset = yOffset,
-                upperTextureName = upperTextureName,
-                lowerTextureName = lowerTextureName,
-                middleTextureName = middleTextureName,
-                sectorId = sectorId,
-                sector = sectors[sectorId.toInt()],
+fun SideDefLump.toSideDef(sectors: Sectors, textureMapContainer: TextureMapContainer): SideDef {
+    val upperTextureName = upperTextureName.asString()
+    val middleTextureName = middleTextureName.asString()
+    val lowerTextureName = lowerTextureName.asString()
 
-            )
-        }
-    }
+    return SideDef(
+        xOffset = xOffset.toInt(),
+        yOffset = yOffset.toInt(),
+        upperTextureName = upperTextureName,
+        middleTextureName = middleTextureName,
+        lowerTextureName = lowerTextureName,
+        upperTextureIdx = textureMapContainer.indexOf(upperTextureName),
+        middleTextureIdx = textureMapContainer.indexOf(middleTextureName),
+        lowerTextureIdx = textureMapContainer.indexOf(lowerTextureName),
+        sectorId  = sectorId.toInt(),
+        sector = sectors[sectorId.toInt()],
+    )
 }
-

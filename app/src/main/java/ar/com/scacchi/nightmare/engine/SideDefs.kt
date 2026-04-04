@@ -1,7 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.FileLump
-import java.nio.ByteBuffer
+import ar.com.scacchi.nightmare.source.wad.TextureMapContainer
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SideDefsLump
 
 class SideDefs(
     val content: Array<SideDef>,
@@ -9,17 +9,14 @@ class SideDefs(
     operator fun get(idx: Int) = content[idx]
 
     companion object {
-        fun createFrom(
-            buffer: ByteBuffer,
-            lump: FileLump,
-            sectors: Sectors,
-        ): SideDefs {
-            buffer.position(lump.filePos)
-            return SideDefs(
-                content = Array(lump.size / 30) {
-                    SideDef.createFrom(buffer, sectors)
-                }
-            )
-        }
+        fun emptySideDefs(): SideDefs = SideDefs(emptyArray())
     }
 }
+
+fun SideDefsLump.toSideDefs(
+    sectors: Sectors, textureMapContainer: TextureMapContainer
+): SideDefs = SideDefs(
+    content = Array(this.content.size) { idx ->
+        this.content[idx].toSideDef(sectors, textureMapContainer)
+    }
+)

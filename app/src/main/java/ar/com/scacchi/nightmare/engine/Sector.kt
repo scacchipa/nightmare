@@ -1,30 +1,24 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.readByteArray
-import ar.com.scacchi.nightmare.data.readLittleEndianShort
-import ar.com.scacchi.nightmare.data.readLittleEndianUShort
-import java.nio.ByteBuffer
+import ar.com.scacchi.nightmare.ext.asString
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SectorLump
 
 class Sector(
-    val floorHeight: Short,
-    val ceilingHeight: Short,
-    val floorTextureName: ByteArray,
-    val ceilingTextureName: ByteArray,
-    val lightLevel: UShort,
-    val type: UShort,
-    val tag: UShort,
-) {
-    companion object {
-        fun createFrom(buffer: ByteBuffer): Sector {
-            return Sector(
-                floorHeight = buffer.readLittleEndianShort(),
-                ceilingHeight = buffer.readLittleEndianShort(),
-                floorTextureName = buffer.readByteArray(8),
-                ceilingTextureName =buffer.readByteArray(8),
-                lightLevel = buffer.readLittleEndianUShort(),
-                type = buffer.readLittleEndianUShort(),
-                tag = buffer.readLittleEndianUShort(),
-            )
-        }
-    }
-}
+    val floorHeight: Int,
+    val ceilingHeight: Int,
+    val floorTextureName: String,
+    val ceilingTextureName: String,
+    val lightLevel: Float,
+    val type: Int,
+    val tag: Int,
+)
+
+fun SectorLump.toSector(): Sector = Sector(
+    floorHeight = floorHeight.toInt(),
+    ceilingHeight = ceilingHeight.toInt(),
+    floorTextureName = floorTextureName.asString(),
+    ceilingTextureName = ceilingTextureName.asString(),
+    lightLevel = lightLevel.toFloat() / 256f,
+    type = type.toInt(),
+    tag = tag.toInt(),
+)

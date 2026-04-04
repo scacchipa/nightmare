@@ -1,7 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
-import ar.com.scacchi.nightmare.data.FileLump
-import java.nio.ByteBuffer
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.LineDefsLump
 
 class LineDefs(
     val content: Array<LineDef>
@@ -9,13 +8,12 @@ class LineDefs(
     operator fun get(idx: Int): LineDef = content[idx]
 
     companion object {
-        fun createFrom(buffer: ByteBuffer, lump: FileLump, sideDefs: SideDefs): LineDefs {
-            buffer.position(lump.filePos)
-            return LineDefs(
-                content = Array(lump.size / 14) {
-                    LineDef.createFrom(buffer, sideDefs)
-                }
-            )
-        }
+        fun emptyLineDefs(): LineDefs = LineDefs(emptyArray())
     }
 }
+
+fun LineDefsLump.toLineDefs(sideDefs: SideDefs): LineDefs = LineDefs(
+    content = Array(content.size) { idx ->
+        content[idx].toLineDef(sideDefs)
+    }
+)
