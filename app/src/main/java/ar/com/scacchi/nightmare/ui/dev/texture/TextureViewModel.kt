@@ -36,9 +36,9 @@ class TextureViewModel @Inject constructor(
                 TextureState(
                     palette = palette,
                     spinnerPosition = _uiState.value.spinnerPosition,
-                    itemCount = wadManager.textureMapList.size,
-                    spinnerValues = (0 until wadManager.textureMapList.size).map {
-                        "$it - ${wadManager.textureMapList[it].name}"
+                    itemCount = wadManager.textureMapContainer.size,
+                    spinnerValues = (0 until wadManager.textureMapContainer.size).map {
+                        "$it - ${wadManager.textureMapContainer[it].name}"
                     },
                     doomBitmap = textureMap
                 )
@@ -56,7 +56,7 @@ class TextureViewModel @Inject constructor(
                 TextureState(
                     palette = palette,
                     spinnerPosition = position,
-                    itemCount = wadManager.textureMapList.size,
+                    itemCount = wadManager.textureMapContainer.size,
                     spinnerValues = _uiState.value.spinnerValues,
                     doomBitmap = textureMap.buildDoomImage(imageRepository, wadManager)
                 )

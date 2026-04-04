@@ -13,4 +13,6 @@ class PNames {
 
     operator fun get(idx: Int) = pNames[idx]
     fun size() = pNames.size
+
+    fun indexOfPName(name: String): Int = pNames.indexOf(name)
 }

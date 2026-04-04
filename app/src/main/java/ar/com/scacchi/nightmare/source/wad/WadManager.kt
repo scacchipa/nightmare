@@ -51,9 +51,9 @@ class WadManager @Inject constructor(
         lumpDirectory[lumpDirectory.getIdxForName("COLORMAP")], buffer
     )
     val pNames by lazy { PNames(lumpProvider.fetchPNameLump()) }
-    val textureMapList by lazy {
-        lumpProvider.fetchTextureLump(1).mapTextureList +
-                lumpProvider.fetchTextureLump(2).mapTextureList
+    val textureMapContainer: TextureMapContainer by lazy {
+        lumpProvider.fetchTextureLump(1).toTextureMapList() +
+                lumpProvider.fetchTextureLump(2).toTextureMapList()
     }
 
     private val episodeMapMap: ConcurrentHashMap<String, EpisodeMap> = ConcurrentHashMap()
@@ -70,7 +70,7 @@ class WadManager @Inject constructor(
 
             lumpProvider.episodeName = name
             val sectors: Sectors = lumpProvider.fetchSectorsLump().toSectors()
-            val sideDefs: SideDefs = lumpProvider.fetchSideDefLump().toSideDefs(sectors)
+            val sideDefs: SideDefs = lumpProvider.fetchSideDefLump().toSideDefs(sectors, textureMapContainer)
             val vertexes: Vertexes = lumpProvider.fetchVertexesLump().toVertexes()
             val lineDefs: LineDefs = lumpProvider.fetchLineDefsLump().toLineDefs(sideDefs)
             val nodes: Nodes = lumpProvider.fetchNodesLump().toNodes()
@@ -110,10 +110,11 @@ class WadManager @Inject constructor(
         lumpProvider.fetchPatch(name)
     }
 
-    fun getTextureMap(textureMapId: Int): TextureMap = textureMapList[textureMapId]
+    fun getTextureMap(textureMapId: Int): TextureMap = textureMapContainer[textureMapId]
 
 
     fun readPatchNameList(): List<String> = this.lumpDirectory.patchListName
     fun readFlatNameList(): List<String> = this.lumpDirectory.flatListName
     fun readSpriteNameList(): List<String> = this.lumpDirectory.spriteListName
 }
+

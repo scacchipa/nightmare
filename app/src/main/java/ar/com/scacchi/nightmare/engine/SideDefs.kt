@@ -1,5 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
+import ar.com.scacchi.nightmare.source.wad.TextureMapContainer
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.SideDefsLump
 
 class SideDefs(
@@ -12,8 +13,10 @@ class SideDefs(
     }
 }
 
-fun SideDefsLump.toSideDefs(sectors: Sectors): SideDefs = SideDefs(
+fun SideDefsLump.toSideDefs(
+    sectors: Sectors, textureMapContainer: TextureMapContainer
+): SideDefs = SideDefs(
     content = Array(this.content.size) { idx ->
-        this.content[idx].toSideDef(sectors)
+        this.content[idx].toSideDef(sectors, textureMapContainer)
     }
 )

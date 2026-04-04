@@ -24,7 +24,7 @@ import kotlin.random.Random
 class User3dViewDrawScope(
     private val parentScope: DrawScope,
     private val gameState: GameState,
-    private val imageRepository: ImageRepository,
+    val imageRepository: ImageRepository,
 ) : DrawScope by parentScope {
 
     var isTraverseBsp = true
@@ -146,7 +146,8 @@ class User3dViewDrawScope(
                     y1 = y1,
                     y2 = y2,
                     texAlt = skyTexAlt,
-                    invScale = skyInvScale, lightLevel = 1.0f
+                    invScale = skyInvScale,
+                    lightLevel = 1.0f
                 )
             } else {
 
@@ -207,7 +208,7 @@ class User3dViewDrawScope(
         if (y1 < y2) {
             val texW = tex.width
             val texH = tex.height
-            val texCol = (texCol + texW) % texW
+            val texCol = texCol.normalize(texW)
             var texY = texAlt + (y1 - H_HEIGHT) * invScale
 
             for (iy in y1.toInt() until y2.toInt()) {
