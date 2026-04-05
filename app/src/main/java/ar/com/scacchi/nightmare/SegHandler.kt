@@ -32,7 +32,7 @@ class SegHandler(
     lateinit var seg: Seg
     var rwAngle1: Float = 0f // first vertex of the segment
     private var upperClip = IntArray(SCREEN_WIDTH.toInt()) { 0 }
-    private var lowerClip = IntArray(SCREEN_WIDTH.toInt()) { SCREEN_HEIGHT.toInt() -1 }
+    private var lowerClip = IntArray(SCREEN_WIDTH.toInt()) { SCREEN_HEIGHT.toInt() - 1 }
     private var screenRange: BitSet = BitSet(SCREEN_WIDTH.toInt()).apply {
         set(0, SCREEN_WIDTH.toInt())
     }
@@ -146,7 +146,7 @@ class SegHandler(
 //                userScope.drawVLine(x, cy1, cy2, ceilTexture ?: "", lightLevel ?: 0f)
                 user3dScreen.drawFlat(
                     texName = ceilTextureName ?: "",
-                    lightLevel = lightLevel ?: 255f,
+                    lightLevel = lightLevel ?: 1f,
                     x = x.toFloat(),
                     y1 = cy1.toFloat(),
                     y2 = cy2.toFloat(),
@@ -242,7 +242,7 @@ class SegHandler(
         val bDrawLowerWall: Boolean
         val bDrawFloor: Boolean
         if (worldFrontZ2 != worldBackZ2 ||
-            !frontSector?.floorTextureName.contentEquals(backSector?.floorTextureName) ||
+            frontSector?.floorTextureName != backSector?.floorTextureName ||
             frontSector?.lightLevel != backSector?.lightLevel
         ) {
             bDrawLowerWall = side?.lowerTextureName != "-" && worldBackZ2 > worldFrontZ2
@@ -298,7 +298,6 @@ class SegHandler(
         } else 0f
 
         val lowerTexAlt = if (bDrawLowerWall) {
-            println("texture idx: $upperWallTextureIdx")
             (side?.yOffset?.toFloat() ?: 0f) +
                     if (line.flags.and(LINEDEF_FLAGS["DONT_PEG_TOP"] ?: 0u) != 0u.toUShort()) {
                         worldFrontZ1
@@ -309,14 +308,15 @@ class SegHandler(
         /*
         * determine how the wall textures are horizontally aligned
          */
-        val segTextured = bDrawLowerWall or bDrawLowerWall
+        val segTextured = bDrawUpperWall or bDrawLowerWall
         val rwOffset: Float =
             if (segTextured) {
-                hypotenuse * sin(offsetAngle) + seg.offset.toFloat() + (side?.xOffset?.toFloat()
-                    ?: 0f)
+                - hypotenuse * sin(offsetAngle) +
+                        seg.offset.toFloat() +
+                        (side?.xOffset?.toFloat() ?: 0f)
             } else 0f
         //
-        val rwCenterAngle = rwNormalAngle - player.angle
+        val rwCenterAngle = - rwNormalAngle + player.angle
 
 
         // the y positions of the top / bottom edges of the wall on the screen
@@ -361,7 +361,7 @@ class SegHandler(
             val invScale: Float
             if (segTextured) {
                 angle = rwCenterAngle + xToAngleTable[x]
-                textureColumn = rwDistance * tan(angle) - rwOffset
+                textureColumn = - (rwDistance * tan(angle) - rwOffset)
                 invScale = 1f / (rwScale1 + rwScaleStep * (x - x1))
             } else {
                 angle = 0f
@@ -379,7 +379,7 @@ class SegHandler(
 //                    userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                     user3dScreen.drawFlat(
                         texName = ceilTextureName ?: "",
-                        lightLevel = lightLevel ?: 255f,
+                        lightLevel = lightLevel ?: 1f,
                         x = x.toFloat(),
                         y1 = cy1.toFloat(),
                         y2 = cy2.toFloat(),
@@ -415,7 +415,7 @@ class SegHandler(
 //                userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                 user3dScreen.drawFlat(
                     texName = ceilTextureName ?: "",
-                    lightLevel = lightLevel ?: 255f,
+                    lightLevel = lightLevel ?: 1f,
                     x = x.toFloat(),
                     y1 = cy1.toFloat(),
                     y2 = cy2.toFloat(),
@@ -459,7 +459,7 @@ class SegHandler(
                     invScale = invScale,
                     lightLevel = 1f
                 )
-                
+
                 //
                 if (lowerClip[x] > wy1) {
                     lowerClip[x] = wy1
@@ -617,10 +617,10 @@ class SegHandler(
         // 4. Rechazar líneas invisibles (Triggers o eventos especiales)
         // Si tienen texturas iguales, misma luz y no hay textura media, no se dibuja nada.
         val frontSideDef = segment.lineDef.frontSideDef
-        if (backSector.ceilingTextureName.contentEquals(frontSector.ceilingTextureName) &&
-            backSector.floorTextureName.contentEquals(frontSector.floorTextureName) &&
+        if (backSector.ceilingTextureName == frontSector.ceilingTextureName &&
+            backSector.floorTextureName == frontSector.floorTextureName &&
             backSector.lightLevel == frontSector.lightLevel &&
-            frontSideDef?.middleTextureName?.contentEquals("-") == true
+            frontSideDef?.middleTextureName == "-"
         ) {
             return
         }

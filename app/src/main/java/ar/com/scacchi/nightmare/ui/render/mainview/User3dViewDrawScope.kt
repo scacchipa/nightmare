@@ -197,7 +197,6 @@ class Nm3DScreen(
         if (y1 < y2) {
             val texW = tex.width
             val texH = tex.height
-            val texCol = texCol.normalize(texW)
             var texY = texAlt + (y1 - H_HEIGHT) * invScale
 
             for (iy in y1.toInt() until y2.toInt()) {
