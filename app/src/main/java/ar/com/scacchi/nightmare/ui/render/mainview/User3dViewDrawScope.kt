@@ -1,10 +1,8 @@
 package ar.com.scacchi.nightmare.ui.render.mainview
 
-import androidx.compose.ui.geometry.Offset
+import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PointMode
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.toArgb
 import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
@@ -23,18 +21,20 @@ import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-class User3dViewDrawScope(
-    private val parentScope: DrawScope,
+class Nm3DScreen(
     private val gameState: GameState,
-    val imageRepository: ImageRepository,
-) : DrawScope by parentScope {
+    private val imageRepository: ImageRepository,
+) {
 
+    val nmBitmap = NmBitmap(SCREEN_WIDTH.toInt(), SCREEN_HEIGHT.toInt())
     var isTraverseBsp = true
-    var segHandler: SegHandler = SegHandler(this, gameState.player)
+    var segHandler: SegHandler = SegHandler(this, gameState.player, imageRepository)
 
     val skyTexAlt = 100
     val skyInvScale = 160 / SCREEN_HEIGHT
     val skyId = "F_SKY1"
+
+    fun createBitmap(): Bitmap = nmBitmap.getBitmap()
 
     @OptIn(ExperimentalTime::class)
     fun renderBspNode(gameState: GameState, nodeId: Int) {
@@ -89,44 +89,30 @@ class User3dViewDrawScope(
     fun drawVLines(x1: Float, x2: Float, subSectorId: Int) {
         val color = getColor(subSectorId)
 
-        this.drawLine(
-            color = color,
-            start = Offset(x1, 0f),
-            end = Offset(x1, SCREEN_HEIGHT),
-            strokeWidth = 1f,
+        nmBitmap.drawLine(
+            color = color.toArgb(),
+            x1 = x1.toInt(), y1 = 0,
+            x2 = x1.toInt(), y2 = SCREEN_HEIGHT.toInt(),
         )
-        this.drawLine(
-            color = color,
-            start = Offset(x2, 0f),
-            end = Offset(x2, SCREEN_HEIGHT),
-            strokeWidth = 1f,
+        nmBitmap.drawLine(
+            color = color.toArgb(),
+            x1 = x2.toInt(), y1 = 0,
+            x2 = x2.toInt(), y2 = SCREEN_HEIGHT.toInt(),
         )
     }
 
     val colorMap = mutableMapOf<String, Color>()
-    fun drawVLine(x: Int, y1: Int, y2: Int, tex: String, light: Float) {
-        if (y1 < y2) {
-            this.drawLine(
-                color = getColor(tex, light),
-                start = Offset(x.toFloat(), y1.toFloat()),
-                end = Offset(x.toFloat(), y2.toFloat()),
-                strokeWidth = 2f
-
-            )
-        }
-    }
 
     fun getColor(tex: String, lightLevel: Float): Color {
         val colorLabel = tex + lightLevel.toString()
 
         return colorMap.getOrPut(colorLabel) {
-            val intensity = lightLevel
             val rnd = Random(tex.hashCode())
 
             Color(
-                red = (rnd.nextInt(50, 256) * intensity).toInt(),
-                green = (rnd.nextInt(50, 256) * intensity).toInt(),
-                blue = (rnd.nextInt(50, 256) * intensity).toInt(),
+                red = (rnd.nextInt(50, 256) * lightLevel).toInt(),
+                green = (rnd.nextInt(50, 256) * lightLevel).toInt(),
+                blue = (rnd.nextInt(50, 256) * lightLevel).toInt(),
             )
         }
     }
@@ -188,14 +174,12 @@ class User3dViewDrawScope(
 
             val col = flatTex[tx, ty]
             val color =
-                if (col == null) Color.Transparent
+                if (col == (-1).toShort()) Color.Transparent
                 else gameState.playPal[0][col.toInt()].light(lightLevel)
-            this.drawPoints(
-                points = listOf(Offset(x, iy.toFloat())),
-                pointMode = PointMode.Points,
-                color = color,
-                strokeWidth = 1f,
-                cap = StrokeCap.Square
+            nmBitmap.drawPixel(
+                x = x.toInt(),
+                y = iy,
+                color = color.toArgb(),
             )
         }
     }
@@ -221,14 +205,11 @@ class User3dViewDrawScope(
                 val yp = texY.toInt().normalize(texH)
                 val paletteColor = tex[xp, yp]
                 val color =
-                    if (paletteColor == null) Color.Transparent
+                    if (paletteColor == (-1).toShort()) Color.Transparent
                     else gameState.playPal[0][paletteColor.toInt()].light(lightLevel)
-                this.drawPoints(
-                    points = listOf(Offset(x, iy.toFloat())),
-                    pointMode = PointMode.Points,
-                    color = color,
-                    strokeWidth = 1f,
-                    cap = StrokeCap.Square
+                nmBitmap.drawPixel(
+                    x = x.toInt(), y = iy,
+                    color = color.toArgb(),
                 )
                 texY += invScale
             }
