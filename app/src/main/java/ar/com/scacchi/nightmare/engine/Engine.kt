@@ -2,9 +2,9 @@ package ar.com.scacchi.nightmare.engine;
 
 import android.content.Context
 import ar.com.scacchi.nightmare.data.color.ColorMap
-import ar.com.scacchi.nightmare.data.color.PlayPal
 import ar.com.scacchi.nightmare.di.ApplicationScope
 import ar.com.scacchi.nightmare.di.IoDispatcher
+import ar.com.scacchi.nightmare.source.wad.NmPlayPal
 import ar.com.scacchi.nightmare.source.wad.WadManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -62,7 +62,7 @@ class Engine @Inject constructor(
 
 //    fun getEpisodeMap(name: String): EpisodeMap = wadManager.getEpisodeMap(name)
 
-    fun getPlayPal(): PlayPal = wadManager.playPal
+    fun getPlayPal(): NmPlayPal = wadManager.playPal
     fun getColorMap(): ColorMap = wadManager.colorMap
     fun getPatchNameList(): List<String> = wadManager.readPatchNameList()
     fun getFlatNameList(): List<String> = wadManager.readFlatNameList()

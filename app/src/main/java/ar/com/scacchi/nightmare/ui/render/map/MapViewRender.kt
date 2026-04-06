@@ -20,6 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.ext.rotateBy
 import ar.com.scacchi.nightmare.settings.SCALE
+import ar.com.scacchi.nightmare.source.wad.NmColor
 import kotlin.random.Random
 
 @Composable
@@ -53,8 +54,8 @@ fun ColumnScope.MapViewRender(
             .graphicsLayer(
                 scaleX = scale,
                 scaleY = -scale,
-                translationX = - offset.x * scale,
-                translationY = - offset.y * scale - 1200,
+                translationX = -offset.x * scale,
+                translationY = -offset.y * scale - 1200,
                 rotationZ = rotation,
                 transformOrigin = TransformOrigin(0f, 0f),
             )
@@ -87,10 +88,12 @@ fun ColumnScope.MapViewRender(
 }
 
 
-fun getColor(seed: Int): Color {
+fun getColor(seed: Int): NmColor {
     val random = Random(seed)
-    return Color(
-        red = random.nextFloat(),
-        green = random.nextFloat(),
-        blue = random.nextFloat())
+    return NmColor(
+        alpha = 0xFFu.toUByte(),
+        red = random.nextInt(256).toUByte(),
+        green = random.nextInt(256).toUByte(),
+        blue = random.nextInt(256).toUByte(),
+    )
 }

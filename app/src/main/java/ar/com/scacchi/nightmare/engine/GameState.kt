@@ -2,10 +2,10 @@ package ar.com.scacchi.nightmare.engine
 
 import ar.com.scacchi.nightmare.data.EpisodeMap
 import ar.com.scacchi.nightmare.data.color.ColorMap
-import ar.com.scacchi.nightmare.data.color.PlayPal
+import ar.com.scacchi.nightmare.source.wad.NmPlayPal
 
 data class GameState(
-    val playPal: PlayPal,
+    val playPal: NmPlayPal,
     val colorMap: ColorMap,
     val episodeMap: EpisodeMap,
     val skyTex: String?,
@@ -13,7 +13,7 @@ data class GameState(
 ) {
     companion object {
         fun getEmpty(): GameState = GameState(
-            playPal = PlayPal(emptyArray()),
+            playPal = NmPlayPal(emptyArray()),
             colorMap = ColorMap(emptyArray()),
             episodeMap = EpisodeMap.emptyEpisodeMap(),
             skyTex = null,

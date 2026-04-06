@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.core.graphics.createBitmap
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
+import ar.com.scacchi.nightmare.source.wad.NmColor
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.abs
@@ -20,11 +21,11 @@ class NmBitmap(val width: Int, val height: Int) {
         }
     }
 
-    fun drawPixel(x: Int, y: Int, color: Int) {
-        intBuffer.put(x + y * width, color)
+    fun drawPixel(x: Int, y: Int, color: NmColor) {
+        intBuffer.put(x + y * width, color.argb)
     }
 
-    fun drawLine(x1: Int, y1: Int, x2: Int, y2: Int, color: Int) {
+    fun drawLine(x1: Int, y1: Int, x2: Int, y2: Int, color: NmColor) {
         var curX = x1
         var curY = y1
 
@@ -37,7 +38,7 @@ class NmBitmap(val width: Int, val height: Int) {
         var err = dx - dy
 
         while (true) {
-            intBuffer.put(curY * width + curX, color)
+            intBuffer.put(curY * width + curX, color.argb)
 
             if (curX == x2 && curY == y2) break
 
@@ -53,12 +54,12 @@ class NmBitmap(val width: Int, val height: Int) {
         }
     }
 
-    fun drawVerticalLine(x: Int, y1: Int, y2: Int, color: Int) {
+    fun drawVerticalLine(x: Int, y1: Int, y2: Int, color: NmColor) {
         if (y1 > y2) return
         var offset = y1 * width + x
 
         repeat(y2 - y1) {
-            intBuffer.put(offset, color)
+            intBuffer.put(offset, color.argb)
             offset += width
         }
     }

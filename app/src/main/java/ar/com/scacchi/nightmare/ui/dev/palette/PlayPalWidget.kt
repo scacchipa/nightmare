@@ -39,7 +39,7 @@ fun PlayPalWidget(
                     Box(
                         modifier = Modifier
                             .size(12.dp)
-                            .background(state.playPal[state.currentPaletteSelected][idx + idy])
+                            .background(state.playPal[state.currentPaletteSelected][idx + idy].color)
                             .border(1.dp, Color.Black)
                     )
                 }

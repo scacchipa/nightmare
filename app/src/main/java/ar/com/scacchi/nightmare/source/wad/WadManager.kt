@@ -4,7 +4,7 @@ import android.content.Context
 import ar.com.scacchi.nightmare.R
 import ar.com.scacchi.nightmare.data.EpisodeMap
 import ar.com.scacchi.nightmare.data.color.ColorMap
-import ar.com.scacchi.nightmare.data.color.PlayPal
+import ar.com.scacchi.nightmare.data.color.PlayPalLump
 import ar.com.scacchi.nightmare.data.endoom.EndoomLump
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Nodes
@@ -45,9 +45,9 @@ class WadManager @Inject constructor(
     val buffer: ByteBuffer = ByteBuffer.wrap(context.resources.openRawResource(wadPath).readBytes())
     val wadHeader: WadHeader = WadHeader.createFrom(buffer)
     val lumpDirectory: LumpDirectory = LumpDirectory.createFrom(buffer, wadHeader)
-    val playPal: PlayPal = PlayPal.createFromLump(
+    val playPal: NmPlayPal = PlayPalLump.createFrom(
         lumpDirectory[lumpDirectory.getIdxForName("PLAYPAL")], buffer
-    )
+    ).toPlayPal()
     val colorMap: ColorMap = ColorMap.createFromLump(
         lumpDirectory[lumpDirectory.getIdxForName("COLORMAP")], buffer
     )
@@ -71,7 +71,8 @@ class WadManager @Inject constructor(
 
             lumpProvider.episodeName = name
             val sectors: Sectors = lumpProvider.fetchSectorsLump().toSectors()
-            val sideDefs: SideDefs = lumpProvider.fetchSideDefLump().toSideDefs(sectors, textureMapContainer)
+            val sideDefs: SideDefs =
+                lumpProvider.fetchSideDefLump().toSideDefs(sectors, textureMapContainer)
             val vertexes: Vertexes = lumpProvider.fetchVertexesLump().toVertexes()
             val lineDefs: LineDefs = lumpProvider.fetchLineDefsLump().toLineDefs(sideDefs)
             val nodes: Nodes = lumpProvider.fetchNodesLump().toNodes()

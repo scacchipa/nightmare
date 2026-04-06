@@ -3,9 +3,9 @@ package ar.com.scacchi.nightmare.ui.dev.texture
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
-import ar.com.scacchi.nightmare.data.color.Palette
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
 import ar.com.scacchi.nightmare.engine.ImageRepository
+import ar.com.scacchi.nightmare.source.wad.NmPalette
 import ar.com.scacchi.nightmare.source.wad.WadManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,7 +22,7 @@ class TextureViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        TextureState(Palette(emptyArray()), 0, 0, emptyList(), DoomBitmap(100, 100))
+        TextureState(NmPalette(emptyArray()), 0, 0, emptyList(), DoomBitmap(100, 100))
     )
     val uiState = _uiState as StateFlow<TextureState>
 

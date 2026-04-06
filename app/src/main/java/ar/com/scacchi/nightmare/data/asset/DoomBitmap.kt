@@ -1,10 +1,9 @@
 package ar.com.scacchi.nightmare.data.asset
 
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
-import ar.com.scacchi.nightmare.data.color.Palette
+import ar.com.scacchi.nightmare.source.wad.NmPalette
 import kotlin.math.max
 import kotlin.math.min
 
@@ -23,14 +22,14 @@ class DoomBitmap(
 
     operator fun get(x: Int, y: Int): Short = pixels[x * height + y]
 
-    fun toBitmap(palette: Palette): Bitmap =
+    fun toBitmap(palette: NmPalette): Bitmap =
         createBitmap(width, height).also { bitmap ->
             for (x in 0 until width) {
                 for (y in 0 until height) {
                     val index = pixels[x * height + y]
 
                     if (index != (-1).toShort()) {
-                        bitmap[x, y] = palette[index.toInt()].toArgb()
+                        bitmap[x, y] = palette[index.toInt()].argb
                     }
                 }
             }

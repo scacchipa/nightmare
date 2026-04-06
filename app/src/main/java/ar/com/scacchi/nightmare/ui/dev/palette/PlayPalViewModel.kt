@@ -1,12 +1,12 @@
 package ar.com.scacchi.nightmare.ui.dev.palette
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ar.com.scacchi.nightmare.data.color.Palette
-import ar.com.scacchi.nightmare.data.color.PlayPal
 import ar.com.scacchi.nightmare.di.DefaultDispatcher
 import ar.com.scacchi.nightmare.engine.Engine
+import ar.com.scacchi.nightmare.source.wad.NmColor
+import ar.com.scacchi.nightmare.source.wad.NmPalette
+import ar.com.scacchi.nightmare.source.wad.NmPlayPal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ class PlayPalViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        PlayPalState(PlayPal(arrayOf(Palette(Array(256){ Color.White }))), 0)
+        PlayPalState(NmPlayPal(arrayOf(NmPalette(Array(256){ NmColor.White }))), 0)
     )
     val uiState = _uiState as StateFlow<PlayPalState>
 

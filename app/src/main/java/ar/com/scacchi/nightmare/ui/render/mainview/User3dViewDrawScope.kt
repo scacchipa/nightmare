@@ -1,8 +1,6 @@
 package ar.com.scacchi.nightmare.ui.render.mainview
 
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import ar.com.scacchi.nightmare.BSP
 import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
@@ -14,6 +12,7 @@ import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
+import ar.com.scacchi.nightmare.source.wad.NmColor
 import ar.com.scacchi.nightmare.ui.render.map.getColor
 import kotlin.math.cos
 import kotlin.math.sin
@@ -90,29 +89,30 @@ class Nm3DScreen(
         val color = getColor(subSectorId)
 
         nmBitmap.drawLine(
-            color = color.toArgb(),
+            color = color,
             x1 = x1.toInt(), y1 = 0,
             x2 = x1.toInt(), y2 = SCREEN_HEIGHT.toInt(),
         )
         nmBitmap.drawLine(
-            color = color.toArgb(),
+            color = color,
             x1 = x2.toInt(), y1 = 0,
             x2 = x2.toInt(), y2 = SCREEN_HEIGHT.toInt(),
         )
     }
 
-    val colorMap = mutableMapOf<String, Color>()
+    val colorMap = mutableMapOf<String, NmColor>()
 
-    fun getColor(tex: String, lightLevel: Float): Color {
+    fun getColor(tex: String, lightLevel: Float): NmColor {
         val colorLabel = tex + lightLevel.toString()
 
         return colorMap.getOrPut(colorLabel) {
             val rnd = Random(tex.hashCode())
 
-            Color(
-                red = (rnd.nextInt(50, 256) * lightLevel).toInt(),
-                green = (rnd.nextInt(50, 256) * lightLevel).toInt(),
-                blue = (rnd.nextInt(50, 256) * lightLevel).toInt(),
+            NmColor(
+                alpha = 0xFFu.toUByte(),
+                red = (rnd.nextInt(50, 256) * lightLevel).toInt().toUByte(),
+                green = (rnd.nextInt(50, 256) * lightLevel).toInt().toUByte(),
+                blue = (rnd.nextInt(50, 256) * lightLevel).toInt().toUByte(),
             )
         }
     }
@@ -174,12 +174,12 @@ class Nm3DScreen(
 
             val col = flatTex[tx, ty]
             val color =
-                if (col == (-1).toShort()) Color.Transparent
+                if (col == (-1).toShort()) NmColor.Transparent
                 else gameState.playPal[0][col.toInt()].light(lightLevel)
             nmBitmap.drawPixel(
                 x = x.toInt(),
                 y = iy,
-                color = color.toArgb(),
+                color = color,
             )
         }
     }
@@ -204,11 +204,11 @@ class Nm3DScreen(
                 val yp = texY.toInt().normalize(texH)
                 val paletteColor = tex[xp, yp]
                 val color =
-                    if (paletteColor == (-1).toShort()) Color.Transparent
+                    if (paletteColor == (-1).toShort()) NmColor.Transparent
                     else gameState.playPal[0][paletteColor.toInt()].light(lightLevel)
                 nmBitmap.drawPixel(
                     x = x.toInt(), y = iy,
-                    color = color.toArgb(),
+                    color = color,
                 )
                 texY += invScale
             }

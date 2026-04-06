@@ -49,7 +49,7 @@ fun ColorMap(
                         Box(
                             modifier = Modifier
                                 .size(4.dp)
-                                .background(state.playPal[state.paletteIdx][colorIdx.toInt()])
+                                .background(state.playPal[state.paletteIdx][colorIdx.toInt()].color)
                         )
                     }
                 }

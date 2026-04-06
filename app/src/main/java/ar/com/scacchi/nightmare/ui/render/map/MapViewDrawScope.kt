@@ -11,11 +11,11 @@ import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
-import ar.com.scacchi.nightmare.source.wad.lump.data.map.SegLump
 import ar.com.scacchi.nightmare.engine.Vertexes
 import ar.com.scacchi.nightmare.ext.scalar
 import ar.com.scacchi.nightmare.settings.H_FOV
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
+import ar.com.scacchi.nightmare.source.wad.lump.data.map.SegLump
 
 class MapViewDrawScope(
     private val parentScope: DrawScope
@@ -127,7 +127,7 @@ class MapViewDrawScope(
         val v1 = gameState.episodeMap.vertexes[seg.startVertexId.toInt()]
         val v2 = gameState.episodeMap.vertexes[seg.endVertexId.toInt()]
         drawLine(
-            color = getColor(subSectorId),
+            color = getColor(subSectorId).color,
             start = v1.toOffset(),
             end = v2.toOffset(),
             strokeWidth = 10f
