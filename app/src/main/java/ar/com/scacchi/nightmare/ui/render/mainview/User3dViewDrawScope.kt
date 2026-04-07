@@ -158,8 +158,8 @@ class Nm3DScreen(
         for (iy in y1.toInt() until y2.toInt()) {
             val z = H_WIDTH * worldZ / (H_HEIGHT - iy)
 
-            val px = playerDirX * z + gameState.player.xPos
-            val py = playerDirY * z + gameState.player.yPos
+            val px = playerDirX * z + gameState.player.pos.x
+            val py = playerDirY * z + gameState.player.pos.y
 
             val leftX = -playerDirY * z + px
             val leftY = playerDirX * z + py

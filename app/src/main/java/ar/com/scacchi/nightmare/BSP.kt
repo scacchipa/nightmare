@@ -22,17 +22,16 @@ class BSP {
 
     companion object {
         const val SUB_SECTOR_IDENTIFIER = 0x8000 // 2**15 = 32768
+        const val TWO_PI = (2f * Math.PI).toFloat()
 
         fun norm(angle: Float): Float {
-            val angle = (angle % (2 * Math.PI)).toFloat()
-            return if (angle >= 0) angle else (angle + 2 * Math.PI).toFloat()
+            return ((angle % TWO_PI) + TWO_PI) % TWO_PI
         }
 
-        fun isOnBackSide(player: Player,node: Node): Boolean {
-            val dx = player.xPos - node.xPartition
-            val dy = player.yPos - node.yPartition
+        fun isOnBackSide(player: Player, node: Node): Boolean {
+            val delta = player.pos - Offset(node.xPartition.toFloat(), node.yPartition.toFloat())
 
-            return dx * node.dyPartition - dy * node.dxPartition <= 0
+            return delta.x * node.dyPartition - delta.y * node.dxPartition <= 0
         }
 
         fun angleToX(angle: Float): Float {
@@ -74,10 +73,9 @@ class BSP {
         }
 
         fun pointToAngle(player: Player, vertex: Offset): Float {
-            val deltaX = vertex.x - player.xPos
-            val deltaY = vertex.y - player.yPos
+            val delta = Offset(vertex.x, vertex.y) - player.pos
 
-            return atan2(deltaY, deltaX)
+            return atan2(delta.y, delta.x)
         }
 
         fun checkBBox(player: Player, bBox: Node.BoundBox): Boolean {
@@ -87,8 +85,8 @@ class BSP {
             val c = Offset(bBox.right.toFloat(), bBox.top.toFloat())
             val d = Offset(bBox.right.toFloat(), bBox.bottom.toFloat())
 
-            val px = player.xPos
-            val py = player.yPos
+            val px = player.pos.x
+            val py = player.pos.y
 
             val bBoxSides: List<Pair<Offset, Offset>> = when {
                 px < bBox.left -> when {

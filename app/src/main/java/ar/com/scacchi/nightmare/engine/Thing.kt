@@ -1,19 +1,18 @@
 package ar.com.scacchi.nightmare.engine
 
+import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.settings.PLAYER_HEIGHT
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.ThingLump
 import kotlin.math.PI
 
 class Thing(
-    val xPos: Int,
-    val yPos: Int,
+    val pos: Offset,
     val angle: Float,
     val type: UShort,
     val flags: UShort,
 ) {
     fun toPlayer(): Player = Player(
-        xPos = xPos.toFloat(),
-        yPos = yPos.toFloat(),
+        pos = pos,
         angle = angle,
         type = type,
         flags = flags,
@@ -22,8 +21,7 @@ class Thing(
 }
 
 fun ThingLump.toThing(): Thing = Thing(
-    xPos = xPos.toInt(),
-    yPos = yPos.toInt(),
+    pos = Offset(x = xPos.toFloat(), y = yPos.toFloat()),
     angle = (angle.toFloat() * PI / 180.0f).toFloat(),
     type = type,
     flags = flags,

@@ -53,15 +53,12 @@ class MapViewDrawScope(
         drawCircle(
             color = Color.Black,
             radius = 20f,
-            center = Offset(player.xPos, player.yPos)
+            center = player.pos
         )
     }
 
     fun drawFov(gameState: GameState) {
-        val playerPos = Offset(
-            x = gameState.player.xPos,
-            y = gameState.player.yPos,
-        )
+        val playerPos = gameState.player.pos
 
         val angle = gameState.player.angle
         val dirA1 = Offset.scalar(angle - H_FOV)

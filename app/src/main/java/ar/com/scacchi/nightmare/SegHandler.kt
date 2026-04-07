@@ -97,8 +97,8 @@ class SegHandler(
 
         // calculate the scaling factors of the left and right edges of the wall range
         val hypotenuse = hypot(
-            x = player.xPos - seg.startVertex.x,
-            y = player.yPos - seg.startVertex.y
+            x = player.pos.x - seg.startVertex.x,
+            y = player.pos.y - seg.startVertex.y
         )
 
         val startX: Int
@@ -266,8 +266,8 @@ class SegHandler(
         val offsetAngle = rwNormalAngle - this.rwAngle1
 
         val hypotenuse = hypot(
-            x = this.player.xPos - seg.startVertex.x,
-            y = this.player.yPos - seg.startVertex.y,
+            x = this.player.pos.x - seg.startVertex.x,
+            y = this.player.pos.y - seg.startVertex.y,
         )
 
         val rwDistance = hypotenuse * cos(offsetAngle)
