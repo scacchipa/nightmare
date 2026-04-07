@@ -23,7 +23,6 @@ class MapViewDrawScope(
 
     fun drawLineDefs(
         lineDefs: LineDefs,
-        vertexes: Vertexes,
     ) {
         lineDefs.content.forEach { line ->
             drawLine(
@@ -111,9 +110,9 @@ class MapViewDrawScope(
         )
     }
 
-    fun drawSeg(gameState: GameState, seg: Seg, subSectorId: Int) {
-        val v1 = gameState.episodeMap.vertexes[seg.startVertexId]
-        val v2 = gameState.episodeMap.vertexes[seg.endVertexId]
+    fun drawSeg(seg: Seg, subSectorId: Int) {
+        val v1 = seg.startVertex
+        val v2 = seg.endVertex
         drawLine(
             color = getColor(subSectorId).color,
             start = v1.pos,

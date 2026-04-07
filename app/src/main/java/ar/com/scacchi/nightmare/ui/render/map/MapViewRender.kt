@@ -30,11 +30,11 @@ fun ColumnScope.MapViewRender(
     gameState: GameState
 ) {
     var scale by remember { mutableFloatStateOf(1 / SCALE) }
-    var offset by remember { mutableStateOf(Offset.Zero) }
+    var offset by remember { mutableStateOf(Offset(0f, 2200f)) }
     var rotation by remember { mutableFloatStateOf(0f) }
 
     Canvas(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .weight(1f)
             .clipToBounds()
@@ -56,7 +56,7 @@ fun ColumnScope.MapViewRender(
                 scaleX = scale,
                 scaleY = -scale,
                 translationX = -offset.x * scale,
-                translationY = -offset.y * scale - 1200,
+                translationY = -offset.y * scale,
                 rotationZ = rotation,
                 transformOrigin = TransformOrigin(0f, 0f),
             )
@@ -72,7 +72,6 @@ fun ColumnScope.MapViewRender(
 
             drawLineDefs(
                 lineDefs = gameState.episodeMap.lineDefs,
-                vertexes = gameState.episodeMap.vertexes
             )
 
             drawVertexes(
