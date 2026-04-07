@@ -53,12 +53,12 @@ class Nm3DScreen(
 
             if (BSP.isOnBackSide(gameState.player, node)) {
                 renderBspNode(gameState, node.backChildId)
-                if (BSP.checkBBox(gameState.player, node.frontBoundBox)) {
+                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.angle )) {
                     renderBspNode(gameState, node.frondChildId)
                 }
             } else {
                 renderBspNode(gameState, node.frondChildId)
-                if (BSP.checkBBox(gameState.player, node.backBoundBox)) {
+                if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.angle)) {
                     renderBspNode(gameState, node.backChildId)
                 }
             }

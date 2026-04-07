@@ -1,6 +1,7 @@
 package ar.com.scacchi.nightmare.ext
 
 import androidx.compose.ui.geometry.Offset
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
@@ -17,3 +18,6 @@ fun Offset.rotateBy(angle: Float): Offset {
 fun Offset.Companion.scalar(rad: Float): Offset = Offset(cos(rad), sin(rad))
 
 fun Offset.hypotenuse(): Float = hypot(x, y)
+fun Offset.atan2(): Float = atan2(y, x)
+fun Offset.angleToX(point: Offset): Float = (point - this).atan2()
+fun Offset.angleTo(point: Offset): Float = (point - this).atan2()
