@@ -6,24 +6,28 @@ import ar.com.scacchi.nightmare.source.wad.lump.data.map.NodeLump
 class Node(
     val partition: Offset,
     val dPartition: Offset,
-    val frontBoundBox: BoundBox = BoundBox(0, 0, 0, 0),
-    val backBoundBox: BoundBox = BoundBox(0, 0, 0, 0),
+    val frontBoundBox: BoundBox = BoundBox.empty,
+    val backBoundBox: BoundBox = BoundBox.empty,
     val frondChildId: Int,
     val backChildId: Int,
 ) {
     class BoundBox(
-        val top: Int,
-        val bottom: Int,
-        val left: Int,
-        val right: Int,
-    )
+        val top: Float,
+        val bottom: Float,
+        val left: Float,
+        val right: Float,
+    ) {
+        companion object {
+            val empty = BoundBox(0f, 0f, 0f, 0f)
+        }
+    }
 }
 
 fun NodeLump.BoundBox.toNodeBoundBox(): Node.BoundBox = Node.BoundBox(
-    top = top.toInt(),
-    bottom = bottom.toInt(),
-    left = left.toInt(),
-    right = right.toInt(),
+    top = top.toFloat(),
+    bottom = bottom.toFloat(),
+    left = left.toFloat(),
+    right = right.toFloat(),
 )
 
 fun NodeLump.toNode(): Node = Node(
