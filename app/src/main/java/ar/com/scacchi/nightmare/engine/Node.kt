@@ -21,30 +21,29 @@ class Node(
         val left: Float,
         val right: Float,
     ) {
+        val leftBottom = Offset(left, bottom)
+        val leftTop = Offset(left, top)
+        val rightTop = Offset(right, top)
+        val rightBottom = Offset(right, bottom)
+
         fun checkBBox(offset: Offset, angle: Float): Boolean {
-
-            val a = Offset(left, bottom)
-            val b = Offset(left, top)
-            val c = Offset(right, top)
-            val d = Offset(right, bottom)
-
             val px = offset.x
             val py = offset.y
 
             val bBoxSides: List<Pair<Offset, Offset>> = when {
                 px < left -> when {
-                    py > top -> listOf(b to a, c to b)
-                    py < bottom -> listOf(b to a, a to d)
-                    else -> listOf(b to a)
+                    py > top -> listOf(leftTop to leftBottom, rightTop to leftTop)
+                    py < bottom -> listOf(leftTop to leftBottom, leftBottom to rightBottom)
+                    else -> listOf(leftTop to leftBottom)
                 }
                 px > right -> when {
-                    py > top -> listOf(c to b, d to c)
-                    py < bottom -> listOf(a to d, d to c)
-                    else -> listOf(d to c)
+                    py > top -> listOf(rightTop to leftTop, rightBottom to rightTop)
+                    py < bottom -> listOf(leftBottom to rightBottom, rightBottom to rightTop)
+                    else -> listOf(rightBottom to rightTop)
                 }
                 else -> when {
-                    py > top -> listOf(c to b)
-                    py < bottom -> listOf(a to  d)
+                    py > top -> listOf(rightTop to leftTop)
+                    py < bottom -> listOf(leftBottom to rightBottom)
                     else -> return true
                 }
             }

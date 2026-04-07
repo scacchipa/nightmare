@@ -98,13 +98,11 @@ class MapViewDrawScope(
     }
 
     fun drawBBox(bBox: Node.BoundBox, color: Color) {
-        val x = bBox.left
-        val y = bBox.top
         val w = bBox.right - bBox.left
         val h = bBox.bottom - bBox.top
         drawRect(
             color = color,
-            topLeft = Offset(x, y),
+            topLeft = bBox.leftTop,
             size = Size(w, h),
             style = Stroke(width = 10f)
         )
