@@ -4,16 +4,9 @@ import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.VertexLump
 
 class Vertex(
-    val x: Int,
-    val y: Int,
-) {
-    fun toOffset(): Offset = Offset(
-        x = this.x.toFloat(),
-        y = this.y.toFloat(),
-    )
-}
+    val pos: Offset,
+)
 
 fun VertexLump.toVertex(): Vertex = Vertex(
-    x = x.toInt(),
-    y = y.toInt(),
+    pos = Offset(x.toFloat(), y.toFloat()),
 )

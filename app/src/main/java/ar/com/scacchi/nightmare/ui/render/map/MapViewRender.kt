@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import ar.com.scacchi.nightmare.engine.GameState
+import ar.com.scacchi.nightmare.ext.degreeToRadian
 import ar.com.scacchi.nightmare.ext.rotateBy
 import ar.com.scacchi.nightmare.settings.SCALE
 import ar.com.scacchi.nightmare.source.wad.NmColor
@@ -45,7 +46,7 @@ fun ColumnScope.MapViewRender(
 
                     val newScale = oldScale * zoom
                     offset =
-                        (offset + centroid / oldScale).rotateBy(gestureRotation) -
+                        (offset + centroid / oldScale).rotateBy(gestureRotation.degreeToRadian()) -
                                 (centroid / newScale + pan / oldScale)
                     scale = newScale
                     rotation += gestureRotation

@@ -11,11 +11,11 @@ import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.LineDefs
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
+import ar.com.scacchi.nightmare.engine.Seg
 import ar.com.scacchi.nightmare.engine.Vertexes
 import ar.com.scacchi.nightmare.ext.scalar
 import ar.com.scacchi.nightmare.settings.H_FOV
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
-import ar.com.scacchi.nightmare.source.wad.lump.data.map.SegLump
 
 class MapViewDrawScope(
     private val parentScope: DrawScope
@@ -28,8 +28,8 @@ class MapViewDrawScope(
         lineDefs.content.forEach { line ->
             drawLine(
                 color = Color.Red,
-                start = vertexes[line.startVertexId].toOffset(),
-                end = vertexes[line.endVertexId].toOffset(),
+                start = vertexes[line.startVertexId].pos,
+                end = vertexes[line.endVertexId].pos,
             )
         }
     }
@@ -37,11 +37,8 @@ class MapViewDrawScope(
     fun drawVertexes(
         vertexes: Vertexes
     ) {
-        val points = vertexes.content
-            .map { Offset(it.x.toFloat(), it.y.toFloat()) }
-
         drawPoints(
-            points = points,
+            points = vertexes.getOffsets(),
             pointMode = PointMode.Points,
             color = Color.Red,
             strokeWidth = 10f,
@@ -108,19 +105,19 @@ class MapViewDrawScope(
         val h = bBox.bottom - bBox.top
         drawRect(
             color = color,
-            topLeft = Offset(x.toFloat(), y.toFloat()),
-            size = Size(w.toFloat(), h.toFloat()),
+            topLeft = Offset(x, y),
+            size = Size(w, h),
             style = Stroke(width = 10f)
         )
     }
 
-    fun drawSeg(gameState: GameState, seg: SegLump, subSectorId: Int) {
-        val v1 = gameState.episodeMap.vertexes[seg.startVertexId.toInt()]
-        val v2 = gameState.episodeMap.vertexes[seg.endVertexId.toInt()]
+    fun drawSeg(gameState: GameState, seg: Seg, subSectorId: Int) {
+        val v1 = gameState.episodeMap.vertexes[seg.startVertexId]
+        val v2 = gameState.episodeMap.vertexes[seg.endVertexId]
         drawLine(
             color = getColor(subSectorId).color,
-            start = v1.toOffset(),
-            end = v2.toOffset(),
+            start = v1.pos,
+            end = v2.pos,
             strokeWidth = 10f
         )
     }

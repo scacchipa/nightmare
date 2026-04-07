@@ -8,12 +8,7 @@ class Vertexes(
 ) {
     operator fun get(idx: Int): Vertex = content[idx]
 
-    fun toOffsetList(): List<Offset> = this.content.map {
-        Offset(
-            x = it.x.toFloat(),
-            y = it.y.toFloat(),
-        )
-    }
+    fun getOffsets(): List<Offset> = content.map { it.pos }
 
     companion object {
         fun emptyVertexes(): Vertexes = Vertexes(emptyArray())

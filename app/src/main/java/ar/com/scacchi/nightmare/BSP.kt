@@ -39,8 +39,8 @@ class BSP {
         }
 
         fun addSegmentToFov(player: Player, startVertex: Vertex, endVertex: Vertex): VertexOnScreen? {
-            val realStartAngle = pointToAngle(player, startVertex.toOffset())
-            val realEndAngle = pointToAngle(player, endVertex.toOffset())
+            val realStartAngle = pointToAngle(player, startVertex.pos)
+            val realEndAngle = pointToAngle(player, endVertex.pos)
 
             val span = norm(realStartAngle - realEndAngle)
 
@@ -80,10 +80,10 @@ class BSP {
 
         fun checkBBox(player: Player, bBox: Node.BoundBox): Boolean {
 
-            val a = Offset(bBox.left.toFloat(), bBox.bottom.toFloat())
-            val b = Offset(bBox.left.toFloat(), bBox.top.toFloat())
-            val c = Offset(bBox.right.toFloat(), bBox.top.toFloat())
-            val d = Offset(bBox.right.toFloat(), bBox.bottom.toFloat())
+            val a = Offset(bBox.left, bBox.bottom)
+            val b = Offset(bBox.left, bBox.top)
+            val c = Offset(bBox.right, bBox.top)
+            val d = Offset(bBox.right, bBox.bottom)
 
             val px = player.pos.x
             val py = player.pos.y

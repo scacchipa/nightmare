@@ -3,6 +3,7 @@ package ar.com.scacchi.nightmare
 import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
+import ar.com.scacchi.nightmare.ext.hypotenuse
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_DIST
@@ -15,7 +16,6 @@ import kotlin.math.PI
 import kotlin.math.absoluteValue
 import kotlin.math.atan
 import kotlin.math.cos
-import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
@@ -96,10 +96,7 @@ class SegHandler(
         val bDrawFloor = worldFrontZ2 < 0
 
         // calculate the scaling factors of the left and right edges of the wall range
-        val hypotenuse = hypot(
-            x = player.pos.x - seg.startVertex.x,
-            y = player.pos.y - seg.startVertex.y
-        )
+        val hypotenuse = (player.pos - seg.startVertex.pos).hypotenuse()
 
         val startX: Int
         val endX: Int
@@ -265,10 +262,7 @@ class SegHandler(
         val rwNormalAngle = seg.radAngle + PI.toFloat() / 2f
         val offsetAngle = rwNormalAngle - this.rwAngle1
 
-        val hypotenuse = hypot(
-            x = this.player.pos.x - seg.startVertex.x,
-            y = this.player.pos.y - seg.startVertex.y,
-        )
+        val hypotenuse = (player.pos - seg.startVertex.pos).hypotenuse()
 
         val rwDistance = hypotenuse * cos(offsetAngle)
 
