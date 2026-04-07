@@ -1,12 +1,12 @@
 package ar.com.scacchi.nightmare.engine
 
+import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.ext.asString
 import ar.com.scacchi.nightmare.source.wad.TextureMapContainer
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.SideDefLump
 
 class SideDef(
-    val xOffset: Int,
-    val yOffset: Int,
+    val offset: Offset,
     val upperTextureName: String,
     val middleTextureName: String,
     val lowerTextureName: String,
@@ -23,8 +23,7 @@ fun SideDefLump.toSideDef(sectors: Sectors, textureMapContainer: TextureMapConta
     val lowerTextureName = lowerTextureName.asString()
 
     return SideDef(
-        xOffset = xOffset.toInt(),
-        yOffset = yOffset.toInt(),
+        offset = Offset(xOffset.toFloat(), yOffset.toFloat()),
         upperTextureName = upperTextureName,
         middleTextureName = middleTextureName,
         lowerTextureName = lowerTextureName,

@@ -95,14 +95,8 @@ class MapViewDrawScope(
 
         drawLine(
             color = Color.Blue,
-            start = Offset(
-                x = node.xPartition.toFloat(),
-                y = node.yPartition.toFloat()
-            ),
-            end = Offset(
-                x = (node.xPartition + node.dxPartition).toFloat(),
-                y = (node.yPartition + node.dyPartition).toFloat()
-            ),
+            start = node.partition,
+            end = node.partition + node.dPartition,
             strokeWidth = 10f
         )
     }

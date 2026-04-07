@@ -29,9 +29,9 @@ class BSP {
         }
 
         fun isOnBackSide(player: Player, node: Node): Boolean {
-            val delta = player.pos - Offset(node.xPartition.toFloat(), node.yPartition.toFloat())
+            val delta = player.pos - node.partition
 
-            return delta.x * node.dyPartition - delta.y * node.dxPartition <= 0
+            return delta.x * node.dPartition.y - delta.y * node.dPartition.x <= 0
         }
 
         fun angleToX(angle: Float): Float {

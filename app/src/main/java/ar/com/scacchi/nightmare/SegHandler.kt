@@ -82,7 +82,7 @@ class SegHandler(
         /*
         * determine how the wall texture are vertically aligned
         */
-        val middleTexAlt = (side?.yOffset?.toFloat() ?: 0f) +
+        val middleTexAlt = (side?.offset?.y ?: 0f) +
                 if (line.flags.and(LINEDEF_FLAGS["DONT_PEG_BOTTOM"] ?: 0u) != 0.toUShort()) {
                     val vTop = (frontSector?.floorHeight ?: 0) + wallTexture.height
                     vTop - player.height
@@ -124,7 +124,7 @@ class SegHandler(
          */
         val rwOffset = hypotenuse * sin(offsetAngle) +
                 seg.offset.toFloat() +
-                (side?.xOffset?.toFloat() ?: 0f)
+                (side?.offset?.x ?: 0f)
 
         val rwCenterAngle = rwNormalAngle - player.angle
 
@@ -288,7 +288,7 @@ class SegHandler(
         val upperTexAlt: Float = if (bDrawUpperWall) {
             val upperWallTexture =
                 imageRepository.getTextureDoomBitmap(side?.upperTextureIdx ?: -1)
-            (side?.yOffset?.toFloat() ?: 0f) +
+            (side?.offset?.y ?: 0f) +
                     (if (line.flags.and(LINEDEF_FLAGS["DONT_PEG_TOP"] ?: 0u) != 0u.toUShort()) {
                         worldFrontZ1
                     } else {
@@ -298,7 +298,7 @@ class SegHandler(
         } else 0f
 
         val lowerTexAlt = if (bDrawLowerWall) {
-            (side?.yOffset?.toFloat() ?: 0f) +
+            (side?.offset?.y ?: 0f) +
                     if (line.flags.and(LINEDEF_FLAGS["DONT_PEG_TOP"] ?: 0u) != 0u.toUShort()) {
                         worldFrontZ1
                     } else {
@@ -313,7 +313,7 @@ class SegHandler(
             if (segTextured) {
                 - hypotenuse * sin(offsetAngle) +
                         seg.offset.toFloat() +
-                        (side?.xOffset?.toFloat() ?: 0f)
+                        (side?.offset?.x ?: 0f)
             } else 0f
         //
         val rwCenterAngle = - rwNormalAngle + player.angle
