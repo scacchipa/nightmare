@@ -74,7 +74,7 @@ class WadManager @Inject constructor(
             val sideDefs: SideDefs =
                 lumpProvider.fetchSideDefLump().toSideDefs(sectors, textureMapContainer)
             val vertexes: Vertexes = lumpProvider.fetchVertexesLump().toVertexes()
-            val lineDefs: LineDefs = lumpProvider.fetchLineDefsLump().toLineDefs(sideDefs)
+            val lineDefs: LineDefs = lumpProvider.fetchLineDefsLump().toLineDefs(vertexes, sideDefs)
             val nodes: Nodes = lumpProvider.fetchNodesLump().toNodes()
             val subSectors: SubSectors = lumpProvider.fetchSubSectorsLump().toSubSectors()
             val segs: Segs = lumpProvider.fetchSegsLump().toSegs(vertexes, lineDefs)

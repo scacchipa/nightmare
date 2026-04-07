@@ -5,6 +5,8 @@ import ar.com.scacchi.nightmare.source.wad.lump.data.map.LineDefLump
 class LineDef(
     val startVertexId: Int,
     val endVertexId: Int,
+    val startVertex: Vertex,
+    val endVertex: Vertex,
     val flags: UShort,
     val specialType: Int,
     val sectorTag: Int,
@@ -14,9 +16,11 @@ class LineDef(
     val backSideDef: SideDef?,
 )
 
-fun LineDefLump.toLineDef(sideDefs: SideDefs): LineDef = LineDef(
+fun LineDefLump.toLineDef(vertexes: Vertexes, sideDefs: SideDefs): LineDef = LineDef(
     startVertexId = startVertexId.toInt(),
     endVertexId = endVertexId.toInt(),
+    startVertex = vertexes[startVertexId.toInt()],
+    endVertex = vertexes[endVertexId.toInt()],
     flags = flags,
     specialType = specialType.toInt(),
     sectorTag = sectorTag.toInt(),

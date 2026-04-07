@@ -28,8 +28,8 @@ class MapViewDrawScope(
         lineDefs.content.forEach { line ->
             drawLine(
                 color = Color.Red,
-                start = vertexes[line.startVertexId].pos,
-                end = vertexes[line.endVertexId].pos,
+                start = line.startVertex.pos,
+                end = line.endVertex.pos,
             )
         }
     }

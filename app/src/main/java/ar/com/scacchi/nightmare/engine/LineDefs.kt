@@ -12,8 +12,8 @@ class LineDefs(
     }
 }
 
-fun LineDefsLump.toLineDefs(sideDefs: SideDefs): LineDefs = LineDefs(
+fun LineDefsLump.toLineDefs(vertexes: Vertexes, sideDefs: SideDefs): LineDefs = LineDefs(
     content = Array(content.size) { idx ->
-        content[idx].toLineDef(sideDefs)
+        content[idx].toLineDef(vertexes, sideDefs)
     }
 )
