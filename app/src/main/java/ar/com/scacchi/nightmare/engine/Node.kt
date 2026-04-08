@@ -30,41 +30,39 @@ class Node(
             val px = offset.x
             val py = offset.y
 
-            val bBoxSides: List<Pair<Offset, Offset>> = when {
-                px < left -> when {
-                    py > top -> listOf(leftTop to leftBottom, rightTop to leftTop)
-                    py < bottom -> listOf(leftTop to leftBottom, leftBottom to rightBottom)
-                    else -> listOf(leftTop to leftBottom)
+            when {
+                px < left -> {
+                    if (checkSide(offset, angle, leftTop, leftBottom)) return true
+                    if (py > top && checkSide(offset, angle, rightTop, leftTop)) return true
+                    if (py < bottom && checkSide(offset, angle, leftBottom, rightBottom))
+                        return true
                 }
-                px > right -> when {
-                    py > top -> listOf(rightTop to leftTop, rightBottom to rightTop)
-                    py < bottom -> listOf(leftBottom to rightBottom, rightBottom to rightTop)
-                    else -> listOf(rightBottom to rightTop)
+                px > right -> {
+                    if (checkSide(offset, angle, rightTop, rightBottom)) return true
+                    if (py > top && checkSide(offset, angle, rightTop, leftTop)) return true
+                    if (py < bottom && checkSide(offset, angle, leftBottom, rightBottom))
+                        return true
+                    return false
                 }
-                else -> when {
-                    py > top -> listOf(rightTop to leftTop)
-                    py < bottom -> listOf(leftBottom to rightBottom)
-                    else -> return true
-                }
-            }
-
-            for ((v1, v2) in bBoxSides) {
-                val angle1 = offset.angleTo(v1)
-                val angle2 = offset.angleTo(v2)
-
-                val span = (angle1 - angle2).normalizeAngle()
-
-                val angle1RelativeToPlayer = (angle1 - angle).normalizeAngle()
-                val span1 = (angle1RelativeToPlayer + H_FOV).normalizeAngle()
-
-                if (span1 > FOV) {
-                    if (span1 >= span + FOV) {
-                        continue
-                    }
-                }
-                return true
+                py > top -> if (checkSide(offset, angle, rightTop, leftTop)) return true
+                px > right -> if (checkSide(offset, angle, leftBottom, rightBottom)) return true
+                else -> return true
             }
             return false
+        }
+
+        private fun checkSide(
+            offset: Offset, angle: Float, vertex1: Offset, vertex2: Offset
+        ): Boolean {
+            val angle1 = offset.angleTo(vertex1)
+            val angle2 = offset.angleTo(vertex2)
+
+            val span = (angle1 - angle2).normalizeAngle()
+
+            val angle1RelativeToPlayer = (angle1 - angle).normalizeAngle()
+            val span1 = (angle1RelativeToPlayer + H_FOV).normalizeAngle()
+
+            return !(span1 > FOV && span1 >= span + FOV)
         }
 
         companion object {

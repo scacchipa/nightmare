@@ -65,52 +65,5 @@ class BSP {
 
             return VertexOnScreen(startX, endX, realStartAngle)
         }
-
-//        fun checkBBox(player: Player, bBox: Node.BoundBox): Boolean {
-//
-//            val a = Offset(bBox.left, bBox.bottom)
-//            val b = Offset(bBox.left, bBox.top)
-//            val c = Offset(bBox.right, bBox.top)
-//            val d = Offset(bBox.right, bBox.bottom)
-//
-//            val px = player.pos.x
-//            val py = player.pos.y
-//
-//            val bBoxSides: List<Pair<Offset, Offset>> = when {
-//                px < bBox.left -> when {
-//                    py > bBox.top -> listOf(Pair(b, a), Pair(c, b))
-//                    py < bBox.bottom -> listOf(Pair(b, a), Pair(a, d))
-//                    else -> listOf(Pair(b, a))
-//                }
-//                px > bBox.right -> when {
-//                    py > bBox.top -> listOf(Pair(c, b), Pair(d, c))
-//                    py < bBox.bottom -> listOf(Pair(a, d), Pair(d, c))
-//                    else -> listOf(Pair(d, c))
-//                }
-//                else -> when {
-//                    py > bBox.top -> listOf(Pair(c, b))
-//                    py < bBox.bottom -> listOf(Pair(a, d))
-//                    else -> return true
-//                }
-//            }
-//
-//            for ((v1, v2) in bBoxSides) {
-//                val angle1 = player.pos.angleToX(v1)
-//                val angle2 = player.pos.angleToX(v2)
-//
-//                val span = (angle1 - angle2).normalizeAngle()
-//
-//                val adjustedAngle1 = angle1 - player.angle
-//                val span1 = (adjustedAngle1 + H_FOV).normalizeAngle()
-//
-//                if (span1 > FOV) {
-//                    if (span1 >= span + FOV) {
-//                        continue
-//                    }
-//                }
-//                return true
-//            }
-//            return false
-//        }
     }
 }
