@@ -4,6 +4,7 @@ import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Vertex
 import ar.com.scacchi.nightmare.ext.angleToX
+import ar.com.scacchi.nightmare.ext.atan2
 import ar.com.scacchi.nightmare.ext.normalizeAngle
 import ar.com.scacchi.nightmare.settings.FOV
 import ar.com.scacchi.nightmare.settings.H_FOV
@@ -41,8 +42,8 @@ class BSP {
             // backface culling
             if (span >= PI) return null
 
-            val startAngle = realStartAngle - player.angle
-            val endAngle = realEndAngle - player.angle
+            val startAngle = realStartAngle - player.dirVector.atan2()
+            val endAngle = realEndAngle - player.dirVector.atan2()
 
             val startSpan = (H_FOV + startAngle).normalizeAngle()
 

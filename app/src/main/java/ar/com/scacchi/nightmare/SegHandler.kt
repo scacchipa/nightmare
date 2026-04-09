@@ -3,6 +3,7 @@ package ar.com.scacchi.nightmare
 import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
+import ar.com.scacchi.nightmare.ext.atan2
 import ar.com.scacchi.nightmare.ext.hypotenuse
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
@@ -46,7 +47,7 @@ class SegHandler(
 
     fun scaleFromGlobalAngle(x: Int, rwNormalAngle: Float, rwDistance: Float): Float {
         val xAngle = xToAngleTable[x]
-        val num = SCREEN_DIST * cos(rwNormalAngle - xAngle - player.angle)
+        val num = SCREEN_DIST * cos(rwNormalAngle - xAngle - player.dirVector.atan2())
         val den = rwDistance * cos(xAngle)
 
         val scale = num / den
@@ -123,7 +124,7 @@ class SegHandler(
                 seg.offset.toFloat() +
                 (side?.offset?.x ?: 0f)
 
-        val rwCenterAngle = rwNormalAngle - player.angle
+        val rwCenterAngle = rwNormalAngle - player.dirVector.atan2()
 
 //        println("X1: $startX -> $rwScale1. X2: $endX -> $scale2.  Player angle: ${player.angle}")
 
@@ -310,7 +311,7 @@ class SegHandler(
                         (side?.offset?.x ?: 0f)
             } else 0f
         //
-        val rwCenterAngle = - rwNormalAngle + player.angle
+        val rwCenterAngle = - rwNormalAngle + player.dirVector.atan2()
 
 
         // the y positions of the top / bottom edges of the wall on the screen

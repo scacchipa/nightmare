@@ -13,7 +13,8 @@ import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
 import ar.com.scacchi.nightmare.engine.Vertexes
-import ar.com.scacchi.nightmare.ext.scalar
+import ar.com.scacchi.nightmare.ext.atan2
+import ar.com.scacchi.nightmare.ext.fromAngle
 import ar.com.scacchi.nightmare.settings.H_FOV
 import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 
@@ -56,9 +57,9 @@ class MapViewDrawScope(
     fun drawFov(gameState: GameState) {
         val playerPos = gameState.player.pos
 
-        val angle = gameState.player.angle
-        val dirA1 = Offset.scalar(angle - H_FOV)
-        val dirA2 = Offset.scalar(angle + H_FOV)
+        val angle = gameState.player.dirVector.atan2()
+        val dirA1 = Offset.fromAngle(angle - H_FOV)
+        val dirA2 = Offset.fromAngle(angle + H_FOV)
 
         val lenRay = SCREEN_HEIGHT
 

@@ -1,6 +1,7 @@
 package ar.com.scacchi.nightmare.engine
 
 import androidx.compose.ui.geometry.Offset
+import ar.com.scacchi.nightmare.ext.fromAngle
 import ar.com.scacchi.nightmare.settings.PLAYER_HEIGHT
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.ThingLump
 import kotlin.math.PI
@@ -13,10 +14,10 @@ class Thing(
 ) {
     fun toPlayer(): Player = Player(
         pos = pos,
-        angle = angle,
         type = type,
         flags = flags,
         height = PLAYER_HEIGHT,
+        dirVector = Offset.fromAngle(angle)
     )
 }
 

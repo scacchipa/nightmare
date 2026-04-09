@@ -6,6 +6,7 @@ import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.ImageRepository
+import ar.com.scacchi.nightmare.ext.atan2
 import ar.com.scacchi.nightmare.ext.light
 import ar.com.scacchi.nightmare.ext.normalize
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
@@ -49,12 +50,12 @@ class Nm3DScreen(
 
             if (BSP.isOnBackSide(gameState.player, node)) {
                 renderBspNode(node.backChildId)
-                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.angle )) {
+                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector.atan2() )) {
                     renderBspNode(node.frondChildId)
                 }
             } else {
                 renderBspNode(node.frondChildId)
-                if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.angle)) {
+                if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector.atan2())) {
                     renderBspNode(node.backChildId)
                 }
             }
@@ -123,7 +124,7 @@ class Nm3DScreen(
         if (y1 < y2) {
             if (texName == skyId) {
                 val texColumn =
-                    2.2f * (this.gameState.player.angle + SegHandler.xToAngleTable[x.toInt()]) * 90
+                    2.2f * (this.gameState.player.dirVector.atan2() + SegHandler.xToAngleTable[x.toInt()]) * 90
 
                 this.drawWallCol(
                     tex = imageRepository.getPictureDoomBitmap("SKY1"),
@@ -147,8 +148,8 @@ class Nm3DScreen(
     fun drawFlatCol(
         flatTex: DoomBitmap, x: Float, y1: Float, y2: Float, lightLevel: Float, worldZ: Float,
     ) {
-        val playerDirX = cos(gameState.player.angle)
-        val playerDirY = sin(gameState.player.angle)
+        val playerDirX = cos(gameState.player.dirVector.atan2())
+        val playerDirY = sin(gameState.player.dirVector.atan2())
 
         for (iy in y1.toInt() until y2.toInt()) {
             val z = H_WIDTH * worldZ / (H_HEIGHT - iy)
