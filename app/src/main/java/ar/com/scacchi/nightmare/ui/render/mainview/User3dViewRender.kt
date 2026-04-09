@@ -10,7 +10,10 @@ import androidx.compose.ui.graphics.asImageBitmap
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.settings.SCREEN_ASPECT
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ColumnScope.User3dViewRender(
     modifier: Modifier = Modifier,
@@ -18,12 +21,13 @@ fun ColumnScope.User3dViewRender(
     imageRepository: ImageRepository,
 ) {
     val user3DScreen = Nm3DScreen(gameState, imageRepository)
-
+    val startNow = Clock.System.now()
     val user3dBitmap = with(user3DScreen) {
         isTraverseBsp = false
-        renderBspNode(gameState, gameState.episodeMap.rootNodeId)
+        renderBspNode(gameState.episodeMap.rootNodeId)
         user3DScreen.createBitmap()
     }
+    println("Time to draw a frame ${Clock.System.now() - startNow}")
     Image(
         modifier = Modifier.fillMaxWidth().aspectRatio(SCREEN_ASPECT),
         bitmap = user3dBitmap.asImageBitmap(),

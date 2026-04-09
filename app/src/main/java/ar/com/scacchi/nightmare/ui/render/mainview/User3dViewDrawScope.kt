@@ -17,7 +17,6 @@ import ar.com.scacchi.nightmare.ui.render.map.getColor
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class Nm3DScreen(
@@ -36,37 +35,33 @@ class Nm3DScreen(
     fun createBitmap(): Bitmap = nmBitmap.getBitmap()
 
     @OptIn(ExperimentalTime::class)
-    fun renderBspNode(gameState: GameState, nodeId: Int) {
-        val startNow = Clock.System.now()
+    fun renderBspNode(nodeId: Int) {
         if (gameState.episodeMap.nodes.isEmpty()) return
         if (isTraverseBsp.not()) {
 
             if (nodeId >= BSP.SUB_SECTOR_IDENTIFIER) {
                 this.renderSubSector(
-                    gameState = gameState,
                     subSectorId = nodeId - BSP.SUB_SECTOR_IDENTIFIER
                 )
                 return
             }
-
             val node = gameState.episodeMap.nodes[nodeId]
 
             if (BSP.isOnBackSide(gameState.player, node)) {
-                renderBspNode(gameState, node.backChildId)
+                renderBspNode(node.backChildId)
                 if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.angle )) {
-                    renderBspNode(gameState, node.frondChildId)
+                    renderBspNode(node.frondChildId)
                 }
             } else {
-                renderBspNode(gameState, node.frondChildId)
+                renderBspNode(node.frondChildId)
                 if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.angle)) {
-                    renderBspNode(gameState, node.backChildId)
+                    renderBspNode(node.backChildId)
                 }
             }
         }
-        println("Time to draw a frame ${Clock.System.now() - startNow}")
     }
 
-    fun renderSubSector(gameState: GameState, subSectorId: Int) {
+    fun renderSubSector(subSectorId: Int) {
 
         val subSector = gameState.episodeMap.subSectors[subSectorId]
 
