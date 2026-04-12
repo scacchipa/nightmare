@@ -40,34 +40,19 @@ fun Offset.cartesianProduct(v: Offset) = Offset(
     y = this.x * v.y + this.y * v.x
 )
 
-fun Offset.fastAtan2(): Float {
+inline fun Offset.fastAtan2(): Float {
 
-    if (x == 0f)
-        return if (y >= 0f) HALF_PI
-        else THREE_HALF_PI
-    if (y == 0f)
-        return if (x >= 0f) 0f
-        else PI.toFloat()
+    if (x == 0f) return if (y >= 0f) HALF_PI else THREE_HALF_PI
+    if (y == 0f) return if (x >= 0f) 0f else PI.toFloat()
 
-    val tan = y / x
-    val cotan = x / y
+    val absX = x.absoluteValue
+    val absY = y.absoluteValue
 
-    return if (tan.absoluteValue < TAN45) {
-        if (x >= 0f) {
-            if (y >= 0) SegHandler.atan2Table[(tan * 1024f).toInt()]
-            else -SegHandler.atan2Table[(-tan * 1024f).toInt()]
-        } else {
-            if (y >= 0) PI.toFloat() - SegHandler.atan2Table[(-tan * 1024f).toInt()]
-            else - PI.toFloat() + SegHandler.atan2Table[(tan * 1024f).toInt()]
-        }
-    } else {
-        if (x >= 0) {
-            if (y >= 0) HALF_PI - SegHandler.atan2Table[(cotan * 1024f).toInt()]
-            else - HALF_PI + SegHandler.atan2Table[(-cotan * 1024f).toInt()]
-        } else {
-            if (y >= 0) HALF_PI + SegHandler.atan2Table[(-cotan * 1024f.toInt()).toInt()]
-            else - HALF_PI - SegHandler.atan2Table[(cotan * 1024f).toInt()]
-        }
-    }
+    val angle =
+        if (absX > absY) SegHandler.atan2Table[(absY / absX * 1024f).toInt()]
+        else HALF_PI - SegHandler.atan2Table[(absX / absY * 1024f).toInt()]
+
+    if (x > 0) return if (y > 0) angle else -angle
+    return if (y > 0) PI.toFloat() - angle else angle - PI.toFloat()
 }
 
