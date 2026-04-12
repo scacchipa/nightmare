@@ -23,7 +23,6 @@ class BSP {
 
     companion object {
         const val SUB_SECTOR_IDENTIFIER = 0x8000 // 2**15 = 32768
-        const val TWO_PI = (2f * Math.PI).toFloat()
 
         fun isOnBackSide(player: Player, node: Node): Boolean {
             val delta = player.pos - node.partition

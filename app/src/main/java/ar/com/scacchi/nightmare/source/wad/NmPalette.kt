@@ -7,6 +7,9 @@ class NmPalette(
     private val content: Array<NmColor>
 ) {
     operator fun get(idx: Int): NmColor = content[idx]
+    operator fun set(idx: Int, value: NmColor) {
+        content[idx] = value
+    }
 }
 
 fun PaletteLump.toPalette(): NmPalette = NmPalette(

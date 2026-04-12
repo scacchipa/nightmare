@@ -1,10 +1,9 @@
 package ar.com.scacchi.nightmare.engine
 
 import androidx.compose.ui.geometry.Offset
-import ar.com.scacchi.nightmare.ext.angleTo
-import ar.com.scacchi.nightmare.ext.normalizeAngle
-import ar.com.scacchi.nightmare.settings.FOV
-import ar.com.scacchi.nightmare.settings.H_FOV
+import ar.com.scacchi.nightmare.ext.cartesianProduct
+import ar.com.scacchi.nightmare.settings.leftLimitFOVScalar
+import ar.com.scacchi.nightmare.settings.rightLimitFOVScaler
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.NodeLump
 
 class Node(
@@ -26,43 +25,59 @@ class Node(
         val rightTop = Offset(right, top)
         val rightBottom = Offset(right, bottom)
 
-        fun checkBBox(offset: Offset, angle: Float): Boolean {
+        fun checkBBox(offset: Offset, dirVector: Offset): Boolean {
             val px = offset.x
             val py = offset.y
 
             when {
                 px < left -> {
-                    if (checkSide(offset, angle, leftTop, leftBottom)) return true
-                    if (py > top && checkSide(offset, angle, rightTop, leftTop)) return true
-                    if (py < bottom && checkSide(offset, angle, leftBottom, rightBottom))
+                    if (checkSide(offset, dirVector, leftTop, leftBottom)) return true
+                    if (py > top && checkSide(offset, dirVector, rightTop, leftTop)) return true
+                    if (py < bottom && checkSide(offset, dirVector, leftBottom, rightBottom))
                         return true
                 }
+
                 px > right -> {
-                    if (checkSide(offset, angle, rightTop, rightBottom)) return true
-                    if (py > top && checkSide(offset, angle, rightTop, leftTop)) return true
-                    if (py < bottom && checkSide(offset, angle, leftBottom, rightBottom))
+                    if (checkSide(offset, dirVector, rightTop, rightBottom)) return true
+                    if (py > top && checkSide(offset, dirVector, rightTop, leftTop)) return true
+                    if (py < bottom && checkSide(offset, dirVector, leftBottom, rightBottom))
                         return true
                     return false
                 }
-                py > top -> if (checkSide(offset, angle, rightTop, leftTop)) return true
-                px > right -> if (checkSide(offset, angle, leftBottom, rightBottom)) return true
+
+                py > top -> if (checkSide(offset, dirVector, rightTop, leftTop)) return true
+                px > right -> if (checkSide(offset, dirVector, leftBottom, rightBottom)) return true
                 else -> return true
             }
             return false
         }
 
         private fun checkSide(
-            offset: Offset, angle: Float, vertex1: Offset, vertex2: Offset
+            offset: Offset, dirVector: Offset, vertex1: Offset, vertex2: Offset
         ): Boolean {
-            val angle1 = offset.angleTo(vertex1)
-            val angle2 = offset.angleTo(vertex2)
 
-            val span = (angle1 - angle2).normalizeAngle()
+            val leftLimitVector = dirVector.cartesianProduct(leftLimitFOVScalar)
+            val rightLimitVector = dirVector.cartesianProduct(rightLimitFOVScaler)
 
-            val angle1RelativeToPlayer = (angle1 - angle).normalizeAngle()
-            val span1 = (angle1RelativeToPlayer + H_FOV).normalizeAngle()
+            val leftD1 =
+                        -leftLimitVector.y * (vertex1.x - offset.x) +
+                         leftLimitVector.x * (vertex1.y - offset.y)
+            val leftD2 =
+                        -leftLimitVector.y * (vertex2.x - offset.x) +
+                         leftLimitVector.x * (vertex2.y - offset.y)
 
-            return !(span1 > FOV && span1 >= span + FOV)
+            if (leftD1 < 0f && leftD2 < 0f) return false
+
+            val rightD1 =
+                       -rightLimitVector.y * (vertex1.x - offset.x) +
+                        rightLimitVector.x * (vertex1.y - offset.y)
+            val rightD2 =
+                       -rightLimitVector.y * (vertex2.x - offset.x) +
+                        rightLimitVector.x * (vertex2.y - offset.y)
+
+            if (rightD1 > 0f && rightD2 > 0f) return false
+
+            return true
         }
 
         companion object {

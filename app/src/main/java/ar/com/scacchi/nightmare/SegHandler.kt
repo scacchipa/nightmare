@@ -1,5 +1,6 @@
 package ar.com.scacchi.nightmare
 
+import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
@@ -43,6 +44,18 @@ class SegHandler(
             FloatArray(SCREEN_WIDTH.toInt() + 1) {
                 atan((H_WIDTH - it) / SCREEN_DIST)
             }
+        val xToVectorTable: Array<Offset> =
+            Array<Offset>(SCREEN_WIDTH.toInt() + 1) {
+                val angle = atan((H_WIDTH - it) / SCREEN_DIST)
+                Offset(cos(angle), sin(angle))
+            }
+        val atan2Table: Array<Float> = Array(1024 +1) { idx ->
+
+            val maxTan = tan(PI / 4)
+            val tan = (maxTan / 1024 * idx).toFloat()
+            val angle = atan(tan)
+            angle
+        }
     }
 
     fun scaleFromGlobalAngle(x: Int, rwNormalAngle: Float, rwDistance: Float): Float {
@@ -306,12 +319,12 @@ class SegHandler(
         val segTextured = bDrawUpperWall or bDrawLowerWall
         val rwOffset: Float =
             if (segTextured) {
-                - hypotenuse * sin(offsetAngle) +
+                -hypotenuse * sin(offsetAngle) +
                         seg.offset.toFloat() +
                         (side?.offset?.x ?: 0f)
             } else 0f
         //
-        val rwCenterAngle = - rwNormalAngle + player.dirVector.atan2()
+        val rwCenterAngle = -rwNormalAngle + player.dirVector.atan2()
 
 
         // the y positions of the top / bottom edges of the wall on the screen
@@ -356,7 +369,7 @@ class SegHandler(
             val invScale: Float
             if (segTextured) {
                 angle = rwCenterAngle + xToAngleTable[x]
-                textureColumn = - (rwDistance * tan(angle) - rwOffset)
+                textureColumn = -(rwDistance * tan(angle) - rwOffset)
                 invScale = 1f / (rwScale1 + rwScaleStep * (x - x1))
             } else {
                 angle = 0f

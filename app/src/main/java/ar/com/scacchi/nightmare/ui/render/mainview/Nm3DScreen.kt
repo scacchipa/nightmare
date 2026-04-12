@@ -15,8 +15,6 @@ import ar.com.scacchi.nightmare.settings.SCREEN_HEIGHT
 import ar.com.scacchi.nightmare.settings.SCREEN_WIDTH
 import ar.com.scacchi.nightmare.source.wad.NmColor
 import ar.com.scacchi.nightmare.ui.render.map.getColor
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 
@@ -50,12 +48,12 @@ class Nm3DScreen(
 
             if (BSP.isOnBackSide(gameState.player, node)) {
                 renderBspNode(node.backChildId)
-                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector.atan2() )) {
+                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector )) {
                     renderBspNode(node.frondChildId)
                 }
             } else {
                 renderBspNode(node.frondChildId)
-                if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector.atan2())) {
+                if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector)) {
                     renderBspNode(node.backChildId)
                 }
             }
@@ -148,8 +146,8 @@ class Nm3DScreen(
     fun drawFlatCol(
         flatTex: DoomBitmap, x: Float, y1: Float, y2: Float, lightLevel: Float, worldZ: Float,
     ) {
-        val playerDirX = cos(gameState.player.dirVector.atan2())
-        val playerDirY = sin(gameState.player.dirVector.atan2())
+        val playerDirX = gameState.player.dirVector.x
+        val playerDirY = gameState.player.dirVector.y
 
         for (iy in y1.toInt() until y2.toInt()) {
             val z = H_WIDTH * worldZ / (H_HEIGHT - iy)

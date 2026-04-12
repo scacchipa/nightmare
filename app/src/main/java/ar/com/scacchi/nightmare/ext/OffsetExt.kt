@@ -1,7 +1,9 @@
 package ar.com.scacchi.nightmare.ext
 
 import androidx.compose.ui.geometry.Offset
+import ar.com.scacchi.nightmare.SegHandler
 import kotlin.math.PI
+import kotlin.math.absoluteValue
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
@@ -37,3 +39,35 @@ fun Offset.cartesianProduct(v: Offset) = Offset(
     x = this.x * v.x - this.y * v.y,
     y = this.x * v.y + this.y * v.x
 )
+
+fun Offset.fastAtan2(): Float {
+
+    if (x == 0f)
+        return if (y >= 0f) HALF_PI
+        else THREE_HALF_PI
+    if (y == 0f)
+        return if (x >= 0f) 0f
+        else PI.toFloat()
+
+    val tan = y / x
+    val cotan = x / y
+
+    return if (tan.absoluteValue < TAN45) {
+        if (x >= 0f) {
+            if (y >= 0) SegHandler.atan2Table[(tan * 1024f).toInt()]
+            else -SegHandler.atan2Table[(-tan * 1024f).toInt()]
+        } else {
+            if (y >= 0) PI.toFloat() - SegHandler.atan2Table[(-tan * 1024f).toInt()]
+            else - PI.toFloat() + SegHandler.atan2Table[(tan * 1024f).toInt()]
+        }
+    } else {
+        if (x >= 0) {
+            if (y >= 0) HALF_PI - SegHandler.atan2Table[(cotan * 1024f).toInt()]
+            else - HALF_PI + SegHandler.atan2Table[(-cotan * 1024f).toInt()]
+        } else {
+            if (y >= 0) HALF_PI + SegHandler.atan2Table[(-cotan * 1024f.toInt()).toInt()]
+            else - HALF_PI - SegHandler.atan2Table[(cotan * 1024f).toInt()]
+        }
+    }
+}
+
