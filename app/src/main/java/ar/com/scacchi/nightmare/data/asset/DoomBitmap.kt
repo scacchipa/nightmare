@@ -13,14 +13,14 @@ class DoomBitmap(
 ) {
     val pixels: ShortArray = ShortArray(width * height) { -1 }
 
-    operator fun set(x: Int, y: Int, palettePos: Short) {
+    inline operator fun set(x: Int, y: Int, palettePos: Short) {
         pixels[x * height + y] = palettePos
     }
-    operator fun set(x: Int, y: Int, palettePos: Byte) {
+    inline operator fun set(x: Int, y: Int, palettePos: Byte) {
         pixels[x * height + y] = palettePos.toShort()
     }
 
-    operator fun get(x: Int, y: Int): Short = pixels[x * height + y]
+    inline operator fun get(x: Int, y: Int): Short = pixels[x * height + y]
 
     fun toBitmap(palette: NmPalette): Bitmap =
         createBitmap(width, height).also { bitmap ->

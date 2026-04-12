@@ -6,7 +6,7 @@ import ar.com.scacchi.nightmare.SegHandler
 import ar.com.scacchi.nightmare.data.asset.DoomBitmap
 import ar.com.scacchi.nightmare.engine.GameState
 import ar.com.scacchi.nightmare.engine.ImageRepository
-import ar.com.scacchi.nightmare.ext.atan2
+import ar.com.scacchi.nightmare.ext.fastAtan2
 import ar.com.scacchi.nightmare.ext.light
 import ar.com.scacchi.nightmare.ext.normalize
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
@@ -122,7 +122,7 @@ class Nm3DScreen(
         if (y1 < y2) {
             if (texName == skyId) {
                 val texColumn =
-                    2.2f * (this.gameState.player.dirVector.atan2() + SegHandler.xToAngleTable[x.toInt()]) * 90
+                    2.2f * (this.gameState.player.dirVector.fastAtan2() + SegHandler.xToAngleTable[x.toInt()]) * 90
 
                 this.drawWallCol(
                     tex = imageRepository.getPictureDoomBitmap("SKY1"),

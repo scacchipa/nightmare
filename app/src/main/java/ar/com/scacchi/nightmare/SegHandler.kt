@@ -33,7 +33,7 @@ class SegHandler(
 
     lateinit var seg: Seg
     var rwAngle1: Float = 0f // first vertex of the segment
-    private var upperClip = IntArray(SCREEN_WIDTH.toInt()) { 0 }
+    private var upperClip = IntArray(SCREEN_WIDTH.toInt())
     private var lowerClip = IntArray(SCREEN_WIDTH.toInt()) { SCREEN_HEIGHT.toInt() - 1 }
     private var screenRange: BitSet = BitSet(SCREEN_WIDTH.toInt()).apply {
         set(0, SCREEN_WIDTH.toInt())
@@ -75,12 +75,9 @@ class SegHandler(
         val side = seg.lineDef.frontSideDef
         val upperClip = this.upperClip
         val lowerClip = this.lowerClip
-        val screenRange = this.screenRange
 
         // textures
-        val lowerTextureId = seg.lineDef.frontSideDef?.lowerTextureIdx ?: -1
         val middleTextureId = seg.lineDef.frontSideDef?.middleTextureIdx ?: -1
-        val upperTextureId = seg.lineDef.frontSideDef?.upperTextureIdx ?: -1
         val ceilTextureName = frontSector?.ceilingTextureName
         val floorTextureName = frontSector?.floorTextureName
         val lightLevel = frontSector?.lightLevel
@@ -91,7 +88,6 @@ class SegHandler(
         // calculate the relative plane heights of the front sector
         val worldFrontZ1 = (frontSector?.ceilingHeight ?: 0) - player.height.toInt()
         val worldFrontZ2 = (frontSector?.floorHeight ?: 0) - player.height.toInt()
-
 
         /*
         * determine how the wall texture are vertically aligned
@@ -509,7 +505,7 @@ class SegHandler(
 
         // 2. Intersección: ¿Qué partes de la pared ven espacio vacio?)
         // Usamos clone para no modificar el screenRange global
-        val intersection = (currWall.clone() as BitSet).apply {
+        val intersection = currWall.apply {
             and(screenRange)
         }
 
@@ -558,7 +554,7 @@ class SegHandler(
             }
 
             // Intersección: qué parte de la pared cae en espacio vacio.
-            val intersection = (currWall.clone() as BitSet).apply {
+            val intersection = currWall.apply {
                 and(screenRange)
             }
 
