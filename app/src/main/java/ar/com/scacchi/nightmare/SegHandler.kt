@@ -315,12 +315,12 @@ class SegHandler(
         val segTextured = bDrawUpperWall or bDrawLowerWall
         val rwOffset: Float =
             if (segTextured) {
-                -hypotenuse * sin(offsetAngle) +
+                hypotenuse * sin(offsetAngle) +
                         seg.offset.toFloat() +
                         (side?.offset?.x ?: 0f)
             } else 0f
         //
-        val rwCenterAngle = -rwNormalAngle + player.dirVersor.atan2()
+        val rwCenterAngle = rwNormalAngle - player.dirVersor.atan2()
 
 
         // the y positions of the top / bottom edges of the wall on the screen
