@@ -38,9 +38,9 @@ class NmBitmap(val width: Int, val height: Int) {
         var err = dx - dy
 
         while (true) {
-            intBuffer.put(curY * width + curX, color.argb)
-
             if (curX == x2 && curY == y2) break
+
+            intBuffer.put(curY * width + curX, color.argb)
 
             val e2 = 2 * err
             if (e2 > -dy) {

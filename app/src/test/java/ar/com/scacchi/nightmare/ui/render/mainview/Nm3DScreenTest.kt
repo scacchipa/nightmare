@@ -46,7 +46,7 @@ class Nm3DScreenTest {
         every { mockGameState.player } returns mockPlayer
         every { mockGameState.playPal } returns myPlayPal
         every { mockPlayer.pos } returns Offset(0f, 0f)
-        every { mockPlayer.dirVector } returns Offset(1f, 0f)
+        every { mockPlayer.dirVersor } returns Offset(1f, 0f)
 
         every { mockFlatTex[any(), any()] } returns 0.toShort()
 
@@ -160,7 +160,7 @@ class Nm3DScreenTest {
         val angleInTable = 0.25f
         SegHandler.xToAngleTable[xIndex] = angleInTable
 
-        every { mockPlayer.dirVector } returns Offset(1f, 0f)
+        every { mockPlayer.dirVersor } returns Offset(1f, 0f)
         every { mockImageRepository.getPictureDoomBitmap("SKY1") } returns mockSkyTex
         every {
             screenSpy.drawWallCol(

@@ -1,19 +1,23 @@
 package ar.com.scacchi.nightmare
 
+import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Vertex
-import ar.com.scacchi.nightmare.ext.angleToX
-import ar.com.scacchi.nightmare.ext.atan2
-import ar.com.scacchi.nightmare.ext.normalizeAngle
-import ar.com.scacchi.nightmare.settings.FOV
-import ar.com.scacchi.nightmare.settings.H_FOV
+import ar.com.scacchi.nightmare.ext.AxisIntersection
+import ar.com.scacchi.nightmare.ext.checkXAxisIntersection
+import ar.com.scacchi.nightmare.ext.compareTo
+import ar.com.scacchi.nightmare.ext.deRotateBY
+import ar.com.scacchi.nightmare.ext.fastAtan2
+import ar.com.scacchi.nightmare.ext.tan
+import ar.com.scacchi.nightmare.ext.vectorToPoint
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_DIST
-import kotlin.math.PI
+import ar.com.scacchi.nightmare.settings.leftLimitFOVVersor
+import ar.com.scacchi.nightmare.settings.rightLimitFOVVersor
 import kotlin.math.tan
 
-data class VertexOnScreen(
+data class  VertexOnScreen(
     val startX: Float,
     val endX: Float,
     val realWallAngle: Float
@@ -31,39 +35,44 @@ class BSP {
         }
 
         fun angleToX(angle: Float): Float = H_WIDTH - SCREEN_DIST * tan(angle)
+        fun vectorToX(vector: Offset): Float = H_WIDTH - SCREEN_DIST * vector.tan()
 
         fun addSegmentToFov(player: Player, startVertex: Vertex, endVertex: Vertex): VertexOnScreen? {
-            val realStartAngle = player.pos.angleToX(startVertex.pos)
-            val realEndAngle = player.pos.angleToX(endVertex.pos)
+            val vStart = player.pos.vectorToPoint(startVertex.pos)
+            val vEnd = player.pos.vectorToPoint(endVertex.pos)
 
-            val span = (realStartAngle - realEndAngle).normalizeAngle()
+            val cross = vStart.x * vEnd.y - vStart.y * vEnd.x
+            if (cross >= 0) return null
 
-            // backface culling
-            if (span >= PI) return null
+            val viewStart = vStart.deRotateBY(player.dirVersor)
+            val viewEnd = vEnd.deRotateBY(player.dirVersor)
 
-            val startAngle = realStartAngle - player.dirVector.atan2()
-            val endAngle = realEndAngle - player.dirVector.atan2()
+            if (viewStart > leftLimitFOVVersor && viewEnd > leftLimitFOVVersor) return null
+            if (viewStart < rightLimitFOVVersor && viewEnd < rightLimitFOVVersor) return null
+            if (Offset.checkXAxisIntersection(viewStart, viewEnd) == AxisIntersection.NEGATIVE)
+                return null
 
-            val startSpan = (H_FOV + startAngle).normalizeAngle()
+            val finalStart =
+                if (viewStart > leftLimitFOVVersor) leftLimitFOVVersor
+                else viewStart
+            val finalEnd =
+                if (viewEnd < rightLimitFOVVersor) rightLimitFOVVersor
+                else viewEnd
 
-            val startClippedAngle =
-                if (startSpan > FOV) {
-                    if (startSpan >= span + FOV) return null
-                    H_FOV
-                } else startAngle
+            val startX = vectorToX(finalStart)
+            val endX = vectorToX(finalEnd)
 
-            val endSpan = (H_FOV - endAngle).normalizeAngle()
+            return VertexOnScreen(startX, endX, vStart.fastAtan2())
+        }
 
-            val endClippedAngle =
-                if (endSpan > FOV) {
-                    if (endSpan >= span + FOV) return null
-                    -H_FOV
-                } else endAngle
+        inline fun isOutsideLeft(v: Offset): Boolean {
+            val cross = leftLimitFOVVersor.x * v.y - leftLimitFOVVersor.y * v.x
+            return cross >= 0
+        }
 
-            val startX = angleToX(startClippedAngle)
-            val endX = angleToX(endClippedAngle)
-
-            return VertexOnScreen(startX, endX, realStartAngle)
+        inline fun isOutsideRight(v: Offset): Boolean {
+            val cross = rightLimitFOVVersor.x * v.y - rightLimitFOVVersor .y * v.x
+            return cross < 0
         }
     }
 }

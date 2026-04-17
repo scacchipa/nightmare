@@ -48,12 +48,12 @@ class Nm3DScreen(
 
             if (BSP.isOnBackSide(gameState.player, node)) {
                 renderBspNode(node.backChildId)
-                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector )) {
+                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVersor )) {
                     renderBspNode(node.frondChildId)
                 }
             } else {
                 renderBspNode(node.frondChildId)
-                if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVector)) {
+                if (node.backBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVersor)) {
                     renderBspNode(node.backChildId)
                 }
             }
@@ -85,12 +85,12 @@ class Nm3DScreen(
         nmBitmap.drawLine(
             color = color,
             x1 = x1.toInt(), y1 = 0,
-            x2 = x1.toInt(), y2 = SCREEN_HEIGHT.toInt(),
+            x2 = x1.toInt(), y2 = SCREEN_HEIGHT.toInt() - 1,
         )
         nmBitmap.drawLine(
             color = color,
             x1 = x2.toInt(), y1 = 0,
-            x2 = x2.toInt(), y2 = SCREEN_HEIGHT.toInt(),
+            x2 = x2.toInt(), y2 = SCREEN_HEIGHT.toInt() - 1,
         )
     }
 
@@ -122,7 +122,7 @@ class Nm3DScreen(
         if (y1 < y2) {
             if (texName == skyId) {
                 val texColumn =
-                    2.2f * (this.gameState.player.dirVector.fastAtan2() + SegHandler.xToAngleTable[x.toInt()]) * 90
+                    2.2f * (this.gameState.player.dirVersor.fastAtan2() + SegHandler.xToAngleTable[x.toInt()]) * 90
 
                 this.drawWallCol(
                     tex = imageRepository.getPictureDoomBitmap("SKY1"),
@@ -146,8 +146,8 @@ class Nm3DScreen(
     fun drawFlatCol(
         flatTex: DoomBitmap, x: Float, y1: Float, y2: Float, lightLevel: Float, worldZ: Float,
     ) {
-        val playerDirX = gameState.player.dirVector.x
-        val playerDirY = gameState.player.dirVector.y
+        val playerDirX = gameState.player.dirVersor.x
+        val playerDirY = gameState.player.dirVersor.y
 
         for (iy in y1.toInt() until y2.toInt()) {
             val z = H_WIDTH * worldZ / (H_HEIGHT - iy)

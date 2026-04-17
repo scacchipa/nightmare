@@ -8,9 +8,9 @@ import ar.com.scacchi.nightmare.ext.Vector270Degree
 import ar.com.scacchi.nightmare.ext.Vector315Degree
 import ar.com.scacchi.nightmare.ext.Vector45Degree
 import ar.com.scacchi.nightmare.ext.Vector90Degree
-import ar.com.scacchi.nightmare.ext.cartesianProduct
-import ar.com.scacchi.nightmare.ext.fromAngle
 import ar.com.scacchi.nightmare.ext.rotateBy
+import ar.com.scacchi.nightmare.ext.rotatedBy
+import ar.com.scacchi.nightmare.ext.versorWithAngle
 import ar.com.scacchi.nightmare.settings.PLAYER_HEIGHT
 import ar.com.scacchi.nightmare.settings.PLAYER_ROT_SPEED
 import ar.com.scacchi.nightmare.settings.PLAYER_SPEED
@@ -22,14 +22,14 @@ data class Player(
     val type: UShort,
     val flags: UShort,
     val height: Float,
-    val dirVector: Offset,
+    val dirVersor: Offset,
 ) {
     constructor(thing: ThingLump) : this(
         pos = Offset(x = thing.xPos.toFloat(), y = thing.yPos.toFloat()),
         type = thing.type,
         flags = thing.flags,
         height = PLAYER_HEIGHT,
-        dirVector = Offset.fromAngle((thing.angle.toFloat() * PI / 180.0f).toFloat())
+        dirVersor = Offset.versorWithAngle((thing.angle.toFloat() * PI / 180.0f).toFloat())
     )
 
     fun advance(): Player = movePlayer(Vector0Degree, PLAYER_SPEED)
@@ -53,7 +53,7 @@ data class Player(
     fun turnRight(): Player = turnPlayer(-PLAYER_ROT_SPEED)
 
     private fun movePlayer(movVector: Offset, speed: Float): Player {
-        val displacement = dirVector.cartesianProduct(movVector) * 3f
+        val displacement = dirVersor.rotatedBy(movVector) * 3f
         return this.copy(
             pos = pos + displacement
         )
@@ -61,7 +61,7 @@ data class Player(
 
     private fun turnPlayer(rotSpeed: Float): Player {
         return this.copy(
-            dirVector = dirVector.rotateBy(rotSpeed)
+            dirVersor = dirVersor.rotateBy(rotSpeed)
         )
     }
 

@@ -2,7 +2,7 @@ package ar.com.scacchi.nightmare.settings
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
-import ar.com.scacchi.nightmare.ext.fromAngle
+import ar.com.scacchi.nightmare.ext.versorWithAngle
 import kotlin.math.tan
 
 const val DOOM_W: Int = 320
@@ -20,8 +20,9 @@ val WIN_RES: IntSize = IntSize(SCREEN_WIDTH.toInt(), SCREEN_HEIGHT.toInt())
 
 const val FOV: Float = (Math.PI / 2).toFloat()
 const val H_FOV: Float = (FOV / 2)
-val leftLimitFOVScalar: Offset = Offset.fromAngle(-H_FOV)
-val rightLimitFOVScaler: Offset = Offset.fromAngle(H_FOV)
+val leftLimitFOVVersor: Offset = Offset.versorWithAngle(H_FOV)
+val rightLimitFOVVersor: Offset = Offset.versorWithAngle(-H_FOV)
+val fovVersor: Offset = Offset.versorWithAngle(FOV)
 
 const val PLAYER_SPEED: Float = 3f
 const val PLAYER_ROT_SPEED: Float = 0.12f

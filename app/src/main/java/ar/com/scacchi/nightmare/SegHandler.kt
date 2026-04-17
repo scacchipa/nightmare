@@ -60,7 +60,7 @@ class SegHandler(
 
     fun scaleFromGlobalAngle(x: Int, rwNormalAngle: Float, rwDistance: Float): Float {
         val xAngle = xToAngleTable[x]
-        val num = SCREEN_DIST * cos(rwNormalAngle - xAngle - player.dirVector.atan2())
+        val num = SCREEN_DIST * cos(rwNormalAngle - xAngle - player.dirVersor.atan2())
         val den = rwDistance * cos(xAngle)
 
         val scale = num / den
@@ -133,7 +133,7 @@ class SegHandler(
                 seg.offset.toFloat() +
                 (side?.offset?.x ?: 0f)
 
-        val rwCenterAngle = rwNormalAngle - player.dirVector.atan2()
+        val rwCenterAngle = rwNormalAngle - player.dirVersor.atan2()
 
 //        println("X1: $startX -> $rwScale1. X2: $endX -> $scale2.  Player angle: ${player.angle}")
 
@@ -320,7 +320,7 @@ class SegHandler(
                         (side?.offset?.x ?: 0f)
             } else 0f
         //
-        val rwCenterAngle = -rwNormalAngle + player.dirVector.atan2()
+        val rwCenterAngle = -rwNormalAngle + player.dirVersor.atan2()
 
 
         // the y positions of the top / bottom edges of the wall on the screen
@@ -364,8 +364,8 @@ class SegHandler(
             val textureColumn: Float
             val invScale: Float
             if (segTextured) {
-                angle = rwCenterAngle + xToAngleTable[x]
-                textureColumn = -(rwDistance * tan(angle) - rwOffset)
+                angle = rwCenterAngle - xToAngleTable[x]
+                textureColumn = rwDistance * tan(angle) - rwOffset
                 invScale = 1f / (rwScale1 + rwScaleStep * (x - x1))
             } else {
                 angle = 0f
@@ -505,7 +505,7 @@ class SegHandler(
 
         // 2. Intersección: ¿Qué partes de la pared ven espacio vacio?)
         // Usamos clone para no modificar el screenRange global
-        val intersection = currWall.apply {
+        val intersection = (currWall.clone() as BitSet).apply {
             and(screenRange)
         }
 
@@ -554,7 +554,7 @@ class SegHandler(
             }
 
             // Intersección: qué parte de la pared cae en espacio vacio.
-            val intersection = currWall.apply {
+            val intersection = (currWall.clone() as BitSet).apply {
                 and(screenRange)
             }
 

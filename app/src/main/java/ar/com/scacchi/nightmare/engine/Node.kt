@@ -1,9 +1,9 @@
 package ar.com.scacchi.nightmare.engine
 
 import androidx.compose.ui.geometry.Offset
-import ar.com.scacchi.nightmare.ext.cartesianProduct
-import ar.com.scacchi.nightmare.settings.leftLimitFOVScalar
-import ar.com.scacchi.nightmare.settings.rightLimitFOVScaler
+import ar.com.scacchi.nightmare.ext.rotatedBy
+import ar.com.scacchi.nightmare.settings.leftLimitFOVVersor
+import ar.com.scacchi.nightmare.settings.rightLimitFOVVersor
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.NodeLump
 
 class Node(
@@ -56,8 +56,8 @@ class Node(
             offset: Offset, dirVector: Offset, vertex1: Offset, vertex2: Offset
         ): Boolean {
 
-            val leftLimitVector = dirVector.cartesianProduct(leftLimitFOVScalar)
-            val rightLimitVector = dirVector.cartesianProduct(rightLimitFOVScaler)
+            val leftLimitVector = dirVector.rotatedBy(leftLimitFOVVersor)
+            val rightLimitVector = dirVector.rotatedBy(rightLimitFOVVersor)
 
             val leftD1 =
                         -leftLimitVector.y * (vertex1.x - offset.x) +
@@ -66,7 +66,7 @@ class Node(
                         -leftLimitVector.y * (vertex2.x - offset.x) +
                          leftLimitVector.x * (vertex2.y - offset.y)
 
-            if (leftD1 < 0f && leftD2 < 0f) return false
+            if (leftD1 > 0f && leftD2 > 0f) return false
 
             val rightD1 =
                        -rightLimitVector.y * (vertex1.x - offset.x) +
@@ -75,7 +75,7 @@ class Node(
                        -rightLimitVector.y * (vertex2.x - offset.x) +
                         rightLimitVector.x * (vertex2.y - offset.y)
 
-            if (rightD1 > 0f && rightD2 > 0f) return false
+            if (rightD1 < 0f && rightD2 < 0f) return false
 
             return true
         }
