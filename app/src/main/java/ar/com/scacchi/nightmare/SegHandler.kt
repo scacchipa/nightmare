@@ -33,8 +33,8 @@ class SegHandler(
 
     lateinit var seg: Seg
     var rwAngle1: Float = 0f // first vertex of the segment
-    private var upperClip = IntArray(SCREEN_WIDTH.toInt())
-    private var lowerClip = IntArray(SCREEN_WIDTH.toInt()) { SCREEN_HEIGHT.toInt() - 1 }
+    private var upperClip = FloatArray(SCREEN_WIDTH.toInt())
+    private var lowerClip = FloatArray(SCREEN_WIDTH.toInt()) { SCREEN_HEIGHT - 1 }
     private var screenRange: BitSet = BitSet(SCREEN_WIDTH.toInt()).apply {
         set(0, SCREEN_WIDTH.toInt())
     }
@@ -125,21 +125,21 @@ class SegHandler(
         for (x in x1 until x2) {
             if (bDrawCeil) {
                 val cy1 = this.upperClip[x]
-                val cy2 = min(wallY1.toInt(), this.lowerClip[x])
+                val cy2 = min(wallY1, this.lowerClip[x])
 //                userScope.drawVLine(x, cy1, cy2, ceilTexture ?: "", lightLevel ?: 0f)
                 user3dScreen.drawFlat(
                     texName = seg.frontSector?.ceilingTextureName ?: "",
                     lightLevel = seg.frontSector?.lightLevel ?: 1f,
                     x = x.toFloat(),
-                    y1 = cy1.toFloat(),
-                    y2 = cy2.toFloat(),
+                    y1 = cy1,
+                    y2 = cy2,
                     worldZ = worldFrontZ1.toFloat()
                 )
             }
 
             if (bDrawWall) {
-                val wy1 = max(wallY1.toInt(), this.upperClip[x])
-                val wy2 = min(wallY2.toInt(), this.lowerClip[x])
+                val wy1 = max(wallY1, this.upperClip[x])
+                val wy2 = min(wallY2, this.lowerClip[x])
 
                 if (wy1 < wy2) {
                     val angle: Float = rwCenterAngle - xToAngleTable[x]
@@ -149,8 +149,8 @@ class SegHandler(
                         tex = wallTexture,
                         texCol = textureColumn.toInt(),
                         x = x.toFloat(),
-                        y1 = wy1.toFloat(),
-                        y2 = wy2.toFloat(),
+                        y1 = wy1,
+                        y2 = wy2,
                         texAlt = middleTexAlt.toInt(),
                         invScale = invScale,
                         lightLevel = 1.0f
@@ -159,15 +159,15 @@ class SegHandler(
             }
 
             if (bDrawFloor) {
-                val fy1 = max(wallY2.toInt(), this.upperClip[x])
+                val fy1 = max(wallY2, this.upperClip[x])
                 val fy2 = this.lowerClip[x]
 //                userScope.drawVLine(x, fy1, fy2, floorTextureName ?: "", lightLevel ?: 0f)
                 user3dScreen.drawFlat(
                     texName = seg.frontSector?.floorTextureName ?: "",
                     lightLevel = 1f,
                     x = x.toFloat(),
-                    y1 = fy1.toFloat(),
-                    y2 = fy2.toFloat(),
+                    y1 = fy1,
+                    y2 = fy2,
                     worldZ = worldFrontZ2.toFloat()
                 )
             }
@@ -326,27 +326,27 @@ class SegHandler(
                 //
                 if (bDrawCeil) {
                     val cy1 = upperClip[x]
-                    val cy2 = min(wallY1.toInt(), lowerClip[x])
+                    val cy2 = min(wallY1, lowerClip[x])
 //                    userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                     user3dScreen.drawFlat(
                         texName = seg.frontSector?.ceilingTextureName ?: "",
                         lightLevel = seg.frontSector?.lightLevel ?: 1f,
                         x = x.toFloat(),
-                        y1 = cy1.toFloat(),
-                        y2 = cy2.toFloat(),
+                        y1 = cy1,
+                        y2 = cy2,
                         worldZ = worldFrontZ1
                     )
                 }
                 //
-                val wy1 = max(drawUpperWallY1.toInt(), upperClip[x])
-                val wy2 = min(drawUpperWallY2.toInt(), lowerClip[x])
+                val wy1 = max(drawUpperWallY1, upperClip[x])
+                val wy2 = min(drawUpperWallY2, lowerClip[x])
 //                userScope.drawVLine(x, wy1, wy2, upperWallTexture ?: "", lightLevel ?: 0f)
                 user3dScreen.drawWallCol(
                     tex = imageRepository.getTextureDoomBitmap(seg.lineDef.frontSideDef?.upperTextureIdx ?: -1),
                     lightLevel = 1f,
                     x = x.toFloat(),
-                    y1 = wy1.toFloat(),
-                    y2 = wy2.toFloat(),
+                    y1 = wy1,
+                    y2 = wy2,
                     texCol = textureColumn.toInt(),
                     texAlt = upperTexAlt.toInt(),
                     invScale = invScale,
@@ -359,14 +359,14 @@ class SegHandler(
 
             if (bDrawCeil) {
                 val cy1 = upperClip[x]
-                val cy2 = min(wallY1.toInt(), lowerClip[x])
+                val cy2 = min(wallY1, lowerClip[x])
 //                userScope.drawVLine(x, cy1, cy2, texCeilId ?: "", lightLevel ?: 0f)
                 user3dScreen.drawFlat(
                     texName = seg.frontSector?.ceilingTextureName ?: "",
                     lightLevel = seg.frontSector?.lightLevel ?: 1f,
                     x = x.toFloat(),
-                    y1 = cy1.toFloat(),
-                    y2 = cy2.toFloat(),
+                    y1 = cy1,
+                    y2 = cy2,
                     worldZ = worldFrontZ1
                 )
                 //
@@ -376,28 +376,28 @@ class SegHandler(
             if (bDrawLowerWall) {
                 //
                 if (bDrawFloor) {
-                    val fy1 = max(wallY2.toInt(), upperClip[x])
+                    val fy1 = max(wallY2, upperClip[x])
                     val fy2 = lowerClip[x]
 //                    userScope.drawVLine(x, fy1, fy2, texFloorName ?: "", lightLevel ?: 0f)
                     user3dScreen.drawFlat(
                         texName = seg.frontSector?.floorTextureName ?: "",
                         lightLevel = 1f,
                         x = x.toFloat(),
-                        y1 = fy1.toFloat(),
-                        y2 = fy2.toFloat(),
+                        y1 = fy1,
+                        y2 = fy2,
                         worldZ = worldFrontZ2
                     )
                 }
                 //
-                val wy1 = max(portalY2.toInt(), upperClip[x])
-                val wy2 = min(wallY2.toInt(), lowerClip[x])
+                val wy1 = max(portalY2, upperClip[x])
+                val wy2 = min(wallY2, lowerClip[x])
 //                userScope.drawVLine(x, wy1, wy2, lowerWallTextureName ?: "", lightLevel ?: 0f)
                 user3dScreen.drawWallCol(
                     tex = imageRepository.getTextureDoomBitmap(seg.lineDef.frontSideDef?.lowerTextureIdx ?: -1),
                     texCol = textureColumn.toInt(),
                     x = x.toFloat(),
-                    y1 = wy1.toFloat(),
-                    y2 = wy2.toFloat(),
+                    y1 = wy1,
+                    y2 = wy2,
                     texAlt = lowerTexAlt.toInt(),
                     invScale = invScale,
                     lightLevel = 1f
@@ -411,7 +411,7 @@ class SegHandler(
             }
 
             if (bDrawFloor) {
-                val fy1 = max(wallY2.toInt(), upperClip[x])
+                val fy1 = max(wallY2, upperClip[x])
                 val fy2 = lowerClip[x]
 //                userScope.drawVLine(x, fy1, fy2, texFloorName ?: "", lightLevel ?: 0f)
 
@@ -419,8 +419,8 @@ class SegHandler(
                     seg.frontSector?.floorTextureName ?: "",
                     lightLevel = 1f,
                     x = x.toFloat(),
-                    y1 = fy1.toFloat(),
-                    y2 = fy2.toFloat(),
+                    y1 = fy1,
+                    y2 = fy2,
                     worldZ = worldFrontZ2
                 )
 
