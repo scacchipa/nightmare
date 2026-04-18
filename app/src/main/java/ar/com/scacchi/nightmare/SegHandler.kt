@@ -107,17 +107,8 @@ class SegHandler(
 
         // calculate the scaling factors of the left and right edges of the wall range
         val hypotenuse = (player.pos - seg.startVertex.pos).hypotenuse()
-
-        val startX: Int
-        val endX: Int
-
-        if (x1 < x2) {
-            startX = x1
-            endX = x2
-        } else {
-            startX = x2
-            endX = x1
-        }
+        val startX: Int = x1
+        val endX: Int = x2
 
         val rwNormalAngle = seg.radAngle + PI.toFloat() / 2f
         val offsetAngle = rwNormalAngle - this.rwAngle1
@@ -278,13 +269,9 @@ class SegHandler(
 
         val rwScaleStep: Float
         val rwScale1 = scaleFromGlobalAngle(x1, rwNormalAngle, rwDistance)
-        if (x1 < x2) {
-            val scale2 = scaleFromGlobalAngle(x2, rwNormalAngle, rwDistance)
-            rwScaleStep = (scale2 - rwScale1) / (x2 - x1)
-        } else {
-            val scale2 = scaleFromGlobalAngle(x1, rwNormalAngle, rwDistance)
-            rwScaleStep = (scale2 - rwScale1) / (x2 - x1)
-        }
+
+        val scale2 = scaleFromGlobalAngle(x2, rwNormalAngle, rwDistance)
+        rwScaleStep = (scale2 - rwScale1) / (x2 - x1)
 
         /*
         * determine how the wall textures are vertically aligned

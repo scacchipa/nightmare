@@ -48,7 +48,11 @@ class Nm3DScreen(
 
             if (BSP.isOnBackSide(gameState.player, node)) {
                 renderBspNode(node.backChildId)
-                if (node.frontBoundBox.checkBBox(gameState.player.pos, gameState.player.dirVersor )) {
+                if (node.frontBoundBox.checkBBox(
+                        gameState.player.pos,
+                        gameState.player.dirVersor
+                    )
+                ) {
                     renderBspNode(node.frondChildId)
                 }
             } else {
@@ -119,27 +123,25 @@ class Nm3DScreen(
         y2: Float,
         worldZ: Float,
     ) {
-        if (y1 < y2) {
-            if (texName == skyId) {
-                val texColumn =
-                    2.2f * (this.gameState.player.dirVersor.fastAtan2() + SegHandler.xToAngleTable[x.toInt()]) * 90
+        if (texName == skyId) {
+            val texColumn =
+                2.2f * (this.gameState.player.dirVersor.fastAtan2() + SegHandler.xToAngleTable[x.toInt()]) * 90
 
-                this.drawWallCol(
-                    tex = imageRepository.getPictureDoomBitmap("SKY1"),
-                    texCol = texColumn.toInt(),
-                    x = x,
-                    y1 = y1,
-                    y2 = y2,
-                    texAlt = skyTexAlt,
-                    invScale = skyInvScale,
-                    lightLevel = 1.0f
-                )
-            } else {
+            this.drawWallCol(
+                tex = imageRepository.getPictureDoomBitmap("SKY1"),
+                texCol = texColumn.toInt(),
+                x = x,
+                y1 = y1,
+                y2 = y2,
+                texAlt = skyTexAlt,
+                invScale = skyInvScale,
+                lightLevel = 1.0f
+            )
+        } else {
 
-                val flatTex = imageRepository.getFlatDoomBitmap(texName)
+            val flatTex = imageRepository.getFlatDoomBitmap(texName)
 
-                drawFlatCol(flatTex, x, y1, y2, lightLevel, worldZ)
-            }
+            drawFlatCol(flatTex, x, y1, y2, lightLevel, worldZ)
         }
     }
 
@@ -188,24 +190,22 @@ class Nm3DScreen(
         invScale: Float, // Factor for scaling texture according to resolution
         lightLevel: Float,
     ) {
-        if (y1 < y2) {
-            val texW = tex.width
-            val texH = tex.height
-            var texY = texAlt + (y1 - H_HEIGHT) * invScale
+        val texW = tex.width
+        val texH = tex.height
+        var texY = texAlt + (y1 - H_HEIGHT) * invScale
 
-            for (iy in y1.toInt() until y2.toInt()) {
-                val xp = texCol.normalize(texW)
-                val yp = texY.toInt().normalize(texH)
-                val paletteColor = tex[xp, yp]
-                val color =
-                    if (paletteColor == (-1).toShort()) NmColor.Transparent
-                    else gameState.playPal[0][paletteColor.toInt()].light(lightLevel)
-                nmBitmap.drawPixel(
-                    x = x.toInt(), y = iy,
-                    color = color,
-                )
-                texY += invScale
-            }
+        for (iy in y1.toInt() until y2.toInt()) {
+            val xp = texCol.normalize(texW)
+            val yp = texY.toInt().normalize(texH)
+            val paletteColor = tex[xp, yp]
+            val color =
+                if (paletteColor == (-1).toShort()) NmColor.Transparent
+                else gameState.playPal[0][paletteColor.toInt()].light(lightLevel)
+            nmBitmap.drawPixel(
+                x = x.toInt(), y = iy,
+                color = color,
+            )
+            texY += invScale
         }
     }
 }
