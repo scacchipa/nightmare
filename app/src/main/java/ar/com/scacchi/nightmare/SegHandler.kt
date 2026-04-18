@@ -31,8 +31,6 @@ class SegHandler(
     val MAX_SCALE = 64.0.toFloat()
     val MIN_SCALE = 0.00390625.toFloat()
 
-    lateinit var seg: Seg
-    var rwAngle1: Float = 0f // first vertex of the segment
     private var upperClip = FloatArray(SCREEN_WIDTH.toInt())
     private var lowerClip = FloatArray(SCREEN_WIDTH.toInt()) { SCREEN_HEIGHT - 1 }
     private var screenRange: BitSet = BitSet(SCREEN_WIDTH.toInt()).apply {
@@ -67,9 +65,8 @@ class SegHandler(
         return min(MAX_SCALE, max(MIN_SCALE, scale))
     }
 
-    fun drawSolidWallRange(x1: Int, x2: Int) {
+    fun drawSolidWallRange(seg: Seg, rwAngle1: Float, x1: Int, x2: Int) {
         //some aliases to shorten the fallowing code
-        val seg = seg
 
         val wallTexture = imageRepository.getTextureDoomBitmap(
             seg.lineDef.frontSideDef?.middleTextureIdx ?: -1
@@ -99,7 +96,7 @@ class SegHandler(
         val hypotenuse = (player.pos - seg.startVertex.pos).hypotenuse()
 
         val rwNormalAngle = seg.radAngle + PI.toFloat() / 2f
-        val offsetAngle = rwNormalAngle - this.rwAngle1
+        val offsetAngle = rwNormalAngle - rwAngle1
         val rwDistance = hypotenuse * cos(offsetAngle)
         val rwScale1 = scaleFromGlobalAngle(x1, rwNormalAngle, rwDistance)
         val scale2 = scaleFromGlobalAngle(x2, rwNormalAngle, rwDistance)
@@ -176,9 +173,7 @@ class SegHandler(
         }
     }
 
-    fun drawPortalWallRange(x1: Int, x2: Int) {
-        // some aliases to shorten the following code
-        val seg = this.seg
+    fun drawPortalWallRange(seg: Seg, rwAngle1: Float, x1: Int, x2: Int) {
 
         // calculate the relative plane heights of front and back sector
         val worldFrontZ1 = (seg.frontSector?.ceilingHeight ?: 0) - player.height
@@ -224,7 +219,7 @@ class SegHandler(
 
         // calculate the scaling factors of the left and right edges of the wall range
         val rwNormalAngle = seg.radAngle + PI.toFloat() / 2f
-        val offsetAngle = rwNormalAngle - this.rwAngle1
+        val offsetAngle = rwNormalAngle - rwAngle1
 
         val hypotenuse = (player.pos - seg.startVertex.pos).hypotenuse()
 
@@ -433,7 +428,7 @@ class SegHandler(
         }
     }
 
-    fun clipPortalWalls(xStart: Int, xEnd: Int) {
+    fun clipPortalWalls(seg: Seg, rwAngle1: Float, xStart: Int, xEnd: Int) {
         // 1. Crea el rango de la pared actual
         val currWall = BitSet(xEnd).apply {
             set(min(xStart, xEnd), max(xEnd, xStart))
@@ -451,7 +446,7 @@ class SegHandler(
 
             if (intersectionSize == wallSize) {
                 // Caso A: La pared del portal es totalmente visible
-                drawPortalWallRange(xStart, xEnd)
+                drawPortalWallRange(seg, rwAngle1, xStart, xEnd)
             } else {
                 // Caso B: La pared está fragmentada por obstáculos previos
                 val x = intersection.nextSetBit(0)
@@ -464,7 +459,7 @@ class SegHandler(
                     val nextEmpty = intersection.nextClearBit(i)
 
                     // Dibujamos el segmento visible encontrado
-                    drawPortalWallRange(currentStart, nextEmpty)
+                    drawPortalWallRange(seg, rwAngle1, currentStart, nextEmpty)
 
                     // Buscamos el inicio del siguiente segmento visible
                     val nextVisible = intersection.nextSetBit(nextEmpty)
@@ -479,7 +474,7 @@ class SegHandler(
         }
     }
 
-    fun clipSolidWalls(xStart: Int, xEnd: Int) {
+    fun clipSolidWalls(seg: Seg, rwAngle1: Float, xStart: Int, xEnd: Int) {
 
         // 1. Verificar si la pantalla está totalmente llena
         if (this.screenRange.isEmpty.not()) {
@@ -497,7 +492,7 @@ class SegHandler(
             if (intersection.isEmpty.not()) {
                 if (intersection.cardinality() == (xEnd - xStart).absoluteValue) {
                     // Caso A: la pared es totalmente visible (sin cortes)
-                    drawSolidWallRange(xStart, xEnd)
+                    drawSolidWallRange(seg, rwAngle1, xStart, xEnd)
                 } else {
                     // Case B: La pared está fragmentada estilo sorted + zip)
                     var x = intersection.nextSetBit(0)
@@ -508,7 +503,7 @@ class SegHandler(
                         val nextEmpty = intersection.nextClearBit(x1)
                         // dibujamos el segmento continuo encontrado
 
-                        drawSolidWallRange(x, nextEmpty)
+                        drawSolidWallRange(seg, rwAngle1, x, nextEmpty)
 
                         // Buscamos el inicio del siguiente fragmento visible
                         val x2 = intersection.nextSetBit(nextEmpty)
@@ -527,21 +522,17 @@ class SegHandler(
         }
     }
 
-    fun classifySegment(segment: Seg, x1: Int, x2: Int, rwAngle1: Float) {
-
-        // Guardamos los datos actuales del segmento en la clase
-        this.seg = segment
-        this.rwAngle1 = rwAngle1
+    fun classifySegment(seg: Seg, x1: Int, x2: Int, rwAngle1: Float) {
 
         // 1. ¿No cruza ni un solo píxel?
         if (x1 == x2) return
 
-        val backSector = segment.backSector
-        val frontSector = segment.frontSector
+        val backSector = seg.backSector
+        val frontSector = seg.frontSector
 
         // 2. Manejo de paredes sólidas (Si no hay sector trasero, es una pared impasable)
         if (backSector == null) {
-            clipSolidWalls(x1, x2)
+            clipSolidWalls(seg, rwAngle1, x1, x2)
             return
         }
 
@@ -550,13 +541,13 @@ class SegHandler(
         if (frontSector?.ceilingHeight != backSector.ceilingHeight ||
             frontSector.floorHeight != backSector.floorHeight
         ) {
-            clipPortalWalls(x1, x2)
+            clipPortalWalls(seg, rwAngle1, x1, x2)
             return
         }
 
         // 4. Rechazar líneas invisibles (Triggers o eventos especiales)
         // Si tienen texturas iguales, misma luz y no hay textura media, no se dibuja nada.
-        val frontSideDef = segment.lineDef.frontSideDef
+        val frontSideDef = seg.lineDef.frontSideDef
         if (backSector.ceilingTextureName == frontSector.ceilingTextureName &&
             backSector.floorTextureName == frontSector.floorTextureName &&
             backSector.lightLevel == frontSector.lightLevel &&
@@ -567,6 +558,6 @@ class SegHandler(
 
         // 5. Fronteras con diferentes niveles de luz o texturas
         // Si llegó aquí, es una línea divisoria que necesita procesarse como portal
-        clipPortalWalls(x1, x2)
+        clipPortalWalls(seg, rwAngle1, x1, x2)
     }
 }
