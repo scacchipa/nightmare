@@ -432,7 +432,7 @@ class SegHandler(
     fun clipPortalWalls(seg: Seg, rwAngle1: Float, xStart: Int, xEnd: Int) {
         // 1. Crea el rango de la pared actual
         val currWall = BitSet(xEnd).apply {
-            set(min(xStart, xEnd), max(xEnd, xStart))
+            set(xStart, xEnd)
         }
 
         // 2. Intersección: ¿Qué partes de la pared ven espacio vacio?)
@@ -475,14 +475,14 @@ class SegHandler(
         }
     }
 
-    fun clipSolidWalls(seg: Seg, rwAngle1: Float, xStart: Int, xEnd: Int) {
+    fun clipSolidWalls(seg: Seg, startVertexToPlayer: Offset, xStart: Int, xEnd: Int) {
 
         // 1. Verificar si la pantalla está totalmente llena
         if (this.screenRange.isEmpty.not()) {
 
             // Creamos un BitSet temporal para la pared actual (rango xStart) hasta xEnd)
-            val currWall = BitSet(max(xStart, xEnd)).apply {
-                set(min(xStart, xEnd), max(xStart, xEnd))
+            val currWall = BitSet(xEnd).apply {
+                set(xStart, xEnd)
             }
 
             // Intersección: qué parte de la pared cae en espacio vacio.
@@ -493,7 +493,7 @@ class SegHandler(
             if (intersection.isEmpty.not()) {
                 if (intersection.cardinality() == (xEnd - xStart).absoluteValue) {
                     // Caso A: la pared es totalmente visible (sin cortes)
-                    drawSolidWallRange(seg, rwAngle1, xStart, xEnd)
+                    drawSolidWallRange(seg, startVertexToPlayer.fastAtan2(), xStart, xEnd)
                 } else {
                     // Case B: La pared está fragmentada estilo sorted + zip)
                     var x = intersection.nextSetBit(0)
@@ -504,7 +504,7 @@ class SegHandler(
                         val nextEmpty = intersection.nextClearBit(x1)
                         // dibujamos el segmento continuo encontrado
 
-                        drawSolidWallRange(seg, rwAngle1, x, nextEmpty)
+                        drawSolidWallRange(seg, startVertexToPlayer.fastAtan2(), x, nextEmpty)
 
                         // Buscamos el inicio del siguiente fragmento visible
                         val x2 = intersection.nextSetBit(nextEmpty)
@@ -530,7 +530,7 @@ class SegHandler(
 
         // 2. Manejo de paredes sólidas (Si no hay sector trasero, es una pared impasable)
         if (seg.backSector == null) {
-            clipSolidWalls(seg, startVertexToPlayer.fastAtan2(), x1, x2)
+            clipSolidWalls(seg, startVertexToPlayer, x1, x2)
             return
         }
 
