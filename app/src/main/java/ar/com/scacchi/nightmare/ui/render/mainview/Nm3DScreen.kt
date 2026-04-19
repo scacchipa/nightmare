@@ -71,13 +71,11 @@ class Nm3DScreen(
         for (segId in 0 until subSector.segCount) {
             val seg = gameState.episodeMap.segs[subSector.firstSegId + segId]
 
-            val result = BSP.addSegmentToFov(
-                gameState.player, seg.startVertex, seg.endVertex
-            ) ?: continue
+            val result = BSP.addSegmentToFov(gameState.player, seg) ?: continue
 
 //            drawVLines(result.startX, result.endX, subSectorId)
             segHandler.classifySegment(
-                seg, result.startX.toInt(), result.endX.toInt(), result.realWallAngle
+                seg, result.startX.toInt(), result.endX.toInt(), result.startVertexToPlayer
             )
         }
     }

@@ -5,6 +5,7 @@ import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
 import ar.com.scacchi.nightmare.ext.atan2
+import ar.com.scacchi.nightmare.ext.fastAtan2
 import ar.com.scacchi.nightmare.ext.hypotenuse
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
@@ -522,42 +523,38 @@ class SegHandler(
         }
     }
 
-    fun classifySegment(seg: Seg, x1: Int, x2: Int, rwAngle1: Float) {
+    fun classifySegment(seg: Seg, x1: Int, x2: Int, startVertexToPlayer: Offset) {
 
         // 1. ¿No cruza ni un solo píxel?
         if (x1 == x2) return
 
-        val backSector = seg.backSector
-        val frontSector = seg.frontSector
-
         // 2. Manejo de paredes sólidas (Si no hay sector trasero, es una pared impasable)
-        if (backSector == null) {
-            clipSolidWalls(seg, rwAngle1, x1, x2)
+        if (seg.backSector == null) {
+            clipSolidWalls(seg, startVertexToPlayer.fastAtan2(), x1, x2)
             return
         }
 
         // 3. Pared con ventana (Portal)
         // Si las alturas de techo o suelo son diferentes, es una abertura que requiere clipping de portal
-        if (frontSector?.ceilingHeight != backSector.ceilingHeight ||
-            frontSector.floorHeight != backSector.floorHeight
+        if (seg.frontSector?.ceilingHeight != seg.backSector.ceilingHeight ||
+            seg.frontSector.floorHeight != seg.backSector.floorHeight
         ) {
-            clipPortalWalls(seg, rwAngle1, x1, x2)
+            clipPortalWalls(seg, startVertexToPlayer.fastAtan2(), x1, x2)
             return
         }
 
         // 4. Rechazar líneas invisibles (Triggers o eventos especiales)
         // Si tienen texturas iguales, misma luz y no hay textura media, no se dibuja nada.
-        val frontSideDef = seg.lineDef.frontSideDef
-        if (backSector.ceilingTextureName == frontSector.ceilingTextureName &&
-            backSector.floorTextureName == frontSector.floorTextureName &&
-            backSector.lightLevel == frontSector.lightLevel &&
-            frontSideDef?.middleTextureName == "-"
+        if (seg.backSector.ceilingTextureName == seg.frontSector.ceilingTextureName &&
+            seg.backSector.floorTextureName == seg.frontSector.floorTextureName &&
+            seg.backSector.lightLevel == seg.frontSector.lightLevel &&
+            seg.lineDef.frontSideDef?.middleTextureName == "-"
         ) {
             return
         }
 
         // 5. Fronteras con diferentes niveles de luz o texturas
         // Si llegó aquí, es una línea divisoria que necesita procesarse como portal
-        clipPortalWalls(seg, rwAngle1, x1, x2)
+        clipPortalWalls(seg, startVertexToPlayer.fastAtan2(), x1, x2)
     }
 }

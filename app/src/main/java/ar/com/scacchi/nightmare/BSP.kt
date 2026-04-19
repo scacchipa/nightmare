@@ -3,12 +3,11 @@ package ar.com.scacchi.nightmare
 import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.engine.Node
 import ar.com.scacchi.nightmare.engine.Player
-import ar.com.scacchi.nightmare.engine.Vertex
+import ar.com.scacchi.nightmare.engine.Seg
 import ar.com.scacchi.nightmare.ext.AxisIntersection
 import ar.com.scacchi.nightmare.ext.checkXAxisIntersection
 import ar.com.scacchi.nightmare.ext.compareTo
 import ar.com.scacchi.nightmare.ext.deRotateBY
-import ar.com.scacchi.nightmare.ext.fastAtan2
 import ar.com.scacchi.nightmare.ext.tan
 import ar.com.scacchi.nightmare.ext.vectorToPoint
 import ar.com.scacchi.nightmare.settings.H_WIDTH
@@ -20,7 +19,7 @@ import kotlin.math.tan
 data class  VertexOnScreen(
     val startX: Float,
     val endX: Float,
-    val realWallAngle: Float
+    val startVertexToPlayer: Offset
 )
 
 class BSP {
@@ -37,15 +36,16 @@ class BSP {
         fun angleToX(angle: Float): Float = H_WIDTH - SCREEN_DIST * tan(angle)
         fun vectorToX(vector: Offset): Float = H_WIDTH - SCREEN_DIST * vector.tan()
 
-        fun addSegmentToFov(player: Player, startVertex: Vertex, endVertex: Vertex): VertexOnScreen? {
-            val vStart = player.pos.vectorToPoint(startVertex.pos)
-            val vEnd = player.pos.vectorToPoint(endVertex.pos)
+        fun addSegmentToFov(player: Player, seg: Seg): VertexOnScreen? {
 
-            val cross = vStart.x * vEnd.y - vStart.y * vEnd.x
+            val startVectorToPlaver = player.pos.vectorToPoint(seg.startVertex.pos)
+            val endVectorToPlayer = player.pos.vectorToPoint(seg.endVertex.pos)
+
+            val cross = startVectorToPlaver.x * endVectorToPlayer.y - startVectorToPlaver.y * endVectorToPlayer.x
             if (cross >= 0) return null
 
-            val viewStart = vStart.deRotateBY(player.dirVersor)
-            val viewEnd = vEnd.deRotateBY(player.dirVersor)
+            val viewStart = startVectorToPlaver.deRotateBY(player.dirVersor)
+            val viewEnd = endVectorToPlayer.deRotateBY(player.dirVersor)
 
             if (viewStart > leftLimitFOVVersor && viewEnd > leftLimitFOVVersor) return null
             if (viewStart < rightLimitFOVVersor && viewEnd < rightLimitFOVVersor) return null
@@ -62,7 +62,7 @@ class BSP {
             val startX = vectorToX(finalStart)
             val endX = vectorToX(finalEnd)
 
-            return VertexOnScreen(startX, endX, vStart.fastAtan2())
+            return VertexOnScreen(startX, endX, startVectorToPlaver)
         }
 
         inline fun isOutsideLeft(v: Offset): Boolean {
