@@ -4,9 +4,15 @@ import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.engine.ImageRepository
 import ar.com.scacchi.nightmare.engine.Player
 import ar.com.scacchi.nightmare.engine.Seg
+import ar.com.scacchi.nightmare.ext.Vector90Degree
 import ar.com.scacchi.nightmare.ext.atan2
+import ar.com.scacchi.nightmare.ext.deRotateBy
 import ar.com.scacchi.nightmare.ext.fastAtan2
 import ar.com.scacchi.nightmare.ext.hypotenuse
+import ar.com.scacchi.nightmare.ext.normal
+import ar.com.scacchi.nightmare.ext.normalize
+import ar.com.scacchi.nightmare.ext.rotatedBy
+import ar.com.scacchi.nightmare.ext.versorWithAngle
 import ar.com.scacchi.nightmare.settings.H_HEIGHT
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_DIST
@@ -59,14 +65,28 @@ class SegHandler(
 
     fun scaleFromGlobalAngle(x: Int, rwNormalAngle: Float, rwDistance: Float): Float {
         val xAngle = xToAngleTable[x]
+
         val num = SCREEN_DIST * cos(rwNormalAngle - xAngle - player.dirVersor.atan2())
         val den = rwDistance * cos(xAngle)
+
+        val scale = num / den
+
+        return min(MAX_SCALE, max(MIN_SCALE, scale))
+    }
+
+    fun scaleFromGlobalVertex(x: Int, normalVectorToPlayer: Offset, rwDistance: Float): Float {
+        val xVector = xToVectorTable[x]
+
+        val num = SCREEN_DIST *
+                normalVectorToPlayer.deRotateBy(xVector).deRotateBy(player.dirVersor).normalize().x
+
+        val den = rwDistance * xVector.x
 
         val scale = num / den
         return min(MAX_SCALE, max(MIN_SCALE, scale))
     }
 
-    fun drawSolidWallRange(seg: Seg, rwAngle1: Float, x1: Int, x2: Int) {
+    fun drawSolidWallRange(seg: Seg, startVertexToPlayer: Offset, x1: Int, x2: Int) {
         //some aliases to shorten the fallowing code
 
         val wallTexture = imageRepository.getTextureDoomBitmap(
@@ -96,21 +116,25 @@ class SegHandler(
         // calculate the scaling factors of the left and right edges of the wall range
         val hypotenuse = (player.pos - seg.startVertex.pos).hypotenuse()
 
-        val rwNormalAngle = seg.radAngle + PI.toFloat() / 2f
-        val offsetAngle = rwNormalAngle - rwAngle1
-        val rwDistance = hypotenuse * cos(offsetAngle)
-        val rwScale1 = scaleFromGlobalAngle(x1, rwNormalAngle, rwDistance)
-        val scale2 = scaleFromGlobalAngle(x2, rwNormalAngle, rwDistance)
+        val offsetVector = seg.vector.normal().deRotateBy(startVertexToPlayer)
+
+        val rwDistance =  startVertexToPlayer.hypotenuse() * offsetVector.normalize().x
+
+        val normalVectorToPlayer = Offset.versorWithAngle(seg.radAngle).rotatedBy(Vector90Degree)
+        val rwScale1 = scaleFromGlobalVertex(x1, normalVectorToPlayer, rwDistance)
+
+        val scale2 = scaleFromGlobalVertex(x2, normalVectorToPlayer,   rwDistance)
+
         val rwScaleStep = (scale2 - rwScale1) / (x1 - x2)
 
         /*
         * determine how the wall textures are horizontally aligned
          */
-        val rwOffset = hypotenuse * sin(offsetAngle) +
+        val rwOffset = hypotenuse * offsetVector.normalize().y +
                 seg.offset.toFloat() +
                 (seg.lineDef.frontSideDef?.offset?.x ?: 0f)
 
-        val rwCenterAngle = rwNormalAngle - player.dirVersor.atan2()
+        val rwCenterAngle = seg.vector.normal().fastAtan2() - player.dirVersor.atan2()
 
 //        println("X1: $startX -> $rwScale1. X2: $endX -> $scale2.  Player angle: ${player.angle}")
 
@@ -219,16 +243,16 @@ class SegHandler(
         }
 
         // calculate the scaling factors of the left and right edges of the wall range
-        val rwNormalAngle = seg.radAngle + PI.toFloat() / 2f
-        val offsetAngle = rwNormalAngle - rwAngle1
+        val normalSegAngle = seg.radAngle + PI.toFloat() / 2f
+        val offsetAngle = normalSegAngle - rwAngle1
 
         val hypotenuse = (player.pos - seg.startVertex.pos).hypotenuse()
 
         val rwDistance = hypotenuse * cos(offsetAngle)
 
-        val rwScale1 = scaleFromGlobalAngle(x1, rwNormalAngle, rwDistance)
+        val rwScale1 = scaleFromGlobalAngle(x1, normalSegAngle, rwDistance)
 
-        val scale2 = scaleFromGlobalAngle(x2, rwNormalAngle, rwDistance)
+        val scale2 = scaleFromGlobalAngle(x2, normalSegAngle, rwDistance)
         val rwScaleStep = (scale2 - rwScale1) / (x2 - x1)
 
         /*
@@ -265,7 +289,7 @@ class SegHandler(
                         (seg.lineDef.frontSideDef?.offset?.x ?: 0f)
             } else 0f
         //
-        val rwCenterAngle = rwNormalAngle - player.dirVersor.atan2()
+        val rwCenterAngle = normalSegAngle - player.dirVersor.atan2()
 
 
         // the y positions of the top / bottom edges of the wall on the screen
@@ -493,7 +517,7 @@ class SegHandler(
             if (intersection.isEmpty.not()) {
                 if (intersection.cardinality() == (xEnd - xStart).absoluteValue) {
                     // Caso A: la pared es totalmente visible (sin cortes)
-                    drawSolidWallRange(seg, startVertexToPlayer.fastAtan2(), xStart, xEnd)
+                    drawSolidWallRange(seg, startVertexToPlayer, xStart, xEnd)
                 } else {
                     // Case B: La pared está fragmentada estilo sorted + zip)
                     var x = intersection.nextSetBit(0)
@@ -504,7 +528,7 @@ class SegHandler(
                         val nextEmpty = intersection.nextClearBit(x1)
                         // dibujamos el segmento continuo encontrado
 
-                        drawSolidWallRange(seg, startVertexToPlayer.fastAtan2(), x, nextEmpty)
+                        drawSolidWallRange(seg, startVertexToPlayer, x, nextEmpty)
 
                         // Buscamos el inicio del siguiente fragmento visible
                         val x2 = intersection.nextSetBit(nextEmpty)

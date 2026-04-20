@@ -7,7 +7,7 @@ import ar.com.scacchi.nightmare.engine.Seg
 import ar.com.scacchi.nightmare.ext.AxisIntersection
 import ar.com.scacchi.nightmare.ext.checkXAxisIntersection
 import ar.com.scacchi.nightmare.ext.compareTo
-import ar.com.scacchi.nightmare.ext.deRotateBY
+import ar.com.scacchi.nightmare.ext.deRotateBy
 import ar.com.scacchi.nightmare.ext.tan
 import ar.com.scacchi.nightmare.ext.vectorToPoint
 import ar.com.scacchi.nightmare.settings.H_WIDTH
@@ -44,8 +44,8 @@ class BSP {
             val cross = startVectorToPlaver.x * endVectorToPlayer.y - startVectorToPlaver.y * endVectorToPlayer.x
             if (cross >= 0) return null
 
-            val viewStart = startVectorToPlaver.deRotateBY(player.dirVersor)
-            val viewEnd = endVectorToPlayer.deRotateBY(player.dirVersor)
+            val viewStart = startVectorToPlaver.deRotateBy(player.dirVersor)
+            val viewEnd = endVectorToPlayer.deRotateBy(player.dirVersor)
 
             if (viewStart > leftLimitFOVVersor && viewEnd > leftLimitFOVVersor) return null
             if (viewStart < rightLimitFOVVersor && viewEnd < rightLimitFOVVersor) return null

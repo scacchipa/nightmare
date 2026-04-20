@@ -1,5 +1,6 @@
 package ar.com.scacchi.nightmare.engine
 
+import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.ext.bamToRadian
 import ar.com.scacchi.nightmare.source.wad.lump.LINEDEF_FLAGS
 import ar.com.scacchi.nightmare.source.wad.lump.data.map.SegLump
@@ -18,6 +19,7 @@ class Seg(
     val frontSector: Sector?,
     val backSector: Sector?,
     val radAngle: Float,
+    val vector: Offset,
 )
 
 fun SegLump.toSeg(idx: Int, vertexes: Vertexes, lineDefs: LineDefs): Seg {
@@ -30,6 +32,8 @@ fun SegLump.toSeg(idx: Int, vertexes: Vertexes, lineDefs: LineDefs): Seg {
     val backSideDef: SideDef? =
         if (direction != 0) lineDef.frontSideDef
         else lineDef.backSideDef
+    val startVertex = vertexes[startVertexId.toInt()]
+    val endVertex = vertexes[endVertexId.toInt()]
 
     return Seg(
         idx = idx,
@@ -39,14 +43,15 @@ fun SegLump.toSeg(idx: Int, vertexes: Vertexes, lineDefs: LineDefs): Seg {
         lineDefId = lineDefId.toInt(),
         direction = direction,
         offset = offset.toInt(),
-        startVertex = vertexes[startVertexId.toInt()],
-        endVertex = vertexes[endVertexId.toInt()],
+        startVertex = startVertex,
+        endVertex = endVertex,
         lineDef = lineDef,
         frontSector = frontSideDef?.sector,
         backSector =
             if (lineDef.flags and (LINEDEF_FLAGS["TWO_SIDED"] ?: 0u) != 0.toUShort())
                 backSideDef?.sector
             else null,
-        radAngle = angle.bamToRadian()
+        radAngle = angle.bamToRadian(),
+        vector = endVertex.pos - startVertex.pos
     )
 }

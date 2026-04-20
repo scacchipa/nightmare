@@ -56,11 +56,12 @@ inline fun Offset.versorToPoint(point: Offset): Offset {
     return vector / vector.hypotenuse()
 }
 inline fun Offset.normalize(): Offset = this / this.hypotenuse()
+inline fun Offset.normal(): Offset =  Offset(-y, x)
 inline fun Offset.rotatedBy(dir: Offset): Offset = Offset(
     x = this.x * dir.x - this.y * dir.y,
     y = this.x * dir.y + this.y * dir.x
 )
-inline fun Offset.deRotateBY(dir: Offset): Offset = Offset(
+inline fun Offset.deRotateBy(dir: Offset): Offset = Offset(
     x = this.x * dir.x + this.y * dir.y,
     y = - this.x * dir.y + this.y * dir.x
 )

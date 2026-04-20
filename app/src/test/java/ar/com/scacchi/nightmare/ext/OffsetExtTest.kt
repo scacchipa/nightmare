@@ -44,7 +44,7 @@ class OffsetExtTest {
         val dir = Offset(1f, 0.25f)
 
         val result1 = vector.rotatedBy(dir)
-        val result2 = vector.deRotateBY(dir)
+        val result2 = vector.deRotateBy(dir)
         val result3 = vector.rotatedBy(dir.flipY())
 
         val vectorAngle = vector.atan2()

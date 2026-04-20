@@ -2,7 +2,7 @@ package ar.com.scacchi.nightmare
 
 import androidx.compose.ui.geometry.Offset
 import ar.com.scacchi.nightmare.ext.atan2
-import ar.com.scacchi.nightmare.ext.deRotateBY
+import ar.com.scacchi.nightmare.ext.deRotateBy
 import ar.com.scacchi.nightmare.ext.rotatedBy
 import ar.com.scacchi.nightmare.settings.H_WIDTH
 import ar.com.scacchi.nightmare.settings.SCREEN_DIST
@@ -43,7 +43,7 @@ class BSPTest {
         val resultAngle2 = resultPoint2.atan2()
         val resultPoint3 = point2.rotatedBy(point3)
         val resultAngle3 = resultPoint3.atan2()
-        val resultPoint4 = point1.deRotateBY(point2)
+        val resultPoint4 = point1.deRotateBy(point2)
         val resultAngle4 = resultPoint4.atan2()
 
 
