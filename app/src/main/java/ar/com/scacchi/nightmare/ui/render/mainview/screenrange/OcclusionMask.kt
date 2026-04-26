@@ -30,28 +30,55 @@ class OcclusionMask(
         val secondRangeList = secondScreenRange.let { screenRange ->
             return@let when (secondScreenRange) {
                 is ScreenRangeLeaf -> clipSecondRange(range)
-                is OcclusionMask -> firstScreenRange.clipIntersection(range)
+                is OcclusionMask -> secondScreenRange.clipIntersection(range)
                 else -> listOf()
             }
         }
 
-        if (resultSecondScreenRange != ScreenRangeNull) {
-            resultFirstScreenRange.let {
-                when (it) {
-                    is ScreenRangeLeaf -> {
-                        firstScreenRange = resultFirstScreenRange
-                        secondScreenRange = resultSecondScreenRange
-                    }
-                    is OcclusionMask -> {
-                        firstScreenRange = it.resultFirstScreenRange
-                        secondScreenRange = it.resultSecondScreenRange
-                    }
-                    is ScreenRangeNull -> throw Exception("This case should not happen")
-                }
-            }
-        } else {
+        if (resultFirstScreenRange is OcclusionMask &&
+            (resultFirstScreenRange as OcclusionMask).firstScreenRange == ScreenRangeNull &&
+            (resultFirstScreenRange as OcclusionMask).secondScreenRange == ScreenRangeNull
+        )
+            resultFirstScreenRange = ScreenRangeNull
+
+        if (resultSecondScreenRange is OcclusionMask &&
+            (resultSecondScreenRange as OcclusionMask).firstScreenRange == ScreenRangeNull &&
+            (resultSecondScreenRange as OcclusionMask).secondScreenRange == ScreenRangeNull
+        )
+            resultSecondScreenRange = ScreenRangeNull
+
+        val staticFirstRange = resultFirstScreenRange
+        val staticSecondRange = resultSecondScreenRange
+
+        if (resultSecondScreenRange == ScreenRangeNull) {
             firstScreenRange = resultFirstScreenRange
             secondScreenRange = resultSecondScreenRange
+        } else {
+            when (staticFirstRange) {
+                is ScreenRangeLeaf -> {
+                    firstScreenRange = staticFirstRange
+                    secondScreenRange = staticSecondRange
+                }
+
+                is OcclusionMask -> {
+                    firstScreenRange = staticFirstRange
+                    secondScreenRange = staticSecondRange
+                }
+
+                is ScreenRangeNull -> {
+                    when {
+                        secondScreenRange is ScreenRangeLeaf -> {
+                            firstScreenRange = staticSecondRange
+                            secondScreenRange = ScreenRangeNull
+                        }
+
+                        staticSecondRange is OcclusionMask -> {
+                            firstScreenRange = staticSecondRange.firstScreenRange
+                            secondScreenRange = staticSecondRange.secondScreenRange
+                        }
+                    }
+                }
+            }
         }
 
         return firstRangeList + secondRangeList
