@@ -41,4 +41,10 @@ class ScreenRangeLeaf(
         return (other as ScreenRangeLeaf).start == start &&
                 other.endInclusive == endInclusive
     }
+
+    override fun hashCode(): Int {
+        var result = start
+        result = 31 * result + endInclusive
+        return result
+    }
 }

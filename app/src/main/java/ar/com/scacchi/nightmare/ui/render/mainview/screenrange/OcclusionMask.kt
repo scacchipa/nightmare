@@ -133,4 +133,10 @@ class OcclusionMask(
         return (other as OcclusionMask).firstScreenRange == firstScreenRange &&
                 other.secondScreenRange == secondScreenRange
     }
+
+    override fun hashCode(): Int {
+        var result = firstScreenRange.hashCode()
+        result = 31 * result + (secondScreenRange?.hashCode() ?: 0)
+        return result
+    }
 }
