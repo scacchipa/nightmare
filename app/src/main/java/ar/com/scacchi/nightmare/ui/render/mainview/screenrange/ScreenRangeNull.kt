@@ -9,7 +9,7 @@ object ScreenRangeNull : IScreenRange {
         IntersectionType.NoIntersection
     override fun clipIntersection(range: IntRange): List<IntRange> = listOf()
 
-    override fun toString(): String = "ScreenRangeMull"
+    override fun toString(): String = "ScreenRangeNull"
 
 
     override fun equals(other: Any?): Boolean {

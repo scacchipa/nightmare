@@ -2,11 +2,11 @@ package ar.com.scacchi.nightmare.ui.render.mainview.screenrange
 
 class OcclusionMask(
     var firstScreenRange: IScreenRange = ScreenRangeNull,
-    var secondScreenRange: IScreenRange? = null
+    var secondScreenRange: IScreenRange = ScreenRangeNull,
 ) : IScreenRange {
 
     var resultFirstScreenRange: IScreenRange = ScreenRangeNull
-    var resultSecondScreenRange: IScreenRange? = ScreenRangeNull
+    var resultSecondScreenRange: IScreenRange = ScreenRangeNull
 
     override val start: Int get() = firstScreenRange.start
     override val endInclusive: Int
@@ -25,16 +25,33 @@ class OcclusionMask(
             is OcclusionMask -> firstScreenRange.clipIntersection(range)
             else -> return listOf()
         }
-        val secondRangeList = secondScreenRange?.let { screenRange ->
+        val secondRangeList = secondScreenRange.let { screenRange ->
             return@let when (secondScreenRange) {
                 is ScreenRangeLeaf -> clipSecondRange(range)
                 is OcclusionMask -> firstScreenRange.clipIntersection(range)
                 else -> listOf()
             }
-        } ?: listOf()
+        }
 
-        firstScreenRange = resultFirstScreenRange
-        secondScreenRange = resultSecondScreenRange
+        if (resultSecondScreenRange != ScreenRangeNull) {
+            resultFirstScreenRange.let {
+                when (it) {
+                    is ScreenRangeLeaf -> {
+                        firstScreenRange = resultFirstScreenRange
+                        secondScreenRange = resultSecondScreenRange
+                    }
+                    is OcclusionMask -> {
+                        firstScreenRange = it.resultFirstScreenRange
+                        secondScreenRange = it.resultSecondScreenRange
+                    }
+                    is ScreenRangeNull -> throw Exception("This case should not happen")
+                }
+            }
+        } else {
+            firstScreenRange = resultFirstScreenRange
+            secondScreenRange = resultSecondScreenRange
+        }
+
         return firstRangeList + secondRangeList
     }
 
@@ -48,7 +65,7 @@ class OcclusionMask(
             }
 
             is IntersectionType.Inside -> {
-                if (secondScreenRange == null) {
+                if (secondScreenRange == ScreenRangeNull) {
                     resultFirstScreenRange =
                         ScreenRangeLeaf(firstScreenRange.start, intersection.start)
                     resultSecondScreenRange =
