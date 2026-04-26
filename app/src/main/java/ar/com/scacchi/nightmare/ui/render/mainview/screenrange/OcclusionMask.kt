@@ -10,7 +10,9 @@ class OcclusionMask(
 
     override val start: Int get() = firstScreenRange.start
     override val endInclusive: Int
-        get() = secondScreenRange?.endInclusive ?: firstScreenRange.endInclusive
+        get() =
+            if (secondScreenRange == ScreenRangeNull) firstScreenRange.endInclusive
+            else secondScreenRange.endInclusive
 
     override fun isInside(item: Int): Boolean = item >= start && item <= endInclusive
     override fun intersection(range: IntRange): IntersectionType {
@@ -94,49 +96,42 @@ class OcclusionMask(
     }
 
     private fun clipSecondRange(range: IntRange): List<IntRange> {
-        val intersection = secondScreenRange?.intersection(range) ?: return listOf()
+        val intersection = secondScreenRange.intersection(range)
 
-        return secondScreenRange?.let { secureSecondScreenRange ->
-            when (intersection) {
-                is IntersectionType.CoverAll -> {
-                    resultSecondScreenRange = ScreenRangeNull
-                    return@let listOf(IntRange(
-                        secureSecondScreenRange.start, secureSecondScreenRange.endInclusive)
-                    )
-                }
-
-                is IntersectionType.Inside -> {
-                    resultSecondScreenRange = OcclusionMask(
-                        ScreenRangeLeaf(secureSecondScreenRange.start, intersection.start),
-                        ScreenRangeLeaf(
-                            intersection.endInclusive,
-                            secureSecondScreenRange.endInclusive
-                        )
-                    )
-                    return@let listOf(IntRange(intersection.start, intersection.endInclusive))
-                }
-
-                is IntersectionType.NoIntersection -> return@let listOf()
-                is IntersectionType.SameStart -> {
-                    resultSecondScreenRange = ScreenRangeLeaf(
-                        intersection.endInclusive, secureSecondScreenRange.endInclusive
-                    )
-                    return@let listOf(
-                        IntRange(
-                            secureSecondScreenRange.start, intersection.endInclusive
-                        )
-                    )
-                }
-
-                is IntersectionType.SomeEnd -> {
-                    resultSecondScreenRange =
-                        ScreenRangeLeaf(secureSecondScreenRange.start, intersection.start)
-                    return@let listOf(
-                        IntRange(intersection.start, secureSecondScreenRange.endInclusive)
-                    )
-                }
+        when (intersection) {
+            is IntersectionType.CoverAll -> {
+                resultSecondScreenRange = ScreenRangeNull
+                return listOf(
+                    IntRange(secondScreenRange.start, secondScreenRange.endInclusive)
+                )
             }
-        } ?: return listOf()
+
+            is IntersectionType.Inside -> {
+                resultSecondScreenRange = OcclusionMask(
+                    ScreenRangeLeaf(secondScreenRange.start, intersection.start),
+                    ScreenRangeLeaf(intersection.endInclusive, secondScreenRange.endInclusive)
+                )
+                return listOf(IntRange(intersection.start, intersection.endInclusive))
+            }
+
+            is IntersectionType.NoIntersection -> return listOf()
+            is IntersectionType.SameStart -> {
+                resultSecondScreenRange = ScreenRangeLeaf(
+                    intersection.endInclusive, secondScreenRange.endInclusive
+                )
+                return listOf(
+                    IntRange(secondScreenRange.start, intersection.endInclusive)
+                )
+            }
+
+            is IntersectionType.SomeEnd -> {
+                resultSecondScreenRange =
+                    ScreenRangeLeaf(secondScreenRange.start, intersection.start)
+                return listOf(
+                    IntRange(intersection.start, secondScreenRange.endInclusive)
+                )
+            }
+        }
     }
 
     override fun toString(): String =
@@ -153,7 +148,7 @@ class OcclusionMask(
 
     override fun hashCode(): Int {
         var result = firstScreenRange.hashCode()
-        result = 31 * result + (secondScreenRange?.hashCode() ?: 0)
+        result = 31 * result + secondScreenRange.hashCode()
         return result
     }
 }
